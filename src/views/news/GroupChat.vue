@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-17 15:24:57
- * @LastEditTime: 2021-06-22 16:03:51
+ * @LastEditTime: 2021-06-22 16:21:49
  * @FilePath: \you-shop1\src\views\news\GroupChat.vue
  * @Describe: 
 -->
@@ -350,7 +350,11 @@ export default {
   min-height: 100%;
   background-color: #fff;
   position: relative;
-  // 导航
+  /**
+   * @Author: 飞
+   * @Date: 2021-06-22 16:21:45
+   * @Describe: 导航
+   */
   .van-nav-bar {
     .van-icon {
       color: #333;
