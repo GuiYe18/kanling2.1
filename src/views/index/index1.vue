@@ -39,6 +39,11 @@
         </li>
       </ul>
     </div>
+    <!-- /**
+     * @Author: 飞
+     * @Date: 2021-06-22 17:50:50
+     * @Describe: 首页新闻展示 
+     */     -->
     <div class="contentList" ref="contentList" :class="{ contentListPaddingTop: contentListTop <= 0 }">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="offset" @load="onLoad">
         <van-cell class="contentItem" v-for="(item, index) in recommendList" :key="index" @click="toDetail(item)">
@@ -178,6 +183,12 @@
         </van-cell>
       </van-list>
     </div>
+    <!--  /**
+   * @Author: 飞
+   * @Date: 2021-06-22 17:51:20
+   * @Describe: 视频展示 
+   */    -->
+   
   </div>
 </template>
 
@@ -365,7 +376,6 @@ export default {
     window.addEventListener("scroll", this.slideHandle);
 
     this.contentListTop = this.$refs.contentList.getBoundingClientRect().top;
-    console.log(this.contentListTop);
     this.labListHeight = this.$refs.labList.getBoundingClientRect().height;
 
     // 推广
@@ -398,7 +408,6 @@ export default {
     },
     slideHandle() {
       this.contentListTop = this.$refs.contentList.getBoundingClientRect().top - this.labListHeight;
-      console.log("contentListTop", this.contentListTop);
     },
     tolocation() {
       this.$router.push(this.fun.getUrl("o2oLocation", "", { tag: "index" }));

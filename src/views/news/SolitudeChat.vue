@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-17 15:24:57
- * @LastEditTime: 2021-06-22 16:01:00
+ * @LastEditTime: 2021-06-22 20:01:46
  * @FilePath: \you-shop1\src\views\news\SolitudeChat.vue
  * @Describe: 
 -->
@@ -213,7 +213,9 @@ export default {
          * @Describe:移动端  点击输入框后   弹起键盘 输入框在输入法上面
          * url:https://www.cnblogs.com/wx1993/p/6059668.html
          */
+        document.querySelector("#text_content").scrollIntoView(false);
         document.querySelector(".InputBox").scrollIntoView(true);
+
       }
     },
     //获取当前时间

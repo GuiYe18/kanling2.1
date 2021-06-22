@@ -255,8 +255,8 @@ export default {
         PAY_TYPE + //类型
         `&uid=` +
         this.uid + //uid
-        `&TRN_TX_LOGNO=` +
-        this.TRN_TX_LOGNO +
+        // `&TRN_TX_LOGNO=` +
+        // this.TRN_TX_LOGNO +//日期
         // this.timestamp //日期加时间戳
         `&TX_MOBILE_NO=19889999966&TX_ORDER_AMOUNT=` +
         this.value + //金额
@@ -278,8 +278,8 @@ export default {
             PAY_TYPE + //类型
             `&uid=` +
             this.uid + //uid
-            `&TRN_TX_LOGNO=` +
-            this.TRN_TX_LOGNO +
+            // `&TRN_TX_LOGNO=` +
+            // this.TRN_TX_LOGNO +
             // this.timestamp //日期加时间戳
             `&TX_MOBILE_NO=19889999966&TX_ORDER_AMOUNT=` +
             this.value + //金额

@@ -154,7 +154,8 @@ export default {
      * @Date: 2021-06-17 16:18:15
      * @Describe: 初始化cookie
      */
-    if (localStorage.getItem("initialization") != 'initialization-04') {
+    if (localStorage.getItem("initialization") != 'initialization-03') {
+
       console.log("初始化cookie");
       window.localStorage.removeItem("VuexDate_NewArray");
       window.localStorage.removeItem("VuexDate_FriendsList");
@@ -167,9 +168,12 @@ export default {
       window.localStorage.removeItem("VuexDate_GroupchatIDNumber");
       window.localStorage.removeItem("VuexDate_GroupThatTotalList");
 
-      localStorage.setItem("initialization", "initialization-04");
+      localStorage.setItem("initialization", "initialization-03");
+
+    }else{
 
     }
+
 
     // this.getParams();
     this.getLanguage();

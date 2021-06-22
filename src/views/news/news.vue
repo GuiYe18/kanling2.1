@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-04-20 11:09:03
- * @LastEditTime: 2021-06-17 19:22:56
+ * @LastEditTime: 2021-06-22 19:30:28
  * @FilePath: \you-shop1\src\views\news\news.vue
  * @Describe: 
 -->
@@ -57,6 +57,7 @@
     <van-action-sheet v-model="show" :title="listNum" :style="{ height: '80%' }">
       <CreateGroupChat :chat="show" :list="list" :CreateAGroupChat="CreateAGroupChat" :Allocation="Allocation" @func="getMsgFormSon" :PoonsTheButton="PoonsTheButton" />
     </van-action-sheet>
+    
   </div>
 </template>
 

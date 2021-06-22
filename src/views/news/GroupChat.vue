@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-17 15:24:57
- * @LastEditTime: 2021-06-22 16:21:49
+ * @LastEditTime: 2021-06-22 20:02:34
  * @FilePath: \you-shop1\src\views\news\GroupChat.vue
  * @Describe: 
 -->
@@ -17,7 +17,7 @@
       <template #right>
         <router-link :to="fun.getUrl('GroupDetails', {}, { username: $route.query.username, nickname: $route.query.nickname })">
           <!-- <i class="el-icon-more" @click="onClickRight"></i> -->
-          <van-icon name="ellipsis" @click="onClickRight"/>
+          <van-icon name="ellipsis" @click="onClickRight" />
         </router-link>
       </template>
     </van-nav-bar>
@@ -288,7 +288,15 @@ export default {
     // 划到最底部
     scrollToBottom: function () {
       if (this.$route.name == "GroupChat") {
+        /**
+         * @Author: 飞
+         * @Date: 2021-06-22 15:21:12
+         * @Describe:移动端  点击输入框后   弹起键盘 输入框在输入法上面
+         * url:https://www.cnblogs.com/wx1993/p/6059668.html
+         */
+
         document.querySelector("#text_content").scrollIntoView(false);
+        document.querySelector(".InputBox").scrollIntoView(true);
       }
     },
 

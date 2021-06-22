@@ -1,14 +1,14 @@
 <!--
  * @Author: 飞
  * @Date: 2021-06-18 11:30:16
- * @LastEditTime: 2021-06-22 16:04:35
+ * @LastEditTime: 2021-06-22 19:07:37
  * @FilePath: \you-shop1\src\views\news\GroupDetails.vue
  * @Describe: 
 -->
 <template>
   <div class="content">
     <!-- 导航-->
-    <van-nav-bar :title="this.$route.query.nickname+'('+Object.keys(list).length+')'" left-arrow fixed>
+    <van-nav-bar :title="this.$route.query.nickname + '(' + Object.keys(list).length + ')'" left-arrow fixed>
       <template #left>
         <!-- <i class="el-icon-arrow-left" @click="onClickLeft"></i> -->
         <van-icon name="arrow-left" @click="onClickLeft" />
@@ -32,6 +32,23 @@
 
       <!-- <span>查看更多</span> -->
     </div>
+
+    <!-- <van-form @submit="onSubmit">
+      <van-field name="uploader" label="文件上传">
+        <template #input>
+          <van-uploader v-model="uploader" />
+        </template>
+      </van-field>
+      <div style="margin: 16px">
+        <van-button round block type="info" native-type="submit">提交</van-button>
+      </div>
+    </van-form>
+
+    <div style="margin: 16px">
+      <van-button round block type="info" native-type="submit">提交</van-button>
+    </div>
+    <span @click="huan">换</span> -->
+
   </div>
 </template>
 
@@ -40,13 +57,20 @@ import { Toast } from "vant";
 export default {
   data() {
     return {
-      list: {}
+      list: {},
+      uploader: [{ url: "https://img01.yzcdn.cn/vant/leaf.jpg" }]
     };
   },
   activated() {
     this.GetGroupMemberAvatar();
   },
   methods: {
+    // onSubmit(values) {
+    //   console.log("submit", values);
+    // },
+    // huan() {
+    //   window.JIM.UpdateGroupInformation();
+    // },
     //
     addPersonnel() {
       Toast("添加新成员暂未开发 功能正在完善");
@@ -61,6 +85,9 @@ export default {
       axios({
         method: "post",
         url: "https://tpkl.minpinyouxuan.com/api/v1/getgroupmem",
+        // headers: {
+        //   "Content-type": "application/x-www-form-urlencoded"
+        // },
         data: {
           gid: this.$route.query.username
         }

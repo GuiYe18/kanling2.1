@@ -173,7 +173,14 @@ export default {
 
         //创建群聊开关(点击选项时触发)
         onSelect() {
-            this.show = true;
+            /**
+             * @Author: 飞
+             * @Date: 2021-06-22 19:31:44
+             * @Describe: 关闭创建群聊  暂时关闭
+             */            
+            // this.show = true;
+
+            Toast('创建群聊正在开发中')
         },
         // 注册
 

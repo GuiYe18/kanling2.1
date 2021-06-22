@@ -71,7 +71,7 @@ function Login() {
                         window.JGusername = data.username
                         window.JIM.MonitorInformation() //监听消息
                         window.JIM.OfflineMessageSynchronizationMonitoring() //离线信息同步监听
-                        window.JIM.UpdateGroupInformation()
+                        // window.JIM.UpdateGroupInformation()//更新群信息
                         /**
                          * @Author: 飞
                          * @Date: 2021-06-16 14:56:58
@@ -87,7 +87,7 @@ function Login() {
                         window.JIM.SingleChatMessageUnread()//单聊未读消息列表
                         // 群
                         // 获取群列表
-                        window.JIM.GetAGroupList()
+                        // window.JIM.GetAGroupList()
 
                     })
                     .onFail(function (data) {
@@ -228,7 +228,7 @@ window.JIM.OfflineMessageSynchronizationMonitoring = function OfflineMessageSync
 // 发送单聊消息
 window.JIM.SendASingleChatMessage = function SendASingleChatMessage(target_username, content) {
 
-    console.log('target_username', );
+    console.log('target_username',);
     console.log('content', content);
 
     JIM.sendSingleMsg({
@@ -480,11 +480,15 @@ window.JIM.BusinessTimeMonitoring = function BusinessTimeMonitoring(params) {
  * @Describe:更新群信息 
  */
 window.JIM.UpdateGroupInformation = function UpdateGroupInformation(gid, avatar) {
-    var formData = new FormData();
-    formData.append("name", "https://gimg2.baidu.com/image_search/src=http%3A%2F%2F2.im.guokr.com%2Fgkimage%2Fkm%2Fiu%2Fs9%2Fkmius9.png&refer=http%3A%2F%2F2.im.guokr.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1626863985&t=9da68eac7d4210883be63ba5237decab");
+    // var formData = new FormData();
+
+    // formData.append("token", 1)
+
+
     JIM.updateGroupInfo({
-        gid: 71089530,
-        avatar: formData,
+        'gid': '71089530',
+        'group_name': '11111111111111111111',
+        'avatar': formData,
     }).onSuccess(function (data) {
         console.log('更新群信息onSuccess', data);
 
@@ -497,6 +501,7 @@ window.JIM.UpdateGroupInformation = function UpdateGroupInformation(gid, avatar)
     console.log('formData', formData);
 
 }
+
 
 //
 // function FansList() {

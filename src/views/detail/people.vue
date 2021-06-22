@@ -57,7 +57,9 @@
         <div class="demo" v-if="content.qsnvideo !== ''">
           <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" :options="playerOptions"> </video-player>
         </div>
-        <div class="detailPic" v-for="(item, index) in content.texturl" :key="index"><img :src="item" alt="" /></div>
+        <div class="detailPic 1" v-for="(item, index) in content.texturl" :key="index">
+          <img :src="item" alt="" />
+        </div>
       </div>
       <div class="dynamic" v-show="labelIndex === 2">
         <van-list v-model="dynamicLoading" :finished="dynamicFinished" finished-text="没有更多了" @load="dynamicOnLoad">
