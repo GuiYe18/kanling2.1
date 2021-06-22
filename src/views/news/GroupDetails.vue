@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-06-18 11:30:16
- * @LastEditTime: 2021-06-18 14:55:44
+ * @LastEditTime: 2021-06-22 16:04:35
  * @FilePath: \you-shop1\src\views\news\GroupDetails.vue
  * @Describe: 
 -->
@@ -10,7 +10,8 @@
     <!-- 导航-->
     <van-nav-bar :title="this.$route.query.nickname+'('+Object.keys(list).length+')'" left-arrow fixed>
       <template #left>
-        <i class="el-icon-arrow-left" @click="onClickLeft"></i>
+        <!-- <i class="el-icon-arrow-left" @click="onClickLeft"></i> -->
+        <van-icon name="arrow-left" @click="onClickLeft" />
       </template>
       <template #right>
         <!-- <i class="el-icon-more" @click="onClickRight"></i> -->

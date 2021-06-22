@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-17 15:24:57
- * @LastEditTime: 2021-06-18 17:12:50
+ * @LastEditTime: 2021-06-22 16:03:51
  * @FilePath: \you-shop1\src\views\news\GroupChat.vue
  * @Describe: 
 -->
@@ -11,11 +11,13 @@
     <!-- 导航 -->
     <van-nav-bar :title="nickname + '(' + Object.keys(GroupMemberNameAvatar).length + ')'" left-arrow fixed>
       <template #left>
-        <i class="el-icon-arrow-left" @click="onClickLeft"></i>
+        <!-- <i class="el-icon-arrow-left" @click="onClickLeft"></i> -->
+        <van-icon name="arrow-left" @click="onClickLeft" />
       </template>
       <template #right>
         <router-link :to="fun.getUrl('GroupDetails', {}, { username: $route.query.username, nickname: $route.query.nickname })">
-          <i class="el-icon-more" @click="onClickRight"></i>
+          <!-- <i class="el-icon-more" @click="onClickRight"></i> -->
+          <van-icon name="ellipsis" @click="onClickRight"/>
         </router-link>
       </template>
     </van-nav-bar>
@@ -348,6 +350,12 @@ export default {
   min-height: 100%;
   background-color: #fff;
   position: relative;
+  // 导航
+  .van-nav-bar {
+    .van-icon {
+      color: #333;
+    }
+  }
   //聊天区
   #text_content {
     width: 100%;
@@ -428,6 +436,7 @@ export default {
       }
     }
   }
+  // 聊天区
   /deep/.InputBox {
     // position: absolute;
     // // bottom: -50px;

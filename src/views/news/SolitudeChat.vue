@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-17 15:24:57
- * @LastEditTime: 2021-06-22 11:21:59
+ * @LastEditTime: 2021-06-22 16:01:00
  * @FilePath: \you-shop1\src\views\news\SolitudeChat.vue
  * @Describe: 
 -->
@@ -11,7 +11,8 @@
     <!-- 导航 -->
     <van-nav-bar :title="nickname" left-arrow fixed>
       <template #left>
-        <i class="el-icon-arrow-left" @click="onClickLeft"></i>
+        <!-- <i class="el-icon-arrow-left" @click="onClickLeft"></i> -->
+        <van-icon name="arrow-left" @click="onClickLeft" />
       </template>
       <!-- <template #right>
         <i class="el-icon-more" @click="onClickRight"></i>
@@ -61,9 +62,7 @@
     </div>
     <!-- 输入框 -->
     <div class="InputBox">
-      <van-cell-group>
-        <van-field v-model="value" rows="1" type="textarea" placeholder="请输入内容..." class="leftsend" :autosize="{ maxHeight: 100, minHeight: 30 }" @focus="onfocus" />
-      </van-cell-group>
+      <van-field v-model="value" rows="1" type="textarea" placeholder="请输入内容..." class="leftsend" :autosize="{ maxHeight: 100, minHeight: 30 }" @focus="onfocus" />
       <div class="rightsend">
         <!-- <div class="AddTo" @click="AddTo"><van-icon name="add-o" size="30" /></div> -->
         <div @click="onSearch" :class="value === '' ? 'send' : 'sendcolor send'">发送</div>
@@ -208,7 +207,13 @@ export default {
     // 划到最底部
     scrollToBottom: function () {
       if (this.$route.name == "SolitudeChat") {
-        document.querySelector("#text_content").scrollIntoView(true);
+        /**
+         * @Author: 飞
+         * @Date: 2021-06-22 15:21:12
+         * @Describe:移动端  点击输入框后   弹起键盘 输入框在输入法上面
+         * url:https://www.cnblogs.com/wx1993/p/6059668.html
+         */
+        document.querySelector(".InputBox").scrollIntoView(true);
       }
     },
     //获取当前时间
@@ -296,6 +301,12 @@ export default {
   min-height: 100%;
   background-color: #fff;
   position: relative;
+  // 导航
+  .van-nav-bar {
+    .van-icon {
+      color: #333;
+    }
+  }
   //聊天区
   #text_content {
     width: 100%;
@@ -376,6 +387,7 @@ export default {
       }
     }
   }
+  // 输入区
   /deep/.InputBox {
     // position: absolute;
     // // bottom: -50px;
