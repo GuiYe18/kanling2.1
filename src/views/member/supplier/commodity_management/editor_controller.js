@@ -93,7 +93,7 @@ export default {
         json = { goods_id: that.$route.params.goods_id };
       }
       $http.post(urls, json).then(
-        function(response) {
+        function (response) {
           if (response.result === 1) {
             that.selectedOptions3 = [];
             that.selectedOptions3 = [
@@ -107,7 +107,7 @@ export default {
               var cindex = 0;
               var cindex_1 = 0;
               // var cindex_2 = 0;
-              that.options.forEach(function(value, index, array) {
+              that.options.forEach(function (value, index, array) {
                 if (value.id == response.data.category_ids.parentid) {
                   cindex = index;
                   categorystring.push(value.label);
@@ -115,7 +115,7 @@ export default {
               });
               that.columns[0].defaultIndex = cindex;
               if (Number(response.data.category_ids.childid)) {
-                that.options[cindex].children.forEach(function(
+                that.options[cindex].children.forEach(function (
                   value,
                   index,
                   array
@@ -128,7 +128,7 @@ export default {
                 if (categorystring.length > 0) {
                   that.columns[1].values = that.goodsHandle_1[
                     categorystring[0]
-                  ].map(function(val, index) {
+                  ].map(function (val, index) {
                     return Object.keys(val)[0];
                   });
                 }
@@ -137,7 +137,7 @@ export default {
                 that.columns[1].defaultIndex = cindex_1;
                 if (Number(response.data.category_ids.thirdid)) {
                   that.options[cindex].children[cindex_1].children.forEach(
-                    function(value, index, array) {
+                    function (value, index, array) {
                       if (value.id == response.data.category_ids.thirdid) {
                         // cindex_2 = index;
                         categorystring.push(value.label);
@@ -158,7 +158,7 @@ export default {
                       ) {
                         arr2 =
                           that.goodsHandle_1[categorystring[0]][i][
-                            categorystring[1]
+                          categorystring[1]
                           ];
                       }
                     }
@@ -201,7 +201,7 @@ export default {
             that.$notify(response.msg);
           }
         },
-        function(response) {
+        function (response) {
           console.log(response);
         }
       );
@@ -217,7 +217,7 @@ export default {
             json
           )
           .then(
-            function(response) {
+            function (response) {
               // console.log('显示分类edit', response);
               if (response.result == 1) {
                 that.sectionOptions = [];
@@ -249,14 +249,14 @@ export default {
               }
               that.getGoodsJson();
             },
-            function(response) {
+            function (response) {
               console.log(response);
             }
           );
       } else if (that.$route.params.store == "supplier") {
         let json = {};
         $http.post("plugin.supplier.frontend.goods.get-category", json).then(
-          function(response) {
+          function (response) {
             if (response.result == 1) {
               that.sectionOptions = [];
               for (var i = 0; i < response.data.length; i++) {
@@ -313,7 +313,7 @@ export default {
             }
             that.getGoodsJson();
           },
-          function(response) {
+          function (response) {
             console.log(response);
           }
         );
@@ -394,7 +394,7 @@ export default {
         }
 
         $http.post(urls, json).then(
-          function(response) {
+          function (response) {
             if (response.result === 1) {
               that.$router.go(-1);
               that.$notify({
@@ -406,7 +406,7 @@ export default {
               that.$notify(response.msg);
             }
           },
-          function(response) {
+          function (response) {
             console.log(response);
           }
         );
@@ -490,7 +490,7 @@ export default {
       let f = file.url;
       if (f) {
         let delIndex = "";
-        this.fileList1.forEach(function(val, index, arr) {
+        this.fileList1.forEach(function (val, index, arr) {
           if (val.url == f) {
             delIndex = index;
           }
@@ -523,12 +523,12 @@ export default {
         //将图片转成base64格式
         reader.readAsDataURL(file);
         //读取成功后的回调
-        reader.onloadend = function() {
+        reader.onloadend = function () {
           let result = this.result;
           let img = new Image();
           img.src = result;
 
-          img.onload = function() {
+          img.onload = function () {
             // 图片原始尺寸
             var originWidth = this.width;
             var originHeight = this.height;
@@ -562,7 +562,7 @@ export default {
             // 图片压缩
             context.drawImage(img, 0, 0, targetWidth, targetHeight);
             // canvas转为blob并上传
-            canvas.toBlob(function(blob) {
+            canvas.toBlob(function (blob) {
               // 图片ajax上传
               console.log(blob);
               if (callback === 1) {
@@ -577,6 +577,7 @@ export default {
     },
     /*vant图片上传*/
     onRead(e, flag) {
+
       if (flag !== true) {
         if (e.file.size > this.photosize) {
           this.imgPreview(e.file, 1);
@@ -671,7 +672,7 @@ export default {
           console.log(error);
         });
     },
-    removeImg: function(delIndex) {
+    removeImg: function (delIndex) {
       this.fileList1.splice(delIndex, 1);
       this.fileList2.splice(delIndex, 1);
       // this.upNumMax = this.fileList2.length;
@@ -680,17 +681,17 @@ export default {
     // };
     goodsHandlefunction_1(opt) {
       var obj = {};
-      var arr = opt.map(function(val, index) {
+      var arr = opt.map(function (val, index) {
         return val.label;
       });
       this.columns[0].values = arr;
       if (Array.isArray(opt[0].children)) {
-        var c_arr_2 = opt[0].children.map(function(val, index) {
+        var c_arr_2 = opt[0].children.map(function (val, index) {
           return val.label;
         });
         this.columns[1].values = c_arr_2;
         if (Array.isArray(opt[0].children[0].children)) {
-          var c_arr_3 = opt[0].children[0].children.map(function(val, index) {
+          var c_arr_3 = opt[0].children[0].children.map(function (val, index) {
             return val.label;
           });
           this.columns[2].values = c_arr_3;
@@ -703,7 +704,7 @@ export default {
 
       for (var i = 0; i < arr.length; i++) {
         if (Array.isArray(opt[i].children)) {
-          var arr_2 = opt[i].children.map(function(val, index) {
+          var arr_2 = opt[i].children.map(function (val, index) {
             return val.label;
           });
           obj[arr[i]] = arr_2;
@@ -712,7 +713,7 @@ export default {
         }
         for (var k = 0; k < opt[i].children.length; k++) {
           if (Array.isArray(opt[i].children[k].children)) {
-            var arr_3 = opt[i].children[k].children.map(function(val, index) {
+            var arr_3 = opt[i].children[k].children.map(function (val, index) {
               return val.label;
             });
             obj[arr[i]][k] = { [obj[arr[i]][k]]: arr_3 };
@@ -723,7 +724,7 @@ export default {
       }
       return obj;
     },
-    seleRegional: function() {
+    seleRegional: function () {
       this.dateshow_1 = true;
     },
     onChange(picker, value, index) {
@@ -734,7 +735,7 @@ export default {
       // getColumnIndex	columnIndex
       if (index == 0) {
         if (this.goodsHandle_1[value[0]].length > 0) {
-          var arr = this.goodsHandle_1[value[0]].map(function(val, index) {
+          var arr = this.goodsHandle_1[value[0]].map(function (val, index) {
             return Object.keys(val)[0];
           });
           picker.setColumnValues(1, arr);
@@ -755,10 +756,10 @@ export default {
         console.log(index);
       }
     },
-    onCancelbtn: function(val, index) {
+    onCancelbtn: function (val, index) {
       this.dateshow_1 = false;
     },
-    onConfirmbtn: function(val, index) {
+    onConfirmbtn: function (val, index) {
       let idArray = [];
       let option = this.options;
       if (Array.isArray(option) && option.length > 0 && Array.isArray(index)) {

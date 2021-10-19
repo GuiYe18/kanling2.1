@@ -4,6 +4,7 @@
  */
 
 import BlockChain from './blockchain';
+import fei from './fei';
 // 根目录
 const rootPath = '';
 const conferenceList = r => require.ensure([], () => r(require('@/views/conference/home')), 'conferenceList');
@@ -20,7 +21,7 @@ const goodsGroup = r => require(['../views/goods/goodsGroup'], r);
 const caseLibrary = r => require(["../views/others/case_library/case_library"], r);
 const caseLibraryHome = r => require(["../views/others/case_library/home"], r);
 const caseLibraryCategory = r => require(["../views/others/case_library/category"], r);
-const caseLibraryLabel = r => require(["../views/others/case_library/label"], r);
+// const caseLibraryLabel = r => require(["../views/others/case_library/label"], r);
 const caseLibrarySubjectList = r => require(["../views/others/case_library/subject_list"], r);
 const caseLibrarySubjectDetail = r => require(["../views/others/case_library/subject_detail"], r);
 const caseLibraryDetail = r => require(["../views/others/case_library/case_detail"], r);
@@ -68,11 +69,18 @@ const listEnterprise = r => require(['../views/listPage/enterprise'], r)
 const listShop = r => require(['../views/listPage/shop'], r)
 const listPeople = r => require(['../views/listPage/people'], r)
 const listSerch = r => require(['../views/listPage/serchList'], r)
+
 //新增详情页 2021/4/7
-const detailEnterprise = r => require(['../views/detail/enterprise'], r)
-const detailShop = r => require(['../views/detail/shop'], r)
-const detailPeople = r => require(['../views/detail/people'], r)
-const detailA = r => require(['../views/detail/a'], r)
+// const detailEnterprise = r => require(['../views/detail/enterprise'], r)
+// const detailShop = r => require(['../views/detail/shop'], r)
+// const detailPeople = r => require(['../views/detail/people'], r)
+
+/**
+ * @Author: 飞
+ * @Date: 2021-08-12 18:45:43
+ * @Describe: 新增企业-商铺-牛人详情
+ */
+const SharedComponentDetails = r => require(['../views/detail/SharedComponentDetails.vue'], r)
 
 //新增发现页
 const find = r => require(['../views/find/find'], r)
@@ -130,7 +138,7 @@ const BrandGoods = r => require(['../views/category/brandgoods'], r);
 const Cart = r => require(['../views/cart/cart'], r);
 const Settlement = r => require(['../views/cart/settlement'], r);
 const Diy = r => require(['../views/diy'], r);
-const newDiy = r => require(['../views/new_diy'], r);
+// const newDiy = r => require(['../views/new_diy'], r);
 const Share = r => require(['../views/home/share'], r);
 const CloseSite = r => require(['../views/close_site'], r);
 const DiyForm = r => require(['../views/diy_form'], r);
@@ -1236,6 +1244,7 @@ const predictIncome = r => require(['../views/extension/team_sell/predict_income
 const storeShareholder = r => require(['../views/extension/store_shareholder/index'], r);
 // 云仓
 const cloudIndex = r => require(['../views/others/cloudwarehouse/cloud_index'], r);
+
 // 提货区
 const pickUpArea = r => require(['../views/others/cloudwarehouse/pickUpArea'], r);
 // 提货详情
@@ -1288,12 +1297,21 @@ const DonationAgreement = r => require(['../views/kick/DonationAgreement.vue'], 
 // 捐赠协议
 const MatterAgreement = r => require(['../views/kick/MatterAgreement.vue'], r);
 
+// 我的捐赠列表
+const ListOfMyDonations = r => require(['../views/kick/ListOfMyDonations.vue'], r);
+
+// 捐物编辑
+const EditProduct = r => require(['../views/kick/EditProduct.vue'], r);
 // 发布捐物
 const releaseContribution = r => require(['../views/kick/releaseContribution.vue'], r);
 // 捐物地址列表
 const releaseAddressList = r => require(['../views/kick/releaseAddressList.vue'], r);
+
 // 我的捐赠 订单
 const MyDonation = r => require(['../views/kick/MyDonation.vue'], r);
+// 我的捐赠 订单详情
+const DonationOrderDetails = r => require(['../views/kick/DonationOrderDetails.vue'], r);
+
 // 我的捐赠 订单   预约发货
 const ShipByAppointment = r => require(['../views/kick/ShipByAppointment.vue'], r);
 // 我的捐赠 订单   预约详情 
@@ -1302,8 +1320,6 @@ const BookingInfo = r => require(['../views/kick/BookingInfo.vue'], r);
 const Disbursment = r => require(['../views/kick/Disbursment.vue'], r);
 // 我的首页 捐赠证书    
 const DonationCertificate = r => require(['../views/kick/DonationCertificate.vue'], r);
-// 我的首页 捐赠发票   
-const DonationInvoice = r => require(['../views/kick/DonationInvoice.vue'], r);
 
 //门店消费卡
 const storeConsumeIndex = r => require(['../views/o2o/store_consume/index'], r);
@@ -1370,7 +1386,7 @@ const RequestARefund = r => require(['../views/IncomeAndExpenditureDetails/Reque
 // 收支明细 退款详情
 const RefundDetails = r => require(['../views/IncomeAndExpenditureDetails/RefundDetails.vue'], r);
 
-// 商户入住 
+// 商户入住   
 const MerchantSettled = r => require(['../views/MerchantSettled/MerchantSettled.vue'], r);
 // 支付码申请提交成功 商户入住 
 const CashCodeApplicationSubmissionSuccess = r => require(['../views/MerchantSettled/CashCodeApplicationSubmissionSuccess.vue'], r);
@@ -1382,13 +1398,26 @@ const PaymentCodeAuthenticationFailed = r => require(['../views/MerchantSettled/
 const ViewPaymentCode = r => require(['../views/MerchantSettled/ViewPaymentCode.vue'], r);
 
 // 我的信息 群聊 群详情
-const GroupDetails = r => require(['../views/news/GroupDetails.vue'], r);
+// const GroupDetails = r => require(['../views/news/GroupDetails.vue'], r);
+const GroupDetails = ()=>import("../views/news/GroupDetails.vue")
 
-
+// 短视频
+// const AutoplayNextSwiper = r => require(['../views/index/AutoplayNextSwiper.vue'], r);
 
 // 页面路由  
 const routes = [
 
+
+    // 短视频
+    // {
+    //     path: '/AutoplayNextSwiper',
+    //     component: AutoplayNextSwiper,
+    //     name: 'AutoplayNextSwiper',
+    //     meta: {
+    //         foot: true
+
+    //     }
+    // },
     // 我的信息 群聊 群详情
     {
         path: '/GroupDetails',
@@ -1510,7 +1539,7 @@ const routes = [
         name: 'GroupChat',
         keepAlive: true,
         meta: {
-            foot: true
+            foot: true,
         }
     },
     // 我的首页 单聊 
@@ -1603,16 +1632,7 @@ const routes = [
             foot: true
         }
     },
-    // 我的首页  捐赠发票  
-    {
-        path: '/donationInvoice',
-        component: DonationInvoice,
-        name: 'DonationInvoice',
-        meta: {
-            title: '捐赠发票',
-            foot: true
-        }
-    },
+
     // 我的首页  捐赠证书   
     {
         path: '/donationCertificate',
@@ -1643,7 +1663,18 @@ const routes = [
             foot: true
         }
     },
-    // 我的捐赠 订单  预约发货  BookingInfo
+
+    // 我的捐赠 订单详情
+    {
+        path: '/DonationOrderDetails',
+        component: DonationOrderDetails,
+        name: 'DonationOrderDetails',
+        meta: {
+            title: '订单详情',
+            foot: true
+        }
+    },
+    // 我的捐赠 订单  预约发货  
     {
         path: '/shipByAppointment',
         component: ShipByAppointment,
@@ -1670,6 +1701,28 @@ const routes = [
         name: 'releaseAddressList',
         meta: {
             title: '捐物地址列表',
+            foot: true
+        }
+    },
+
+
+    // 我的捐赠列表
+    {
+        path: '/ListOfMyDonations',
+        component: ListOfMyDonations,
+        name: 'ListOfMyDonations',
+        meta: {
+            title: '我的捐赠列表',
+            foot: true
+        }
+    },
+    // 捐物编辑
+    {
+        path: '/EditProduct',
+        component: EditProduct,
+        name: 'EditProduct',
+        meta: {
+            title: '捐物编辑',
             foot: true
         }
     },
@@ -1803,16 +1856,16 @@ const routes = [
             isPC: true
         }
     },
-    {
-        path: '/case_library_label/:id',
-        component: caseLibraryLabel,
-        name: "caseLibraryLabel",
-        meta: {
-            title: "标签",
-            foot: true,
-            isPC: true
-        }
-    },
+    // {
+    //     path: '/case_library_label/:id',
+    //     component: caseLibraryLabel,
+    //     name: "caseLibraryLabel",
+    //     meta: {
+    //         title: "标签",
+    //         foot: true,
+    //         isPC: true
+    //     }
+    // },
     {
         path: '/case_library_subject_list',
         component: caseLibrarySubjectList,
@@ -1987,19 +2040,11 @@ const routes = [
         component: Home,
         name: 'home',
         meta: {
-            title: '',
+            title: '捐领',
             foot: false
         }
     },
-    { //
-        path: '/detail/a',
-        component: detailA,
-        name: 'detailA',
-        meta: {
-            title: '企业分类',
-            foot: false
-        }
-    },
+
     //新增首页
     {
         path: '/index',
@@ -2071,36 +2116,53 @@ const routes = [
         name: 'listSerch',
         meta: {
             title: '搜索列表',
-            foot: false
+            foot: true
         }
     },
-    { //新增企业详情
-        path: '/detail/enterprise',
-        component: detailEnterprise,
-        name: 'detailEnterprise',
+
+    /**
+     * @Author: 飞
+     * @Date: 2021-08-12 18:44:04
+     * @Describe: 新增企业-商铺-牛人详情
+     */    
+    { 
+        path: '/SharedComponentDetails',
+        component: SharedComponentDetails,
+        name: 'SharedComponentDetails',
         meta: {
             title: '企业详情',
-            foot: false
+            foot: true
         }
     },
-    { //新增商铺详情
-        path: '/detail/shop',
-        component: detailShop,
-        name: 'detailShop',
-        meta: {
-            title: '商铺详情',
-            foot: false
-        }
-    },
-    { //新增牛人详情
-        path: '/detail/people',
-        component: detailPeople,
-        name: 'detailPeople',
-        meta: {
-            title: '牛人详情',
-            foot: false
-        }
-    },
+    // { //新增企业详情
+    //     path: '/detail/enterprise',
+    //     component: detailEnterprise,
+    //     name: 'detailEnterprise',
+    //     meta: {
+    //         title: '企业详情',
+    //         foot: true
+    //     }
+    // },
+    // { //新增商铺详情
+    //     path: '/detail/shop',
+    //     component: detailShop,
+    //     name: 'detailShop',
+    //     meta: {
+    //         title: '商铺详情',
+    //         foot: true
+
+
+    //     }
+    // },
+    // { //新增牛人详情
+    //     path: '/detail/people',
+    //     component: detailPeople,
+    //     name: 'detailPeople',
+    //     meta: {
+    //         title: '牛人详情',
+    //         foot: true
+    //     }
+    // },
     { //新增发现
         path: '/find',
         component: find,
@@ -2125,7 +2187,7 @@ const routes = [
         name: 'findAdd',
         meta: {
             title: '发布商机',
-            foot: false
+            foot: true
         }
     },
     { //新增消息
@@ -2143,7 +2205,7 @@ const routes = [
         component: StrongManManage,
         name: 'strongManManage',
         meta: {
-            title: '企业管理',
+            title: '数据分析',
             foot: true
         }
     },
@@ -2369,7 +2431,7 @@ const routes = [
         component: EnterpriseManage,
         name: 'enterpriseManage',
         meta: {
-            title: '企业管理',
+            title: '数据分析',
             foot: true
         }
     },
@@ -2379,7 +2441,7 @@ const routes = [
         component: ShopsManage,
         name: 'shopsManage',
         meta: {
-            title: '企业管理',
+            title: '数据分析',
             foot: true
         }
     },
@@ -2432,15 +2494,15 @@ const routes = [
             foot: false
         }
     },
-    {
-        path: '/newDiy',
-        component: newDiy,
-        name: 'newDiy',
-        meta: {
-            title: '',
-            foot: true
-        }
-    },
+    // {
+    //     path: '/newDiy',
+    //     component: newDiy,
+    //     name: 'newDiy',
+    //     meta: {
+    //         title: '',
+    //         foot: true
+    //     }
+    // },
     // {
     //   path: "/diy/:page_id",
     //   component: Diy,
@@ -2637,7 +2699,7 @@ const routes = [
         component: IntegralV2,
         name: 'integral_v2',
         meta: {
-            title: '积分',
+            title: '通兑',
             foot: true
         }
     },
@@ -2839,7 +2901,7 @@ const routes = [
         component: IntegralList,
         name: 'integrallist',
         meta: {
-            title: '积分列表',
+            title: '通兑明细',
             foot: true
         }
     },
@@ -5898,7 +5960,7 @@ const routes = [
         name: 'o2oLocation',
         meta: {
             title: '',
-            foot: false
+            foot: true
         }
     },
     {
@@ -6530,7 +6592,7 @@ const routes = [
     // SupplierCenter 供应商管理中心
 
     {
-        path: '/supplier_center/:uid',
+        path: '/SupplierCenter',
         component: SupplierCenter,
         name: 'SupplierCenter',
         meta: {
@@ -6624,7 +6686,7 @@ const routes = [
     // 供应商--信息管理
 
     {
-        path: '/supplier_info_manage/:member_id',
+        path: '/SupInfoManage_A/:member_id',
         component: SupInfoManage,
         name: 'SupInfoManage',
         meta: {
@@ -9630,7 +9692,11 @@ const routes = [
     .map(route => {
         route.path = rootPath + route.path;
         return route;
-    });
+    }).concat(fei)
+    .map(route => {
+        // route.path = rootPath + route.path;
+        return route;
+    })
 // 404 页
 routes.push({
     path: '*',

@@ -14,9 +14,11 @@
         </div>
 
         <ul class="tool-boxlis 2" v-if="datas.list_style == '1'">
-          <li v-for="icon in datas.show_list" :key="icon.url" v-if="notShow.indexOf(icon.url) < 0" @click="pluginGoto(icon, member_item)">
-            <i class="iconfont" :class="icon.class"></i>
-            <div>{{ icon.title }}</div>
+          <li v-for="icon in datas.show_list" :key="icon.url" @click="pluginGoto(icon, member_item)">
+            <template v-if="notShow.indexOf(icon.url) < 0">
+              <i class="iconfont" :class="icon.class"></i>
+              <div>{{ icon.title }}</div>
+            </template>
           </li>
           <li v-for="(item, index) in datas.list" :key="index" @click="gotoUrl(item)">
             <img class="diy-img" :src="item.image || emptyImage" alt="" />
@@ -25,13 +27,18 @@
         </ul>
 
         <ul class="tool-boxlis 1" v-if="datas.list_style == '2'" v-show="show">
-          <li v-for="icon in datas.show_list" :key="icon.url" v-if="notShow.indexOf(icon.url) < 0" @click="pluginGoto(icon, member_item)">
-            <div class="lis">
-              <i class="iconfont icon-stay_pay" style="font-size: 28px"></i>
-              <div>{{ icon.title }}</div>
-            </div>
-            <i class="iconfont icon-member_right"></i>
-          </li>
+          <section v-for="icon in datas.show_list" :key="icon.id" v-show="icon.title != `门店申请`">
+            <section v-show="icon.title != `门店管理`">
+              <li v-if="notShow.indexOf(icon.url) < 0" @click="pluginGoto(icon, member_item)">
+                <div class="lis">
+                  <i class="iconfont icon-stay_pay" style="font-size: 28px"></i>
+                  <div>{{ icon.title }}</div>
+                </div>
+                <i class="iconfont icon-member_right"></i>
+              </li>
+            </section>
+          </section>
+
           <li v-for="(item, index) in datas.list" :key="index" @click="gotoUrl(item)">
             <div class="lis">
               <img class="diy-img" :src="item.image || emptyImage" alt="" />
@@ -142,7 +149,7 @@ export default {
       show: true,
       activeNames: ["1"],
       applyList: [
-        { name: "supplier", title: "牛人申请", url: ["member"], icon: "icon-kc_line_order" },
+        { name: "supplier", title: "牛人申请", url: "member", icon: "icon-kc_line_order" },
         { name: "supplier", title: "企业申请", url: "newEnterprise", icon: "icon-shangpin1" },
         { name: "supplier", title: "商铺申请", url: "shops", icon: "icon-fenlei6" }
       ],
@@ -192,15 +199,14 @@ export default {
         }
         // 直接填写牛人基本信息
         if (res.data.data.attestation == 0) {
-          this.ShowHidden();
+          this.ShowHidden(res.data.data.attestation);
         }
       });
     },
     // 参数去跳转数据还是基本信息
-    ShowHidden() {
+    ShowHidden(attestation) {
       const data = {
         sid: Number(window.localStorage.getItem("sid"))
-        // attestation: attestation
       };
       axios({
         method: "post",
@@ -208,29 +214,44 @@ export default {
         data
       }).then(res => {
         // 填写基本信息基本信息判断
+        // examine:1显示所有顶部导航,0只显示基本信息页面
         if (res.data.data.examine === 0) {
           if (window.localStorage.getItem("typea") == 3) {
-            this.$router.push(this.fun.getUrl("strongManInfoNew", {}, { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid, shop_id: this.$route.query.shop_id }));
+                
+            this.$router.push(this.fun.getUrl("strongManInfoNew", {}, { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid, shop_id: this.$route.query.shop_id,attestation: attestation }));
           }
           if (window.localStorage.getItem("typea") == 2) {
-            this.$router.push(this.fun.getUrl("shopsInfo", {}, { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid, shop_id: this.$route.query.shop_id }));
+            this.$router.push(this.fun.getUrl("shopsInfo", {}, { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid, shop_id: this.$route.query.shop_id ,attestation: attestation}));
           }
           if (window.localStorage.getItem("typea") == 1) {
-            this.$router.push(this.fun.getUrl("enterpriseInfo", {}, { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid, shop_id: this.$route.query.shop_id }));
+            this.$router.push(this.fun.getUrl("enterpriseInfo", {}, { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid, shop_id: this.$route.query.shop_id ,attestation: attestation}));
           }
         }
 
         // 已经填写过基本信息
         if (res.data.data.examine === 1) {
-          if (window.localStorage.getItem("typea") == 3) {
-            this.$router.push(this.fun.getUrl("strongManManage", {}, { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid, shop_id: this.$route.query.shop_id }));
-          }
-          if (window.localStorage.getItem("typea") == 2) {
-            this.$router.push(this.fun.getUrl("strongManManage", {}, { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid, shop_id: this.$route.query.shop_id }));
-          }
-          if (window.localStorage.getItem("typea") == 1) {
-            this.$router.push(this.fun.getUrl("strongManManage", {}, { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid, shop_id: this.$route.query.shop_id }));
-          }
+          this.$router.push(
+            this.fun.getUrl(
+              "strongManManage",
+              {},
+              {
+                i: this.$route.query.i,
+                type: this.$route.query.type,
+                mid: this.$route.query.mid,
+                shop_id: this.$route.query.shop_id,
+                attestation: attestation
+              }
+            )
+          );
+          // if (window.localStorage.getItem("typea") == 3) {
+          //   this.$router.push(this.fun.getUrl("strongManManage", {}, { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid, shop_id: this.$route.query.shop_id }));
+          // }
+          // if (window.localStorage.getItem("typea") == 2) {
+          //   this.$router.push(this.fun.getUrl("strongManManage", {}, { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid, shop_id: this.$route.query.shop_id }));
+          // }
+          // if (window.localStorage.getItem("typea") == 1) {
+          //   this.$router.push(this.fun.getUrl("strongManManage", {}, { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid, shop_id: this.$route.query.shop_id }));
+          // }
         }
       });
     },
@@ -262,10 +283,9 @@ export default {
         // 基本信息
         // this.$router.push("member/strongMan?i=2&type=5&mid=0&shop_id=1");
         // 跳转牛人申请
-
+        console.log("少时诵诗书所所所所所所所所");
         // 判断牛人是否要认证
         this.DoYouFillInBasicInformation();
-
       } else if (item.name == "courier") {
         window.localStorage.setItem("couriername", item.title);
         this.$router.push(this.fun.getUrl(item.url));

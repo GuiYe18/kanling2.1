@@ -77,6 +77,7 @@ export default {
       this.showPage = false;
       this.page = 1;
       let p = this.fun.bd_encrypt(this.point.lng, this.point.lat);
+      
       let json = {
         page: this.page,
         kwd: this.inputs,

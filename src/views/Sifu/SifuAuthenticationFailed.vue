@@ -1,13 +1,13 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-11 16:03:35
- * @LastEditTime: 2021-05-25 16:34:33
+ * @LastEditTime: 2021-07-21 10:30:40
  * @FilePath: \you-shop1\src\views\Sifu\SifuAuthenticationFailed.vue
  * @Describe: 
 -->
 <template>
   <div class="content">
-    <div><img src="./img/未通过.png" alt="" /></div>
+    <div><img src="./img/DidNotPass.png" alt="" /></div>
     <p class="UnderReview">审核未通过</p>
     <p class="UnderReviewText">未通过原因：{{s_remarks}}</p>
     <!-- 重新认证 -->
@@ -29,8 +29,8 @@ export default {
     }
   },
   activated() {
-    console.log("his.$router.query.uid", this.$route.query.uid);
-    this.uid = this.$route.query.uid;
+    console.log("his.$router.query.uid", JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid);
+    this.uid = JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid;
     axios({
       method: "post",
       url: "https://tpkl.minpinyouxuan.com/index.php/api/v2/supportdetail",

@@ -1,20 +1,27 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-11 16:03:35
- * @LastEditTime: 2021-06-04 14:59:40
+ * @LastEditTime: 2021-09-29 17:25:06
  * @FilePath: \you-shop1\src\views\MerchantSettled\PaymentCodeUnderReview.vue
  * @Describe: 
 -->
 <template>
   <div class="content">
-    <div><img src="./img/审核中.png" alt="" /></div>
+    <div><img src="./img/underReview.png" alt="" /></div>
     <p class="UnderReview">支付码审核中</p>
-    <p class="UnderReviewText">信息提交后48小时内审核</p>
+    <p class="UnderReviewText">
+      信息提交后两个工作日审核<br />
+      审核时间周一到周五
+    </p>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  activated() {
+    
+  },
+};
 </script>
 
 <style lang="scss" scoped>

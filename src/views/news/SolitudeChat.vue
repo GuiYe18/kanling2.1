@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-17 15:24:57
- * @LastEditTime: 2021-06-22 20:01:46
+ * @LastEditTime: 2021-08-28 22:23:55
  * @FilePath: \you-shop1\src\views\news\SolitudeChat.vue
  * @Describe: 
 -->
@@ -39,9 +39,13 @@
         <!-- 单聊对话 -->
         <li v-for="(item, i) in list" :key="i">
           <div class="shell_left" v-show="item.informationTypesOf == 'L'">
-            <div class="imgDiv_Left">
+            <van-image class="Avatar imgDiv_Left" :src="Avatar">
+              <template v-slot:error>加载失败</template>
+            </van-image>
+            <!-- <div class="imgDiv_Left">
               <img :src="item.topurl" alt="" />
-            </div>
+            </div> -->
+
             <div class="TextArea_Left">
               <h2>{{ item.from_name }}</h2>
               <div class="Dialogue_Left">{{ item.msg_body.text }}</div>
@@ -53,9 +57,13 @@
               <h2>{{ IMname }}</h2>
               <div class="Dialogue">{{ item.msg_body.text }}</div>
             </div>
-            <div class="imgDiv">
+
+            <!-- <div class="imgDiv">
               <img :src="photo_wx" alt="" />
-            </div>
+            </div> -->
+            <van-image class="Avatar imgDiv" :src="photo_wx">
+              <template v-slot:error>加载失败</template>
+            </van-image>
           </div>
         </li>
       </ul>
@@ -90,13 +98,15 @@ export default {
       message: "",
       MyUsername: "Jion",
       username: "", //用户username
-      time1: "", //当前时间
-      time2: "", //七日前
       // 自己头像
       photo_wx: "",
       // 自己IM ID
       IMID: "",
-      IMname: ""
+      IMname: "",
+      Timestamp: "", //时间戳
+      mmgettime: "",
+      hhgettime: "",
+      Avatar:'',//头像
     };
   },
   mounted() {
@@ -105,13 +115,10 @@ export default {
     // 有新的消息
     // window.getaddNewinformation = this.getaddNewinformation;
   },
-  created() {
-    console.log("created");
-  },
+  created() {},
   activated() {
-    console.log("activated");
-    this.timeFormate(new Date());
-
+    // 获取当前时间
+    this.getCurrentTime();
     //   把默认的title改变
     document.title = this.defaultTit;
     // this.itemData = this.$route.query.name;
@@ -127,7 +134,7 @@ export default {
     // // // 获取单个聊天记录
     // this.GetChatRecords();
 
-    // 第一次进入获取数据
+    // 第一次进入 获取单聊内容
     this.theFirstTime();
 
     // 进入滑到最底部
@@ -157,10 +164,6 @@ export default {
       return this.$store.state.NewArray;
     }
 
-    // ...mapState({
-    //   //等价于上面的写法
-    //   NewArray: state => state.NewArray
-    // })
   },
   watch: {
     NewArray(val, cal) {
@@ -191,9 +194,10 @@ export default {
         }
       }
     },
-
+// 获取单聊内容
     theFirstTime() {
       this.list = this.$store.state.NewArray[this.username];
+      this.Avatar = this.$store.state.IDtopurl[this.username];
     },
     // 获取用户自己IM信息
     GetIMInformation() {
@@ -215,22 +219,23 @@ export default {
          */
         document.querySelector("#text_content").scrollIntoView(false);
         document.querySelector(".InputBox").scrollIntoView(true);
-
       }
     },
     //获取当前时间
-    timeFormate(timeStamp) {
-      let hh = new Date().getHours() < 10 ? "0" + new Date().getHours() : new Date().getHours();
-      let mm = new Date().getMinutes() < 10 ? "0" + new Date().getMinutes() : new Date().getMinutes();
-      let ss = new Date().getSeconds() < 10 ? "0" + new Date().getSeconds() : new Date().getSeconds();
+    getCurrentTime() {
+      //获取当前时间并打印
+      console.log("当前时间戳", new Date().getTime());
+      this.Timestamp = new Date().getTime();
 
-      var date1 = new Date(),
-        time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate() + " " + hh + ":" + mm + ":" + ss; //time1表示当前时间
-      var date2 = new Date(date1);
-      date2.setDate(date1.getDate() + timeStamp);
-      var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate() + " " + hh + ":" + mm + ":" + ss;
-      this.time1 = time1; //当日时间
-      this.time2 = time2; //七日前
+      var _this = this;
+      let mm = new Date().getMonth() + 1;
+      let dd = new Date().getDate();
+      let hh = new Date().getHours();
+      let mf = new Date().getMinutes() < 10 ? "0" + new Date().getMinutes() : new Date().getMinutes();
+      _this.mmgettime = mm + "-" + dd;
+      _this.hhgettime = hh + ":" + mf;
+
+      console.log(_this.gettime);
     },
 
     // 导航返回
@@ -244,6 +249,7 @@ export default {
     },
     //点击回车发送函数
     onSearch() {
+      this.getCurrentTime();
       // window.JIM.SendGroupChatText()
       // return
       // if (this.value == "") {
@@ -263,8 +269,9 @@ export default {
 
       // this.list.push(obj);
       var sendMessage = {
-        // create_time: 1622115476,
-        // from_appkey: "d208e6d0b26f52bf80daff0c",
+        create_time: new Date().getTime(),
+        mmgettime: this.mmgettime,
+        hhgettime: this.hhgettime, //创建时间
         from_id: this.username,
         from_platform: "api",
         from_type: "user",
@@ -322,14 +329,17 @@ export default {
         .TextArea {
           display: inline-block;
         }
-        .imgDiv {
+        /deep/.imgDiv {
           text-align: right;
           margin-left: 8px;
           vertical-align: top;
+          width: 42px;
+          height: 42px;
+
           img {
             width: 42px;
             height: 42px;
-            border-radius: 50%;
+            border-radius: 0.25rem;
           }
         }
         .TextArea {
@@ -338,6 +348,7 @@ export default {
           max-width: 251px;
           .Dialogue {
             text-align: left;
+            display: inline-block;
             font-size: 13px;
             font-family: PingFang-SC-Medium, PingFang-SC;
             font-weight: 500;
@@ -358,14 +369,14 @@ export default {
         .imgDiv_Left {
           display: inline-block;
         }
-        .imgDiv_Left {
+        /deep/.imgDiv_Left {
           margin-right: 8px;
           text-align: right;
           vertical-align: top;
           img {
             width: 42px;
             height: 42px;
-            border-radius: 50%;
+            border-radius: 0.25rem;
           }
         }
         .TextArea_Left {
@@ -373,6 +384,7 @@ export default {
           vertical-align: super;
           max-width: 251px;
           .Dialogue_Left {
+          display: inline-block;
             text-align: left;
             font-size: 13px;
             font-family: PingFang-SC-Medium, PingFang-SC;

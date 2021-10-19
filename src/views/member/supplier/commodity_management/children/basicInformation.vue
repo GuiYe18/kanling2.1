@@ -74,6 +74,7 @@
       >
         <span style="font-size: 16px;">商品详情：</span>
       </div>
+      
       <div style="text-align: center;" class="clearfloat imgflex">
         <van-field
         v-model="shopText"
@@ -81,12 +82,14 @@
         placeholder="请输入商品详情文字"
         v-if="isType && minStore"
       />
+
         <template v-for="(val, index) in fileList2">
           <div class="photobox" :key="index">
             <img :src="val.url" style="width: 100%;"/>
             <i @click="removeImg(index)"></i>
           </div>
         </template>
+
         <van-uploader :after-read="multipleMethod_1" multiple>
           <div
             style="padding: 1rem; width: 5rem; height: 5rem; border: 1px dashed #c0ccda; margin-left: 0.2rem; margin-right: 0.2rem;"
@@ -98,6 +101,7 @@
             />
           </div>
         </van-uploader>
+
       </div>
     </section>
     <!-- <section class="otherphoto"

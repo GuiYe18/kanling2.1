@@ -47,7 +47,7 @@
       <ul>
         <li class="item">
           <div class="imgItem">
-            <img src="./编组@2x.png" alt="" />
+            <img src="./Group2X.png" alt="" />Group2X
           </div>
           <div style="display: inline-block; width: 83%; margin-left: 10px">
             <p class="ItemName_time"><span class="name"> 姓名 </span> <span class="timed"> 时间 </span></p>
@@ -57,7 +57,7 @@
         </li>
         <li class="item">
           <div class="imgItem">
-            <img src="./编组@2x.png" alt="" />
+            <img src="./Group2X.png" alt="" />
           </div>
           <div style="display: inline-block; width: 83%; margin-left: 10px">
             <p class="ItemName_time"><span class="name"> 姓名 </span> <span class="timed"> 时间 </span></p>
@@ -67,7 +67,7 @@
         </li>
         <li class="item">
           <div class="imgItem">
-            <img src="./编组@2x.png" alt="" />
+            <img src="./Group2X.png" alt="" />
           </div>
           <div style="display: inline-block; width: 83%; margin-left: 10px">
             <p class="ItemName_time"><span class="name"> 姓名 </span> <span class="timed"> 时间 </span></p>
@@ -77,7 +77,7 @@
         </li>
         <li class="item">
           <div class="imgItem">
-            <img src="./编组@2x.png" alt="" />
+            <img src="./Group2X.png" alt="" />
           </div>
           <div style="display: inline-block; width: 83%; margin-left: 10px">
             <p class="ItemName_time"><span class="name"> 姓名 </span> <span class="timed"> 时间 </span></p>
@@ -87,7 +87,7 @@
         </li>
         <li class="item">
           <div class="imgItem">
-            <img src="./编组@2x.png" alt="" />
+            <img src="./Group2X.png" alt="" />
           </div>
           <div style="display: inline-block; width: 83%; margin-left: 10px">
             <p class="ItemName_time"><span class="name"> 姓名 </span> <span class="timed"> 时间 </span></p>

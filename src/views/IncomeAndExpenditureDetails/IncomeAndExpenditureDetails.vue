@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-24 14:26:07
- * @LastEditTime: 2021-06-21 20:18:19
+ * @LastEditTime: 2021-08-12 21:03:58
  * @FilePath: \you-shop1\src\views\IncomeAndExpenditureDetails\IncomeAndExpenditureDetails.vue
  * @Describe: 
 -->
@@ -75,7 +75,7 @@ export default {
         method: "post",
         url: "https://tpkl.minpinyouxuan.com/api/v1/fu_pay_details",
         data: {
-          uid: window.localStorage.getItem("uid")
+          uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid
           // uid: "1"
         }
       })
@@ -113,7 +113,7 @@ export default {
 .content {
   // 账户余额
   .AccountBalance {
-    background-image: url("./img/背景.png");
+    background-image: url("./img/background.png");
     width: 100%;
     height: 160px;
     p:nth-child(1) {

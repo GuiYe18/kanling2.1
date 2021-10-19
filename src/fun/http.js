@@ -224,8 +224,12 @@ function tempInfo(data) {
      * @Author: 飞
      * @Date: 2021-06-15 13:38:47
      * @Describe:有uid之后登录 
-     */    
-    window.JIM.getSignature();
+     */
+    if (localStorage.getItem("lishi") == "lishi_4") {
+        window.JIM.getSignature(0);
+        localStorage.setItem("lishi", "lishi_4");
+    }
+
 }
 
 
@@ -260,6 +264,7 @@ function getLocation() {
 }
 
 function onComplete(obj) {
+    
     console.log("objjjjj", obj);
     // var res =
     //   "经纬度：" +

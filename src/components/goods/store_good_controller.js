@@ -2285,6 +2285,7 @@ export default {
 
     //显示商城活动默认活动
     showDefaultActivity(val) {
+      console.log('少时诵诗书所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所',val);
       if (val.first_strip_key == "coupon") {
         this.firstActivityBtn = "购买返券";
         this.firstActivityCon = "商品订单完成返优惠券";

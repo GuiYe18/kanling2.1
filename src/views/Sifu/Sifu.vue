@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-11 13:11:16
- * @LastEditTime: 2021-06-21 19:14:29
+ * @LastEditTime: 2021-08-09 10:15:18
  * @FilePath: \you-shop1\src\views\Sifu\Sifu.vue
  * @Describe: 
 -->
@@ -12,8 +12,8 @@
       <van-radio name="3">
         <template #icon="props">
           <div :class="props.checked ? 'Selected' : ''">
-            <img v-show="!props.checked" src="./img/低保户.png" alt="" />
-            <img v-show="props.checked" src="./img/低保户ed.png" alt="" />
+            <img v-show="!props.checked" src="./img/Low_cost.png" alt="" />
+            <img v-show="props.checked" src="./img/Low_cost_ed.png" alt="" />
             <br /><span>低保户</span>
           </div>
         </template>
@@ -21,8 +21,8 @@
       <van-radio name="1">
         <template #icon="props">
           <div :class="props.checked ? 'Selected' : ''">
-            <img v-show="!props.checked" src="./img/残疾人.png" alt="" />
-            <img v-show="props.checked" src="./img/残疾人ed.png" alt="" />
+            <img v-show="!props.checked" src="./img/Disabled.png" alt="" />
+            <img v-show="props.checked" src="./img/Disabled_ed.png" alt="" />
             <br /><span>残疾人</span>
           </div>
         </template>
@@ -30,8 +30,8 @@
       <van-radio name="2">
         <template #icon="props">
           <div :class="props.checked ? 'Selected' : ''">
-            <img v-show="!props.checked" src="./img/军烈属.png" alt="" />
-            <img v-show="props.checked" src="./img/军烈属ed.png" alt="" />
+            <img v-show="!props.checked" src="./img/MilitaryCommander.png" alt="" />
+            <img v-show="props.checked" src="./img/MilitaryCommander_ed.png" alt="" />
             <br /><span>军烈属</span>
           </div>
         </template>
@@ -39,8 +39,8 @@
       <van-radio name="4">
         <template #icon="props">
           <div :class="props.checked ? 'Selected' : ''">
-            <img v-show="!props.checked" src="./img/五保户.png" alt="" />
-            <img v-show="props.checked" src="./img/五保户ed.png" alt="" />
+            <img v-show="!props.checked" src="./img/FiveGuaranteedHousehold.png" alt="" />
+            <img v-show="props.checked" src="./img/FiveGuaranteedHousehold_ed.png" alt="" />
             <br /><span>五保户</span>
           </div>
         </template>
@@ -48,8 +48,8 @@
       <van-radio name="5">
         <template #icon="props">
           <div :class="props.checked ? 'Selected' : ''">
-            <img v-show="!props.checked" src="./img/其他.png" alt="" />
-            <img v-show="props.checked" src="./img/其他ed.png" alt="" />
+            <img v-show="!props.checked" src="./img/other.png" alt="" />
+            <img v-show="props.checked" src="./img/other_ed.png" alt="" />
             <br /><span>其他</span>
           </div>
         </template>
@@ -60,30 +60,8 @@
     <van-field v-model="useName" label="姓名" placeholder="请填写您的姓名" input-align="right" />
     <van-field v-model="useId" label="身份证号" placeholder="请填写您的身份证号码" input-align="right" />
     <van-field v-model="s_mobile" label="手机号" placeholder="请填写您的手机号" maxlength="11" type="tel" input-align="right" @blur="blur" />
-    <van-field input-align="right" v-model="VerificationCode" type="number" label="验证码" maxlength="4" placeholder="请输入短信验证码">
-      <!-- <template #span>
-        <span>获取验证码</span>
-      </template> -->
-      <!-- <template #button>
-        <van-button class="VerificationCode">
-          <template>
-            <span v-show="getVerificationCode" @click="finish">获取验证码</span>
-            <van-grid clickable>
-              <van-grid-item text="开始"  @click="start" />
-            </van-grid>
-          </template>
-
-          <template>
-            <van-count-down v-show="!getVerificationCode" :time="time" format="ss" @finish="finish" />
-          </template>
-        </van-button>
-      </template> -->
+    <van-field input-align="right" v-model="VerificationCode" type="number" label="验证码" maxlength="6" placeholder="请输入短信验证码">
       <template #button>
-        <!-- <van-count-down ref="countDown" v-show="!getVerificationCode" :time="3000" :auto-start="false" format="ss" @finish="finish" millisecond @change="change" />
-        <van-grid clickable v-show="getVerificationCode">
-          <van-grid-item text="获取验证码" @click="start" />
-        </van-grid> -->
-
         <van-count-down v-show="!getVerificationCode" ref="countDown" millisecond :time="Calculatetime" :auto-start="false" format="ss" @finish="finish" @change="change" />
         <van-grid clickable v-show="getVerificationCode">
           <van-grid-item text="获取验证码" @click="start" />
@@ -92,6 +70,7 @@
     </van-field>
 
     <span class="titPhotos">请上传证件照片(不少于2张,不大于6张)</span>
+
     <!-- <van-uploader :max-count="2" v-model="fileList" multiple :after-read="afterRead" :result-type='file'>
         <img src="./img/Photos.png" alt="" />
       </van-uploader> -->
@@ -110,8 +89,32 @@
     >
       <img src="./img/Photos.png" alt="" />
     </el-upload>
-    <div class="commit">
-      <van-checkbox @click="NoAgree" v-model="checked" checked-color="#ee0a24" disabled>我已阅读并同意<span>申请及使用规则协议</span></van-checkbox>
+
+    <span class="StampFile">*请上传相关盖章文件</span>
+    <!-- <van-uploader :max-count="2" v-model="fileList" multiple :after-read="afterRead" :result-type='file'>
+        <img src="./img/Photos.png" alt="" />
+      </van-uploader> -->
+    <!-- 法人身份证反面照片 -->
+    <el-upload
+      :limit="1"
+      :on-exceed="handleExceedProve"
+      action="https://tpkl.minpinyouxuan.com/index.php/api/image"
+      list-type="picture-card"
+      :auto-upload="true"
+      :data="{ type: 1 }"
+      :name="'image[]'"
+      :on-success="IDPhotoProve_S"
+      class="IDPhoto"
+      :before-remove="beforeRemoveProve"
+    >
+      <img src="./img/Photos.png" alt="" />
+    </el-upload>
+
+    <div class="commit" @click="NoAgree">
+      <!-- <van-checkbox  v-model="checked" checked-color="#ee0a24" disabled>我已阅读并同意<span>申请及使用规则协议</span></van-checkbox> -->
+
+      <van-checkbox v-show="!checked" v-model="checked" disabled icon-size="17px">我已阅读并同意<span>申请及使用规则协议</span></van-checkbox>
+      <van-checkbox v-show="checked" v-model="checked" checked-color="#E60416" icon-size="17px">我已阅读并同意<span>申请及使用规则协议</span></van-checkbox>
     </div>
     <!-- 提交 -->
     <div class="btn" @click="submit">提交</div>
@@ -139,6 +142,12 @@ import fun from "../../fun";
 export default {
   data() {
     return {
+      /**
+       * @Author: 飞
+       * @Date: 2021-07-05 15:42:46
+       * @Describe: 相关文件证明
+       */
+      IDPhotoProve: "",
       // 协议
       // 协议同意文本
       AgreementText: "同意",
@@ -166,8 +175,7 @@ export default {
       figureSelection: "", //选的哪个类型
       useName: "", //姓名
       useId: "", //身份证号,
-      fileList: "",
-      photoList: "",
+      fileList: "", //照片
       uid: ""
     };
   },
@@ -207,7 +215,7 @@ export default {
       (this.useName = ""), //姓名
       (this.useId = ""), //身份证号,
       (this.fileList = ""),
-      (this.uid = this.$route.query.uid);
+      (this.uid = JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid);
 
     this.NoAgree();
   },
@@ -227,10 +235,19 @@ export default {
     //     Toast("只能上传图片");
     //   }
     // },
+    /**
+     * @Author: 飞
+     * @Date: 2021-07-05 15:48:36
+     * @Describe: 删除相关文件
+     */
+
+    beforeRemoveProve(file, fileList) {
+      this.IDPhotoProve = "";
+    },
     //删除
     beforeRemove(file, fileList) {
-      console.log('file.response.data.img_path',file.response.data.img_path);
-      console.log('this.fileList.split(",")',this.fileList.split(","));
+      console.log("file.response.data.img_path", file.response.data.img_path);
+      console.log('this.fileList.split(",")', this.fileList.split(","));
       var phopt = this.fileList.split(",");
       var split = "";
 
@@ -244,7 +261,6 @@ export default {
           // console.log('phopt[index].toString()',phopt[index],file.response.data.img_path);
         }
       }
-
 
       this.fileList = split;
       console.log("删除剩", this.fileList);
@@ -285,7 +301,6 @@ export default {
       this.getVerificationCode = false;
     },
     // 倒计时开始  获取验证码
-
     start() {
       if (this.s_mobile == "") {
         Toast("手机号不能为空");
@@ -317,10 +332,26 @@ export default {
     finish() {
       this.getVerificationCode = !this.getVerificationCode;
     },
-
+    handleExceedProve(files, IDPhotoProve) {
+      Toast(`已选中${IDPhotoProve.length}张,不得超过${IDPhotoProve.length}张`);
+    },
     //证件照超过限制提示
     handleExceed(files, fileList) {
       Toast(`已选中${fileList.length}张,不得超过${fileList.length}张`);
+    },
+
+    /**
+     * @Author: 飞
+     * @Date: 2021-07-05 15:41:01
+     * @Describe: 相关文件证明
+     */
+    IDPhotoProve_S(res) {
+      console.log("res", res);
+      if (res.result == "1") {
+        this.IDPhotoProve = res.data.img_path;
+      } else {
+        Toast("只能上传图片");
+      }
     },
     // //图片视频上传接口
     IDPhoto(res) {
@@ -339,7 +370,6 @@ export default {
       } else {
         Toast("只能上传图片");
       }
-
       // this.fileList.push(res.data.img_path);
     },
 
@@ -372,6 +402,11 @@ export default {
         Toast("传证件照片不能少于2张");
         return;
       }
+      if (this.IDPhotoProve.length == "") {
+        Toast("请上传相关证件照片");
+        return;
+      }
+
       if (this.checked == false) {
         Toast("请点击我已阅读并同意捐赠协议并同意");
         return;
@@ -387,7 +422,8 @@ export default {
           s_type: Number(this.figureSelection),
           s_photo: this.fileList,
           s_mobile: this.s_mobile,
-          code: this.VerificationCode
+          code: this.VerificationCode,
+          s_photo1: this.IDPhotoProve //相关文件
         }
       })
         .then(response => {
@@ -403,6 +439,8 @@ export default {
           }
         })
         .catch(error => {
+          //
+          Toast("信息填写有误,请认真填写");
           console.log(error);
         });
     }
@@ -522,7 +560,7 @@ export default {
   .van-button:active::before {
     opacity: 0;
   }
-
+  // 验证码
   /deep/.van-cell {
     .van-cell__value {
       height: 24px;
@@ -567,11 +605,22 @@ export default {
   .titPhotos {
     display: block;
     text-align: justify;
-    padding: 15px;
+    padding: 15px 15px 0 15px;
     font-size: 14px;
     font-family: SourceHanSansCN-Regular, SourceHanSansCN;
     font-weight: 400;
     color: #333333;
+    line-height: 21px;
+  }
+  //
+  .StampFile {
+    display: block;
+    text-align: justify;
+    padding: 0 15px 15px 15px;
+    font-size: 14px;
+    font-family: SourceHanSansCN-Regular, SourceHanSansCN;
+    font-weight: 400;
+    color: red;
     line-height: 21px;
   }
   //   四扶

@@ -1,8 +1,14 @@
+<!--
+ * @Author: 飞
+ * @Date: 2021-04-20 11:08:57
+ * @LastEditTime: 2021-07-20 18:25:11
+ * @FilePath: \you-shop1\src\views\member\service\order\order_list.vue
+ * @Describe: 
+-->
 <template>
   <div id="payment">
-    <c-title :hide="false"
-             text='我的订单'></c-title>
-    <div style="height: 41px;"></div>
+    <c-title :hide="false" text="我的订单"></c-title>
+    <div style="height: 41px"></div>
 
     <van-sticky offset-top="36px">
       <van-tabs v-model="selected" @click="swichTabTItem">
@@ -18,39 +24,33 @@
     <van-pull-refresh v-model="isLoading" @refresh="loadTop" success-text="刷新成功">
       <div>
         <!-- <mt-tab-container v-model="selected"> -->
-        <div v-if="selected==0">
+        <div v-if="selected == 0">
           <!-- <mt-tab-container-item id="0"> -->
-          <cOrderList v-on:ConfrimOrderNotification="cofirmOrderAction"
-                      v-on:ToDetailNotification="toDetail"
-                      :datasource="orderList"
-                      :status="0" class='osll'></cOrderList>
+          <cOrderList v-on:ConfrimOrderNotification="cofirmOrderAction" v-on:ToDetailNotification="toDetail" :datasource="orderList" :status="0" class="osll"></cOrderList>
           <!-- </mt-tab-container-item> -->
         </div>
-        <div v-if="selected==1">
+        <div v-if="selected == 1">
           <!-- <mt-tab-container-item id="1"> -->
-          <cOrderList v-on:ConfrimOrderNotification="cofirmOrderAction"
-                      v-on:ToDetailNotification="toDetail"
-                      v-on:MultiplePayNotification="multiplePayAction"
-                      :datasource="waitPayList"
-                      ref="mychild"
-                      :status="1" class='osll'></cOrderList>
-          <div style="height: 45px;"></div>
+          <cOrderList
+            v-on:ConfrimOrderNotification="cofirmOrderAction"
+            v-on:ToDetailNotification="toDetail"
+            v-on:MultiplePayNotification="multiplePayAction"
+            :datasource="waitPayList"
+            ref="mychild"
+            :status="1"
+            class="osll"
+          ></cOrderList>
+          <div style="height: 45px"></div>
           <!-- </mt-tab-container-item> -->
         </div>
-        <div v-if="selected==2">
+        <div v-if="selected == 2">
           <!-- <mt-tab-container-item id="2"> -->
-          <cOrderList v-on:ConfrimOrderNotification="cofirmOrderAction"
-                      v-on:ToDetailNotification="toDetail"
-                      :datasource="waitSendList"
-                      :status="2" class='osll'></cOrderList>
+          <cOrderList v-on:ConfrimOrderNotification="cofirmOrderAction" v-on:ToDetailNotification="toDetail" :datasource="waitSendList" :status="2" class="osll"></cOrderList>
           <!-- </mt-tab-container-item> -->
         </div>
-        <div v-if="selected==3">
+        <div v-if="selected == 3">
           <!-- <mt-tab-container-item id="3"> -->
-          <cOrderList v-on:ConfrimOrderNotification="cofirmOrderAction"
-                      v-on:ToDetailNotification="toDetail"
-                      :datasource="waitReceiveList"
-                      :status="3" class='osll'></cOrderList>
+          <cOrderList v-on:ConfrimOrderNotification="cofirmOrderAction" v-on:ToDetailNotification="toDetail" :datasource="waitReceiveList" :status="3" class="osll"></cOrderList>
           <!-- </mt-tab-container-item> -->
         </div>
 
@@ -68,39 +68,38 @@
 import orderListController from "./order_listController";
 
 export default orderListController;
-
 </script>
 <style lang="scss" rel="stylesheet/scss" scoped>
-  .osll {
-    min-height: 100vh;
-  }
+.osll {
+  min-height: 100vh;
+}
 
-  .contes {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 2.1875rem;
+.contes {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 2.1875rem;
+  background: #fff;
+  line-height: 2.1875rem;
+  border-top: #e2e2e2 solid 0.0625rem;
+  text-align: right;
+
+  button {
+    border: solid 0.0625rem #f15353;
     background: #fff;
-    line-height: 2.1875rem;
-    border-top: #e2e2e2 solid 0.0625rem;
-    text-align: right;
-
-    button {
-      border: solid 0.0625rem #f15353;
-      background: #fff;
-      border-radius: 0.875rem;
-      margin-right: 0.3125rem;
-      color: #f15353;
-    }
+    border-radius: 0.875rem;
+    margin-right: 0.3125rem;
+    color: #f15353;
   }
+}
 
-  .loadNomore img {
-    width: 20%;
-  }
+.loadNomore img {
+  width: 20%;
+}
 
-  #payment {
-    .mint-navbar.is-fixed {
-      top: 2.5rem;
-    }
+#payment {
+  .mint-navbar.is-fixed {
+    top: 2.5rem;
   }
+}
 </style>

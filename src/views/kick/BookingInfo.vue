@@ -5,24 +5,29 @@
       <ul>
         <li>
           <div class="marshalling_left">
-            <img src="../../assets/images/kick/编组 2@2x.png" alt="" />
+            <img src="../../assets/images/kick/Group.png" alt="" />
             <span>取件员：王先生</span>
-            <img src="../../assets/images/kick/通话按钮@2x.png" alt="" />
+            <img src="../../assets/images/kick/CallButton.png" alt="" />
           </div>
-          <div class="marshalling_right">
+          <!-- <div class="marshalling_right">
             <span>取消寄件</span>
-          </div>
+          </div> -->
           <!-- 额外标签法清除浮动 -->
           <div style="clear: both"></div>
         </li>
         <li>
-          <div class="PickUp_left"><span>取件时间：</span><span>3月5日(星期六) 09:00-11:00</span></div>
-          <div class="PickUp_right">
-            <span @click="modificationTime">修改时间</span>
+          <div class="PickUp_left">
+            <span>取件时间：</span>
+            <span>2021-08-13 09:00-11:00</span>
+            <span style="width: 56px"></span>
           </div>
         </li>
         <li>
-          <div class="PickUp_bottom"><span>取件码：</span><span>5533</span><span>快递员上门前请勿提供</span></div>
+          <div class="PickUp_bottom">
+            <span>取件码：</span>
+            <span>9879</span>
+            <span>快递员上门前请勿提供</span>
+          </div>
         </li>
       </ul>
     </div>
@@ -30,25 +35,26 @@
     <div class="addressBook">
       <div class="addressTop">
         <div>
-          <img src="../../assets//images/kick/寄件@2x.png" alt="" />
+          <img src="../../assets//images/kick/Send.png" alt="" />
         </div>
         <div>
           <span>寄件人：{{ postName }}</span
           >&#32;&#32;<span>{{ postIphone }}</span>
           <div>{{ postIp }}</div>
         </div>
-        <div @click="addressBook">修改地址</div>
+        <!-- <div @click="addressBook">修改地址</div> -->
+        <div style="width: 58px"></div>
       </div>
 
       <div class="addressTop">
         <div>
-          <img src="../../assets//images/kick/收件@2x.png" alt="" />
+          <img src="../../assets//images/kick/Recipient.png" alt="" />
         </div>
         <div>
-          <span>收件人：{{ getName }}</span
-          >&#32;&#32;<span>{{ getIphone }}</span>
+          <span>收件人：{{ receiveAddress.realname }}</span
+          >&#32;&#32;<span>{{ receiveAddress.mobile }}</span>
 
-          <div>{{ getIp }}</div>
+          <div>{{ receiveAddress.address }}</div>
         </div>
         <div style="width: 58px"></div>
       </div>
@@ -75,12 +81,26 @@ export default {
       getName: "王先生",
       getIphone: "13700000000",
       getIp: "北京市海淀区知春里65号卫星通信大厦A座10层10层",
+      PickupCode: "", //取件码
+
       list: [],
-      chosenAddressId: "2" //选中第几个
+      chosenAddressId: "2", //选中第几个
+
+      receiveAddress: {} //收件人的地址
     };
+    4;
   },
   created() {
     this.GetShippingAddress();
+  },
+  activated() {
+    console.log("order_id", this.$route.query.order_id);
+    this.order_id = this.$route.query.order_id;
+
+    // 获取快递员的信息
+    this.getPickupInformation();
+    // 获取收件人的地址信息
+    this.getReceiversAddress();
   },
   watch: {
     // 地址列表  选中赋值
@@ -95,6 +115,59 @@ export default {
     }
   },
   methods: {
+    // 获取收件人的地址信息
+    getReceiversAddress() {
+      var that = this;
+      axios({
+        method: "post",
+        url: "https://tpkl.minpinyouxuan.com/index.php/api/v2/order_detail",
+        data: {
+          order_id: this.order_id
+        }
+      })
+        .then(res => {
+          if (res.data.result == 1) {
+            // 获取寄件人的地址信息id
+            that.chosenAddressId = res.data.data.goods_id;
+            that.receiveAddress = res.data.data.address;
+          }
+
+          if (res.data.result == 0) {
+            Toast("接口有误请联系看领客服人员");
+          }
+
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 获取快递员的信息
+    getPickupInformation() {
+      var that = this;
+      axios({
+        method: "post",
+        url: "https://tpkl.minpinyouxuan.com/index.php/api/v2/manage_sto",
+        data: {
+          order_id: this.order_id
+        }
+      })
+        .then(res => {
+          console.log("resresresresresresresresresresres", res.data.data);
+          if (res.data.result == 1) {
+            Toast("此订单调派中");
+            // Toast("此订单" + res.data.data.data.OrderStatusName);
+
+            that.PickupCode = res.data.data.data.PrintCode;
+          }
+          if (res.data.result == 0) {
+            Toast("");
+            console.log(res.data);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     //   修改时间
     modificationTime() {
       this.$router.push(this.fun.getUrl("ShipByAppointment", {}));
@@ -169,7 +242,7 @@ export default {
     },
     // 返回
     onClickLeft() {
-      Toast("返回");
+      this.$router.push(this.fun.getUrl("DonationCenter"));
     }
   }
 };
@@ -198,6 +271,7 @@ export default {
       padding: 12px 0;
       div:nth-child(1) {
         display: inline-flex;
+        vertical-align: super;
         img {
           width: 20px;
           height: 20px;
@@ -237,11 +311,9 @@ export default {
   }
   // 编组
   .marshalling {
-    width: 350px;
     height: 128px;
     background: #ffffff;
     border-radius: 5px;
-    margin: 0 auto;
     margin-top: 15px;
     .marshalling_left {
       display: inline-flex;
@@ -285,9 +357,8 @@ export default {
     .PickUp_left {
       text-align: left;
       display: inline-block;
-      //   width: 77%;
-      margin-left: 13px;
-      margin-right: 4%;
+      width: 100%;
+      padding-left: 14px;
       span:nth-child(2) {
         font-size: 14px;
         font-family: SourceHanSansCN-Medium, SourceHanSansCN;
@@ -296,17 +367,11 @@ export default {
         line-height: 21px;
       }
     }
-    .PickUp_right {
-      display: inline-block;
-      text-align: right;
-      //   width: 23%;
-      margin-right: 13px;
-    }
+
     .PickUp_bottom {
       text-align: left;
-      margin-left: 16px;
-      margin-right: 4%;
-      margin-top: 8px;
+      padding-left: 14px;
+      width: 100%;
       span:nth-child(2) {
         font-size: 14px;
         font-family: SourceHanSansCN-Medium, SourceHanSansCN;

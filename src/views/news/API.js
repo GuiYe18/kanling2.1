@@ -126,10 +126,9 @@ export default {
                  * @Date: 2021-06-15 16:43:06
                  * @Describe: 
                  */
-                // 计数  看看够不够欧创建群聊
+                // 计数  看看够不够欧创建群聊  
                 var num = 0;
                 newV.forEach((item, index, array) => {
-                    console.log("item", item.checked);
                     if (item.checked == true) {
                         num = num + 1;
                     }
@@ -163,6 +162,7 @@ export default {
         CreateAGroupSuccess() {
             Toast('建群成功')
             this.show = false
+            console.log('this.$store.state.FansList,',this.$store.state.FansList,);
         },
         //创建群聊全选非全选
         getMsgFormSon(data) {
@@ -178,9 +178,9 @@ export default {
              * @Date: 2021-06-22 19:31:44
              * @Describe: 关闭创建群聊  暂时关闭
              */            
-            // this.show = true;
+            this.show = true;
 
-            Toast('创建群聊正在开发中')
+            Toast('创建群聊未开放')
         },
         // 注册
 

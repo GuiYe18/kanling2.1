@@ -22,12 +22,12 @@
   </div>
 </template>
 <script>
-import cTitle from 'components/title'
+import cTitle from "components/title";
 export default {
   components: { cTitle },
   data() {
     return {
-      qrcode: '',
+      qrcode: "",
       list: [
         // {
         //   uid: 1,
@@ -46,41 +46,42 @@ export default {
         //   create_time: '2020.12.12'
         // }
       ]
-    }
+    };
   },
   activated() {
-    this.getExtensionInfo()
+    this.getExtensionInfo();
   },
   methods: {
     getExtensionInfo() {
       // 获取二维码
-      this.getQrCode()
-      this.getMemberList()
+      this.getQrCode();
+      this.getMemberList();
     },
     getQrCode() {
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/geterweima'
-      const uid = JSON.parse(localStorage.getItem('tempIndex')).memberinfo.uid
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/geterweima";
+      const uid = JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid;
       axios({
         url,
-        method: 'POST',
+        method: "POST",
         data: { uid }
       }).then(res => {
-        this.qrcode = res.data.data.qrcode
-      })
+        this.qrcode = res.data.data.qrcode;
+      });
     },
     getMemberList() {
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/memberlists'
-      const uid = JSON.parse(localStorage.getItem('tempIndex')).memberinfo.uid
+      var that = this;
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/memberlists";
+      const uid = JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid;
       axios({
         url,
-        method: 'POST',
+        method: "POST",
         data: { uid }
       }).then(res => {
-        this.list = res.data.data
-      })
+        that.list = res.data.data.filter(Boolean);
+      });
     }
   }
-}
+};
 </script>
 <style lang="scss" rel="stylesheet/scss" scoped>
 #income,
@@ -114,7 +115,7 @@ export default {
 
 .list {
   color: #333;
-  padding: .625rem 0;
+  padding: 0.625rem 0;
   .list-item {
     display: flex;
     align-items: center;
@@ -129,7 +130,7 @@ export default {
       &:nth-of-type(1) {
         flex: 1;
         text-align: left;
-        text-indent: .625rem;
+        text-indent: 0.625rem;
       }
       &:nth-of-type(2) {
         width: 6.25rem;

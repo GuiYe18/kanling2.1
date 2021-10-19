@@ -12,7 +12,10 @@ console.log('加载im-------------------------------------------------------');
 
 
 
-window.JIM.getSignature = function getSignature() {
+
+
+
+window.JIM.getSignature = function getSignature(lishi) {
     // var that = this
     axios({ method: "post", url: "https://tpkl.minpinyouxuan.com/index.php/api/v1/qianming" })
         .then(response => {
@@ -21,7 +24,7 @@ window.JIM.getSignature = function getSignature() {
                 random_str: response.data.data.random_str,
                 timestamp: response.data.data.timestamp,
                 signature: response.data.data.signature,
-                flag: 0
+                flag: lishi
             })
                 .onSuccess(function (data) {
                     //data.code 返回码
@@ -80,14 +83,14 @@ function Login() {
                         window.JIM.BusinessTimeMonitoring()
                         // window.JIM.GetFriendsList()//获取好友列表
                         SendAListOfFriends()//获取好友列表
-                        FansList()//获取粉丝列表
+                        // FansList()//获取粉丝列表
 
                         // window.JIM.GetAListOfSessions()//获取会话列表
 
-                        window.JIM.SingleChatMessageUnread()//单聊未读消息列表
                         // 群
                         // 获取群列表
                         // window.JIM.GetAGroupList()
+
 
                     })
                     .onFail(function (data) {
@@ -164,13 +167,17 @@ window.JIM.GetAListOfSessions = function GetAListOfSessions() {
 window.JIM.MonitorInformation = function MonitorInformation() {
 
     JIM.onMsgReceive(function (data) {
-        // console.log('新消息', data.messages[0].content);
-        // 将会话列表存在本地
-        // window.localStorage.setItem('NewNews', JSON.stringify(data.messages[0].content));
-        // content_text = data.messages[0].content
+        console.log('最新消息');
         if (data.messages[0].msg_type == 3) {
+            var _tiem = new Date(data.messages[0].content.create_time)
+            let mm = _tiem.getMonth() + 1;
+            let dd = _tiem.getDate();
+            let hh = _tiem.getHours();
+            let mf = _tiem.getMinutes() < 10 ? "0" + _tiem.getMinutes() : _tiem.getMinutes();
+
+            data.messages[0].content['mmgettime'] = mm + "-" + dd;
+            data.messages[0].content['hhgettime'] = hh + ":" + mf;
             latestNews(data.messages[0])
-            console.log('单聊新信息', data.messages[0]);
         }
         if (data.messages[0].msg_type == 4) {
             GroupChatNewInformation(data.messages[0])
@@ -290,13 +297,14 @@ window.JIM.GetFriendsList = function GetFriendsList() {
         //data.message 描述
     });
 }
-
 // 单聊消息未读
 window.JIM.SingleChatMessageUnread = function SingleChatMessageUnread(usernameIMID) {
+    // console.log('usernameIMID', usernameIMID);
     // 单聊，未读数，调用则成功，无回调函数
     var count = JIM.getUnreadMsgCnt({
         'username': usernameIMID
     });
+    // console.log('单聊消息未读', count);
     return count
 
     // console.log('单聊消息未读',count);
@@ -326,9 +334,9 @@ window.JIM.SingleChatMessageHasBeenReadBack = function SingleChatMessageHasBeenR
     console.log('++++++++++++++++++++++++++++++++');
 
     // // 重置单聊会话，调用则成功，无回调函数
-    // JIM.resetUnreadCount({
-    //     'username': usernameIMID
-    // });
+    JIM.resetUnreadCount({
+        'username': usernameIMID
+    });
 
     // console.log('usernameIMID,msg_ids', usernameIMID, msg_ids);
     // // JIM.onMsgReceiptChange(function(data) {
@@ -501,194 +509,21 @@ window.JIM.UpdateGroupInformation = function UpdateGroupInformation(gid, avatar)
     console.log('formData', formData);
 
 }
-
-
-//
-// function FansList() {
+// /**
+//  * @Author: 飞
+//  * @Date: 2021-08-27 11:52:24
+//  * @Describe: 获取会话未读数
+//  * @param {*} gid
+//  * @param {*} avatar
+//  */
+// window.JIM.GetASessionUnread = function GetASessionUnread() {
+//     console.log('获取会话未读数', );
+//     JIM.onMutiUnreadMsgUpdate(function(data) {
+//         console.log('获取会话未读数', data);
+//         // data.type 会话类型
+//         // data.gid 群 id
+//         // data.appkey 所属 appkey
+//         // data.username 会话 username
+//     });
 
 // }
-
-
-// import Messages from "./Messages";
-// import CreateGroupChat from "./CreateGroupChat";
-// export default {
-//     name: "news",
-//     data() {
-//         return {
-//             // 好友列表
-//             list: [],
-//             active: 1, //
-//             uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid,
-//             show: false, //创建群聊 功能
-//             CreateAGroupChat: false, //三个以上为true
-//             Allocation: false, //全选中
-//             PoonsTheButton: false, //全选中按钮
-
-
-//             use: "",
-//             pw: "",
-//             appkData: {}
-//         };
-//     },
-//     activated() {
-//         window.scrollTo(0, 0); //滚至顶部
-//         this.qianming(); //获取签名
-//         // this.init_tongxin();//初始化
-
-//         // this.getMemberData();
-
-//         // var that = this;
-//         // window.JIM.getConversation()
-//         //     .onSuccess(function (data) {
-//         //         console.log("会话列表", that.list);
-//         //         that.list = data.conversations
-//         //         console.log('that.list', that.list);
-
-//         //     })
-//         //     .onFail(function (data) {
-
-//         //     });
-//     },
-//     components: {
-//         Messages,
-//         CreateGroupChat
-//     },
-//     watch: {
-//         PoonsTheButton: function () {
-//             if (this.PoonsTheButton == true) {
-//                 this.list.map(function (value, index, array) {
-//                     return (value.checked = true);
-//                 });
-//             }
-//             if (this.PoonsTheButton == false) {
-//                 this.list.map(function (value, index, array) {
-//                     return (value.checked = false);
-//                 });
-//                 // this.PoonsTheButton = false;
-//             }
-//         },
-//         list: {
-//             //监听的对象
-//             deep: true, //深度监听设置为 true
-//             handler: function (newV, oldV) {
-//                 console.log("watch中：", newV);
-//                 var num = 0;
-//                 newV.forEach((item, index, array) => {
-//                     console.log("item", item.checked);
-//                     if (item.checked == true) {
-//                         num = num + 1;
-//                     }
-//                     //执行代码
-//                 });
-//                 console.log("num", num);
-//                 if (num >= 3) {
-//                     this.CreateAGroupChat = true;
-//                 }
-//                 if (num < 3) {
-//                     this.CreateAGroupChat = false;
-//                 }
-//                 if (num == this.list.length) {
-//                     this.Allocation = true;
-//                 } else {
-//                     this.Allocation = false;
-//                 }
-//             }
-//         },
-//         appkData: function (N, O) {
-//             console.log("ssssssssssssss");
-//             this.init_tongxin();
-//         }
-//     },
-//     methods: {
-//         getMsgFormSon(data) {
-//             console.log("data", data);
-//             this.PoonsTheButton = data;
-//         },
-//         //
-//         openChat() {
-//             this.show = true;
-//         },
-//         // 注册
-
-//         logon() { },
-//         // 获取基本信息
-//         getMemberData() {
-//             $http
-//                 .post("member.member.member-data", { v: 2 }, " ")
-//                 .then(
-//                     response => {
-//                         if (response.result === 1) {
-//                             console.log("基本信息请求成功");
-//                         } else {
-//                             require("@/assets/css/member/02.scss");
-//                         }
-//                     },
-//                     response => {
-//                         console.log(response.msg);
-//                         require("@/assets/css/member/02.scss");
-//                     }
-//                 )
-//                 .catch(err => {
-//                     console.error(err);
-//                     require("@/assets/css/member/02.scss");
-//                 });
-//         },
-//         qianming() {
-//             var that = this;
-//             axios({ method: "post", url: "https://tpkl.minpinyouxuan.com/index.php/api/v1/qianming" })
-//                 .then(response => {
-//                     that.appkData = response.data.data;
-//                 })
-//                 .catch(error => {
-//                     console.log(error);
-//                 });
-//         },
-//         //初始化
-//         init_tongxin() {
-//             var pwsdata = {};
-
-//             window.JIM = new window.JMessage({
-//                 debug: true
-//             });
-//             window.JIM.init({
-//                 appkey: this.appkData.appkey,
-//                 random_str: this.appkData.random_str,
-//                 timestamp: this.appkData.timestamp,
-//                 signature: this.appkData.signature,
-//                 flag: 0
-//             })
-//                 .onSuccess(function (data) {
-//                     //data.code 返回码
-//                     //data.message 描述
-//                     console.log("请求成功回调", data);
-//                     // 登录
-//                 })
-//                 .onFail(function (data) {
-//                     // 同上
-//                     console.log("请求失败回调 ", data);
-//                 });
-//         },
-//         //登录
-//         logIn() {
-//             var that = this;
-//             window.JIM.login({
-//                 username: '1234',
-//                 password: '1234'
-//             })
-//                 .onSuccess(function (data) {
-//                     console.log("登录成功", data); //News
-//                     console.log("that", that);
-
-//                     window.localStorage.setItem("usename_JG", that.use);
-//                     window.localStorage.setItem("password_JG", that.pw);
-
-//                     //   this.$router.push({ name: "ComMit", params: {}, query: { i: this.$route.query.i, type: this.$route.query.type, mid: this.$route.query.mid } });
-//                     that.$router.push({ name: "news", params: {}, query: { i: that.$route.query.i, type: that.$route.query.type, mid: that.$route.query.mid } });
-//                 })
-//                 .onFail(function (data) {
-//                     console.log("登录失败", data);
-//                     //同上
-//                 });
-//         }
-//     }
-// };

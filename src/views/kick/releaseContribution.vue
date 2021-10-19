@@ -1,12 +1,14 @@
 <template>
   <div class="release">
     <van-field v-model="valueTitle" label="标题:" placeholder="请输入标题" class="TIT" />
+
     <van-field label="商品图片(主图单张)" class="productPicture" />
     <van-uploader v-model="fileList" :after-read="multipleMethod_1" multiple accept="image/png, image/jpeg" :max-count="1"></van-uploader>
+
     <van-field label="商品详情图片(多张)" class="productPicture" />
     <van-uploader v-model="fileList1" :after-read="multipleMethod_2" multiple accept="image/png, image/jpeg"></van-uploader>
     <van-field v-model="message" rows="1" :autosize="{ maxHeight: 200, minHeight: 102 }" type="textarea" placeholder="请输入商品描述">
-      <img src="../../assets/images/kick/添加2@2x.png" alt=""
+      <img src="../../assets/images/kick/Add2@2x.png" alt=""
     /></van-field>
 
     <ul>
@@ -175,7 +177,8 @@
         </van-radio-group>
       </li> -->
       <li @click="NoAgree">
-        <van-checkbox v-model="checked" checked-color="#ee0a24" disabled icon-size="17px">我已阅读并同意<span>捐赠协议</span></van-checkbox>
+        <van-checkbox v-show="!checked" v-model="checked" disabled icon-size="17px">我已阅读并同意<span>捐赠协议</span></van-checkbox>
+        <van-checkbox v-show="checked" v-model="checked" checked-color="#E60416" icon-size="17px">我已阅读并同意<span>捐赠协议</span></van-checkbox>
       </li>
       <li>
         <!-- <p>捐赠说明：凡是捐赠出去的物品给予捐赠证书，凡是销售出去的捐赠品给予电子捐赠发票。1积分=1元。</p> -->
@@ -187,8 +190,8 @@
     <!-- 提交成功 -->
     <van-popup v-model="successSubmit">
       <div>
-        <img src="../../assets/images/kick/发布成功@2x.png" alt="" /><br />
-        <span>发布成功</span><br />
+        <img src="../../assets/images/kick/Successful.png" alt="" /><br />
+        <span>提交成功 等待审核</span><br />
         <div @click="returnHome">返回首页</div>
         <br />
       </div>
@@ -214,6 +217,8 @@
 import { Toast } from "vant";
 import addresslist_controller from "../../views/member/address/addresslist_controller.js";
 import MatterAgreement from "./MatterAgreement";
+var canvas = document.createElement("canvas");
+var context = canvas.getContext("2d");
 export default {
   data() {
     return {
@@ -244,9 +249,8 @@ export default {
       AgreementTimeUnit: "s",
       // 协议允许点击
       AgreementAllowClick: false,
-
-      disabled: false,
-      protocolshow: false,
+      protocolshow: false, //协议书显示隐藏
+      // 监督
       valueTitle: "", //商品标题
       videoFileList: [], // 存放视频
       dataListed: [], //存放地址用于计算
@@ -256,6 +260,7 @@ export default {
       // kilogramName: "", //物品
       kilogramValue: "", //多少斤
       radio: "", //分类选择
+      disabled: false,
       radiodata: ["日用品", "食品", "文件", "衣物", "数码产品", "更多"],
       jin: 1,
 
@@ -292,7 +297,8 @@ export default {
       result: ["a", "b"],
       uploadUrl: "", //上传图片地址
       productPicture: "", //商品图片
-      ProductDetails: [] //商品详情图片
+      ProductDetails: [], //商品详情图片
+      photosize: 5242000
     };
   },
 
@@ -301,6 +307,14 @@ export default {
   },
 
   watch: {
+    $route: function (N, O) {
+      console.log("route", N, O);
+      if (N.name == "releaseContribution" && O.name == "appendAddress") {
+        this.protocolshow = false;
+        this.GetShippingAddress();
+      }
+    },
+    
     // 监控用户是否点击协议 (倒计时)
     protocolshow: function (N, O) {
       console.log("params", N, O);
@@ -367,17 +381,17 @@ export default {
   },
   mounted() {
     // 每次进来后置顶
-    window.scrollTo(0, 0);
-    this.go();
-    this.GetShippingAddress();
-    this.urlUp(); //商品上传
+    // window.scrollTo(0, 0);
+    console.log("------------------------------------mounted-------------------------------------------");
   },
   activated() {
     // 每次进来后置顶
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0);
     this.NoAgree();
     this.getJson();
     this.urlUp(); //商品上传
+    this.GetShippingAddress();
+    console.log("------------------------------------activated-------------------------------------------");
   },
   methods: {
     // 取消分类按钮
@@ -410,7 +424,21 @@ export default {
                     id: response.data[i].childrens[k].id,
                     value: response.data[i].childrens[k].id,
                     text: response.data[i].childrens[k].name
+                    // children: []
                   });
+                  // if (!response.data[i].childrens[k].childrens || response.data[i].childrens[k].childrens.length < 1) {
+                  //   // 判断是否有三级分类
+                  // } else {
+                  //   that.sectionOptions[i].children[k].children = [];
+                  //   console.log("三级分类", response.data[i].childrens[k].childrens);
+                  //   for (var j = 0; j < response.data[i].childrens[k].childrens.length; j++) {
+                  //     that.sectionOptions[i].children[k].children.push({
+                  //       id: response.data[i].childrens[k].childrens[j].id,
+                  //       value: response.data[i].childrens[k].childrens[j].id,
+                  //       label: response.data[i].childrens[k].childrens[j].name
+                  //     });
+                  //   }
+                  // }
                 }
               }
             }
@@ -431,6 +459,7 @@ export default {
       // console.log("this.columns[index[0]].id.children[index[1]].id", this.columns[index[0]].children[index[1]].id);
       this.FirstClassID = this.columns[index[0]].id;
       this.SecondaryID = this.columns[index[0]].children[index[1]].id;
+
       this.FirstClassName = this.columns[index[0]].text;
       this.SecondaryName = this.columns[index[0]].children[index[1]].text;
       // 关闭分类
@@ -463,6 +492,7 @@ export default {
     // 返回首页
     returnHome() {
       this.$router.push(this.fun.getUrl("home", {}));
+      this.successSubmit = false;
       this.destroyElement();
     },
     destroyElement() {
@@ -471,7 +501,7 @@ export default {
     },
     // 捐赠    valueTitle
     DonateSubmit() {
-      console.log('siteIphone',this.siteIphone,this.site);
+      console.log("siteIphone", this.siteIphone, this.site);
       if (!this.valueTitle) {
         Toast("商品标题不能为空");
         return;
@@ -536,6 +566,7 @@ export default {
         // uid:'',
         category_cid: this.SecondaryID, //二级分类
         category_pid: this.FirstClassID, //一级分类
+        // category:[this.FirstClassID,this.SecondaryID],
         title: this.valueTitle, //商品名称
         icon: this.icon, //1企业全新2个人全新3个人二手
         sku: this.ItemUnit, //商品单位
@@ -552,9 +583,9 @@ export default {
         /**
          * @Author: 飞
          * @Date: 2021-06-15 15:08:11
-         * @Describe: 
+         * @Describe:
          */
-        brand_id: 5//新增类型
+        brand_id: 5 //新增类型
       };
       var that = this;
       $http.post("plugin.supplier.frontend.goods.add-goods", json, "正在上传中").then(
@@ -645,9 +676,7 @@ export default {
       this.show = true;
       console.log("sssssss", this.show);
     },
-    go() {
-      console.log("ssssssssss");
-    },
+
     // 获取地址列表
     GetShippingAddress() {
       var that = this;
@@ -785,12 +814,12 @@ export default {
       if (flag !== true) {
         if (e && e.length) {
           // // 判断是否是多图上传 多图则循环添加进去
-          // e.forEach(item => {
-          //   if (item.file.size > this.photosize) {
-          //     this.imgPreview(item.file, 2);
-          //     return false;
-          //   }
-          // });
+          e.forEach(item => {
+            if (item.file.size > this.photosize) {
+              this.imgPreview(item.file, 2);
+              return false;
+            }
+          });
         } else {
           if (e.file.size > this.photosize) {
             this.imgPreview(e.file, 2);
@@ -815,7 +844,6 @@ export default {
       } else {
         fd.append("file", e.file); //第一个参数字符串可以填任意命名，第二个根据对象属性来找到file
       }
-      fd.append("attach", "upload");
 
       axios
         .post(this.uploadUrl, fd, {
@@ -828,6 +856,7 @@ export default {
               that.productPicture = responseData.data.img;
             }
           } else {
+            Toast(responseData.msg);
             console.log(responseData.msg);
           }
         })
@@ -837,12 +866,12 @@ export default {
       if (flag !== true) {
         if (e && e.length) {
           // // 判断是否是多图上传 多图则循环添加进去
-          // e.forEach(item => {
-          //   if (item.file.size > this.photosize) {
-          //     this.imgPreview(item.file, 2);
-          //     return false;
-          //   }
-          // });
+          e.forEach(item => {
+            if (item.file.size > this.photosize) {
+              this.imgPreview(item.file, 2);
+              return false;
+            }
+          });
         } else {
           if (e.file.size > this.photosize) {
             this.imgPreview(e.file, 2);
@@ -867,7 +896,6 @@ export default {
       } else {
         fd.append("file", e.file); //第一个参数字符串可以填任意命名，第二个根据对象属性来找到file
       }
-      fd.append("attach", "upload");
 
       axios
         .post(this.uploadUrl, fd, {
@@ -1106,7 +1134,6 @@ export default {
     padding: 0 13px;
     li {
       padding-top: 13px;
-
       .van-radio-group {
         display: inline-flex;
         float: right;
@@ -1115,6 +1142,7 @@ export default {
           background-color: #e60416;
         }
       }
+
       /deep/.van-checkbox__label {
         color: #666666;
         span {

@@ -1,19 +1,23 @@
 <!--
  * @Author: 飞
  * @Date: 2021-06-05 20:04:12
- * @LastEditTime: 2021-06-22 10:57:03
+ * @LastEditTime: 2021-08-27 14:11:32
  * @FilePath: \you-shop1\src\views\news\Follow.vue
  * @Describe: 
 -->
 <template>
   <div>
-    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+    <van-list v-model="loading" :finished="finished" :finished-text="HowManyPeople" @load="onLoad">
       <router-link v-for="(item, index) in list" :key="index" :to="fun.getUrl('SolitudeChat', {}, { username: item.username, nickname: item.qsn_name })">
-        <van-cell >
-          <div class="Avatar">
-            <img :src="item.topurl" alt="" />
-            <!-- <van-badge v-if="item.unread_msg_count != 0" :content="item.unread_msg_count" /> -->
-          </div>
+        
+        <van-cell>
+          <!-- <div class="Avatar">
+            <img :src="item.topurl" alt="" /> -->
+          <!-- <van-badge v-if="item.unread_msg_count != 0" :content="item.unread_msg_count" /> -->
+          <!-- </div> -->
+          <van-image class="Avatar" :src="item.topurl">
+            <template v-slot:error>加载失败</template>
+          </van-image>
           <div class="text">
             <!-- <van-badge :content="5">
               <div class="child">{{ item.nickName }}</div>
@@ -36,18 +40,22 @@ export default {
     return {
       list: [],
       loading: true,
-      finished: true
+      finished: true,
+      HowManyPeople: ""
     };
   },
   watch: {
     FriendsList(val, cal) {
-      console.log("好友列表有变化", val, cal);
+      // console.log("好友列表有变化", val, cal);
       this.list = val;
     }
   },
   activated() {
     console.log("----------------------------首次加载-好友列表-------------------------------", this.$store.state.FriendsList);
     this.list = this.$store.state.FriendsList;
+    if (this.list.length != undefined) {
+      this.HowManyPeople = `已关注` + this.list.length + `个`;
+    }
   },
   created() {},
   //利用计算属性
@@ -55,10 +63,7 @@ export default {
     FriendsList() {
       return this.$store.state.FriendsList;
     }
-    // ...mapState({
-    //   //等价于上面的写法
-    //   NewArray: state => state.NewArray
-    // })
+
   },
   methods: {
     onLoad() {}
@@ -69,17 +74,29 @@ export default {
 <style lang="scss" scoped>
 .content {
   height: 100%;
+
   .van-list {
+    padding-bottom: 50px;
     //   联系人每行
     .van-cell {
+      padding: 10px 0 10px 1rem;
+      overflow: visible;
+      /deep/.van-cell__value {
+        overflow: visible;
+      }
       // 头像
-      .Avatar {
-        vertical-align: middle;
-        height: 42px;
+      /deep/.Avatar {
+        vertical-align: inherit;
+        width: 2.75rem;
+        height: 2.75rem;
+        .van-image__error {
+          text-align: center;
+          font-size: 11px;
+        }
         img {
-          width: 42px;
-          height: 42px;
-          border-radius: 50%;
+          width: 2.75rem;
+          height: 2.75rem;
+          border-radius: 0.25rem;
         }
         display: inline-block;
         .van-badge {
@@ -89,8 +106,20 @@ export default {
       }
       // 名称
       .text {
-        padding-left: 10px;
+        height: 85%;
+        margin-left: 10px;
+        border-bottom: 1px solid #f0f0f0;
         display: inline-block;
+        width: calc(100% - 2.75rem - 10px);
+
+        h2 {
+          font-size: 0.88rem;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #333333;
+          line-height: 1.25rem;
+          letter-spacing: 1px;
+        }
         /deep/.child {
           width: 40px;
           height: 40px;

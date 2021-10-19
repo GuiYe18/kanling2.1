@@ -86,7 +86,7 @@ import U_video from "components/new_diy/video";
 // import QRCode from 'qrcode';
 import html2canvas from "html2canvas";
 import yzGoodsposter from 'components/ui_components/yz_goodsPoster';
-import { EventBus } from "@/../event-bus.js";
+// import { EventBus } from "@/../event-bus.js";
 
 // let isMCreated = 0;
 window.memberAdvertisement = 1; //弹出周期设置为关闭网页(弹窗广告)
@@ -284,9 +284,11 @@ export default {
             // 爱心积分
             love_integral: '',
             CashCodeStatus: 0,//收款码状态  //收款码状态   审核状态(1 审核中 2 审核通过 3审核未通过),默认是全部传""或者0
+            hangye:false
         };
     },
     activated() {
+        console.log('ccccccccccccccccccccccscscscsc');
         setTimeout(() => {
             this.member_agent = JSON.parse(window.localStorage.getItem('mailLanguage')).agent && JSON.parse(window.localStorage.getItem('mailLanguage')).agent.agent ? JSON.parse(window.localStorage.getItem('mailLanguage')).agent.agent : '客户';
             this.$forceUpdate();
@@ -320,6 +322,8 @@ export default {
         window.addEventListener("scroll", this.handleScroll);
         // 收款码状态   请求
         this.getLocation();
+        // 获取行业列表
+        this.getDetails()
     },
     deactivated() {
         window.removeEventListener("scroll", this.handleScroll);
@@ -345,25 +349,45 @@ export default {
     */
     mounted() {
         // 全局事件总线(被动)
-        EventBus.$on("decreased", ({ num }) => {
-            this.$nextTick(() => {
-                console.log("-----------------------------------------", num);
-            })
-        });
+        // EventBus.$on("decreased", ({ num }) => {
+        //     this.$nextTick(() => {
+        //         console.log("------------全局事件总线(被动)出发啦-----------------------------", num);
+        //     })
+        // });
     },
 
     methods: {
+        // 行业代表
+        getDetails() {
+            var that = this;
+            const url = "https://tpkl.minpinyouxuan.com/index.php/api/v3/industrys";
+            axios({
+              method: "POST",
+              url,
+              data: {
+                uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid //uid
+              }
+            }).then(res => {
+              console.log("resresresresresresresresres", res.data.data);
+              if (res.data.result === 1) {
+                that.hangye = true
+              } else {
+                that.hangye = false
+              }
+            });
+          },
         // 收款码状态   请求
         getLocation() {
             var that = this
             axios
                 .post(" https://tpkl.minpinyouxuan.com/api/v1/pay_shopstatus", {
-                    // uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid
-                    uid: JSON.parse(localStorage.getItem("uid"))
+                    uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid
+                    // uid: JSON.parse(localStorage.getItem("uid"))
                 })
                 .then(response => {
                     if (response.data.result == 1) {
                         that.CashCodeStatus = response.data.data.merchant_status
+                        that.payStype = response.data.data.type
                     }
                 })
                 .catch(error => {
@@ -385,6 +409,7 @@ export default {
                     response => {
                         console.log(response, '0000000');
                         if (response.result === 1) {
+
 
                             if (this.$store.state.temp.item.is_decorate === 1) {
                                 console.log('response', response.data.member.love_integral);
@@ -501,6 +526,7 @@ export default {
                     }
                 });
             }
+            console.log('this.components',this.components);
             if (data.page_info) {
                 //会员中心只有弹窗广告
                 this.advertising = data.page_info.advertising_id;

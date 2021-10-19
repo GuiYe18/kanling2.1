@@ -1,13 +1,9 @@
 <template>
+  <!-- 牛人 -->
   <div class="content">
     <div v-if="isReceive" class="red">
       <div class="redDetail">
         <div v-if="!showRed">
-          <!-- <div class='redTop'></div>
-          <mt-progress
-            :value="val"
-            :bar-height="10"
-          ></mt-progress> -->
           <van-circle stroke-width="60" color="#f63a39" class="progress" v-model="rate" :rate="val" size="4.75rem" layer-color="#ebedf0" />
         </div>
       </div>
@@ -15,19 +11,30 @@
     <div class="redSuccess" v-if="showRed">
       <img :src="redGif" alt="" />
       <div @click="closeRed" class="closeIcon"><van-icon color="#fff" name="cross" size="1rem" /></div>
-      <div class="money" v-show="delay">已领取{{ money }}元</div>
+      <div class="money" v-show="delay">{{ money }}</div>
     </div>
-
-    <div class="swiper">
-      <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
+    <!-- 头部轮播 -->
+    <div class="swiper" style="position: relative">
+      <van-swipe class="my-swipe" :autoplay="3000">
         <van-swipe-item v-for="(item, index) in content.topurl" :key="index">
           <img :src="item" alt="" />
-          <!-- <van-image fit="cover" :src="item" /> -->
         </van-swipe-item>
       </van-swipe>
+      <div id="back" @click="Retreat">
+        <van-icon name="arrow-left" />
+      </div>
     </div>
 
-    <div class="logo"><img :src="content.logourl" alt="" /></div>
+    <!-- 头像 -->
+    <div class="logo">
+      <div>
+        <img :src="content.logourl" alt="" />
+      </div>
+      <div class="industry" v-if="industry_data[0] !== ''">
+        <li v-for="(labelItem, labelIndex) in industry_data" :key="labelIndex">{{ labelItem }}{{ industry_data.length }}</li>
+      </div>
+    </div>
+
     <div class="contentInfo">
       <div class="title">
         <h3>
@@ -37,30 +44,60 @@
           </strong>
         </h3>
       </div>
+      <!-- 标题 -->
       <div class="classification">
         <div>
-          <span>行业：</span>
-          <span>{{ content.catename }}</span>
+          <strong>{{ content.qsntitle }}</strong>
         </div>
       </div>
-      <div class="lableList">
-        <ul>
-          <li @click="cheangeLabel(index)" v-for="(item, index) in lableList" v-show="item.isShow" :key="index" :class="{ cur: labelIndex === index }">
-            <span>{{ item.name }}</span>
-            <div></div>
-          </li>
-        </ul>
-      </div>
+    </div>
+    <!-- 标签  -->
+    <div class="lableList" v-if="navigation_Show">
+      <ul>
+        <li @click="cheangeLabel(index)" v-for="(item, index) in lableList" v-show="item.isShow" :key="index" :class="{ cur: labelIndex === index }">
+          <span>{{ item.name }}</span>
+          <div></div>
+        </li>
+      </ul>
+    </div>
+    <!-- 企业信息 内容 -->
+    <div style="padding: 0 0.9375rem">
       <div class="detail" v-show="labelIndex === 0">
-        <!-- <div class="detailTitle">{{ content.qsn_name }}</div> -->
-        <p>{{ content.qsntext }}</p>
+        <!-- 牛人介绍 -->
+        <div class="detailTitle">牛人介绍</div>
+        <!-- 最多显示两行 -->
+        <div class="van-multi-ellipsis--l2 IntroductionInformation" v-if="IntroductionInformation_show">
+          {{ content.qsntext }}
+        </div>
+        <div class="IntroductionInformation" v-if="!IntroductionInformation_show">
+          {{ content.qsntext }}
+        </div>
+        <!-- <i @click="Expand" class="el-icon-d-arrow-right"></i> -->
+        <img @click="Expand" src="./img/Expand.gif" alt="" :class="IntroductionInformation_show == true ? 'img' : 'img_S'" />
+        <!-- 联系方式 -->
+        <div class="detailTitle">联系方式</div>
+        <!-- 地址 -->
+        <div class="position">
+          <img src="./img/Position.png" alt="" />
+          <!-- 最多显示两行 -->
+          <div class="van-multi-ellipsis--l2">{{ content.sqnadress }}<van-icon name="arrow" /></div>
+        </div>
+        <div class="position">
+          <img src="./img/phone.png" alt="" />
+          <!-- 最多显示两行 -->
+          <div class="van-multi-ellipsis--l2">{{ content.qsnphone }} <a :href="`tel:` + content.qsnphone">拨打</a></div>
+        </div>
+        <div class="Album detailTitle">相册</div>
         <div class="demo" v-if="content.qsnvideo !== ''">
           <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" :options="playerOptions"> </video-player>
         </div>
-        <div class="detailPic 1" v-for="(item, index) in content.texturl" :key="index">
-          <img :src="item" alt="" />
+
+        <div class="detailPic sp" v-for="(item, index) in content.texturl" :key="index">
+          <img :src="item" alt="" @click="PicturePreview(index)" />
+          <span>{{ index + 1 }}/{{ content.texturl.length }}</span>
         </div>
       </div>
+
       <div class="dynamic" v-show="labelIndex === 2">
         <van-list v-model="dynamicLoading" :finished="dynamicFinished" finished-text="没有更多了" @load="dynamicOnLoad">
           <van-cell v-for="item in dynamicList" :key="item.id">
@@ -76,8 +113,8 @@
           </van-cell>
         </van-list>
       </div>
-      <div class="aboutUs" v-show="labelIndex === 3">
-        <ul>
+      <!-- <div class="aboutUs" v-show="labelIndex === 3"> -->
+      <!-- <ul>
           <li>
             <span>企业地址</span>
             <strong>{{ content.sqnadress }}</strong>
@@ -86,25 +123,37 @@
             <span>企业电话</span>
             <em>{{ content.qsnphone }}</em>
           </li>
-        </ul>
-      </div>
+        </ul> -->
+      <!-- </div> -->
     </div>
-    <div class="operationBtn">
+
+    <div class="operationBtn 11">
       <div @click="likeHandle">
-        <van-icon v-if="content.fabulousstatus === 0" size="2.2rem" name="like" color="#dbdbdb" />
-        <van-icon v-else size="2.2rem" name="like" color="#f7173a" />
+        <img v-if="content.fabulousstatus === 0" src="./img/like.png" alt="" />
+        <img v-else src="./img/like_ed.png" alt="" />
+
+        <!-- <van-icon v-if="content.fabulousstatus === 0" size="2.2rem" name="like" color="#dbdbdb" />
+        <van-icon v-else size="2.2rem" name="like" color="#f7173a" /> -->
         <span>{{ content.fabulous }}</span>
       </div>
       <div @click="showCommentHandle">
-        <van-icon size="2.2rem" name="chat" color="#dbdbdb" />
+        <!-- information -->
+        <img src="./img/information.png" alt="" />
         <span>{{ content.comment }}</span>
       </div>
       <div @click="followHandle">
-        <van-icon v-if="content.followstatus === 0" size="2.2rem" name="star" color="#dbdbdb" />
-        <van-icon v-else size="2.2rem" name="star" color="#f2bb13" />
+        <img v-if="content.followstatus === 0" src="./img/Collect.png" alt="" />
+        <img v-else src="./img/Collect_ed.png" alt="" />
         <span>{{ content.follow }}</span>
       </div>
     </div>
+    <!-- 
+    /**
+     * @Author: 飞
+     * @Date: 2021-06-23 10:44:50
+     * @Describe: 回复
+     */
+      -->
     <van-action-sheet v-model="showComment" :title="commentTitle">
       <div class="commentContent" @click.stop="clearReply">
         <div class="commentList">
@@ -155,13 +204,17 @@
 </template>
 
 <script>
-import { Swipe, SwipeItem, Toast, Circle, ActionSheet } from "vant";
+import { Swipe, SwipeItem, Toast, Circle, ActionSheet, ImagePreview } from "vant";
 // import { videoPlayer } from 'vue-video-player'
 import { videoPlayer } from "vue-video-player";
-
+import { Notify } from "vant";
 export default {
   data() {
     return {
+      navigation_Show: true, //导航是否隐藏
+      IntroductionInformation_show: true, //牛人介绍展开收拢
+      industry_data: [], //行业
+
       dynamicLoading: false,
       dynamicFinished: false,
       dynamicList: [],
@@ -170,12 +223,12 @@ export default {
       finished: false,
       commentPage: 1,
       commentValue: "",
-      commentNum: 0,
+      commentNum: 0, //评论数
       showComment: false,
       rate: 100,
       lableList: [
         {
-          name: "企业信息",
+          name: "牛人信息",
           isShow: true
         },
         {
@@ -188,25 +241,25 @@ export default {
         },
         {
           name: "联系我们",
-          isShow: true
+          isShow: false
         }
       ],
-      labelIndex: 0,
+      labelIndex: 0, //标题第几个
       content: {
-        swipeList: [
-          { url: require("../../assets/newImg/detail/swipeItem.png") },
-          { url: require("../../assets/newImg/detail/swipeItem.png") },
-          { url: require("../../assets/newImg/detail/swipeItem.png") },
-          { url: require("../../assets/newImg/detail/swipeItem.png") }
-        ],
-        logo: require("../../assets/newImg/detail/logo.png"),
-        title: "李兴华",
-        classification: {
-          one: "高级管理",
-          two: "高级管理",
-          three: "创始人",
-          four: ""
-        }
+        // swipeList: [
+        //   { url: require("../../assets/newImg/detail/swipeItem.png") },
+        //   { url: require("../../assets/newImg/detail/swipeItem.png") },
+        //   { url: require("../../assets/newImg/detail/swipeItem.png") },
+        //   { url: require("../../assets/newImg/detail/swipeItem.png") }
+        // ],
+        // logo: require("../../assets/newImg/detail/logo.png"),
+        // title: "李兴华",
+        // classification: {
+        //   one: "高级管理",
+        //   two: "高级管理",
+        //   three: "创始人",
+        //   four: ""
+        // }
       },
       val: 0,
       timer: "",
@@ -215,7 +268,7 @@ export default {
       uid: "",
       receive_status: "",
       isReceive: false,
-      money: "1.23",
+      money: "",
       delay: false,
       timeStamp: new Date().getTime().toString(),
       redGif: require("./img/red6.gif"),
@@ -241,7 +294,7 @@ export default {
             //类型
             type: "video/mp4",
             //url地址
-            src: ""
+            src: "" //视频播放地址
           }
         ],
         //你的封面地址
@@ -292,6 +345,26 @@ export default {
     }
   },
   methods: {
+    // 后退
+    Retreat(){
+        this.$router.go(-1)
+    },
+    //牛人介绍 展开 收拢
+    Expand() {
+      this.IntroductionInformation_show = !this.IntroductionInformation_show;
+    },
+    /**
+     * @Author: 飞
+     * @Date: 2021-06-23 11:01:06
+     * @Describe: 图片预览
+     */
+    PicturePreview(msg) {
+      ImagePreview({
+        images: this.content.texturl,
+        startPosition: msg
+      });
+    },
+
     nothHandle() {},
     clearReply() {
       this.parent_id = 0;
@@ -330,12 +403,24 @@ export default {
         data
       }).then(res => {
         if (res.data.result === 1) {
-          this.money = res.data.data;
+          // console.log('res.data.data',res.data.data);
+          this.money = res.data.data.money;
           this.showRed = true;
+          /**
+           * @Author: 飞
+           * @Date: 2021-06-30 17:48:23
+           * @Describe:领取红包成功   关注发信息
+           */
+
+          // 更新关注列表
+          window.SendAListOfFriends();
+          window.JIM.SendASingleChatMessage(res.data.data.username, window.JIM.useData.nickname + "领取了你发的红包,并已关注");
+
           this.timeoutOnoff = setTimeout(() => {
             this.delay = true;
             clearTimeout(this.timeoutOnoff);
           }, 1500);
+
           const hideRed = setTimeout(() => {
             this.closeRed();
             clearTimeout(hideRed);
@@ -355,6 +440,7 @@ export default {
         }
       }, 50);
     },
+    // 获取个人基本信息
     getInfo() {
       const data = {
         id: this.uid,
@@ -367,29 +453,41 @@ export default {
         data
       }).then(res => {
         if (res.data.result === 1) {
+          // this.$set 向响应式对象中添加一个属性，并确保这个新属性同样是响应式的，且触发视图更新。它必须用于向响应式对象上添加新属性，因为 Vue 无法探测普通的新增属性 (比如 this.myObject.newProperty = 'hi')
           for (const key in res.data.data) {
             this.$set(this.content, key, res.data.data[key]);
           }
-          this.swipeList = res.data.data.topurl;
-          this.commentNum = this.content.comment;
-          this.playerOptions.sources[0].src = this.content.qsnvideo;
+
+          this.industry_data = res.data.data.catename.split("/"); //行业
+          this.commentNum = this.content.comment; //评论数
+          this.playerOptions.sources[0].src = this.content.qsnvideo; //播放视频地址
+          // 浏览
           this.addvisit();
+          // 个人中心 标签判断
           this.judgeLabel();
         }
       });
     },
+    // 个人中心 标签判断
     judgeLabel() {
+      // 是否是供应商1是.0不是
       if (!this.content.supplier) {
         this.lableList[1].isShow = false;
       } else {
         this.lableList[1].isShow = true;
       }
+      //  有没有动态  1有动态,,0没有
       if (!this.content.dynamic) {
         this.lableList[2].isShow = false;
       } else {
-        this.lableList[2].isShow = true;
+        this.lableList[2].isShow = false;
+      }
+      // 产品 动态都为空  影藏导航
+      if (this.lableList[2].isShow == false && this.lableList[1].isShow == false) {
+        this.navigation_Show = false;
       }
     },
+    // 个人中心 标签事件
     cheangeLabel(index) {
       if (index === 1) {
         if (this.content.supplier) {
@@ -400,8 +498,8 @@ export default {
       }
       this.labelIndex = index;
     },
+    //浏览
     addvisit() {
-      //浏览
       const data = {
         sid: this.content.id,
         uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid
@@ -413,6 +511,7 @@ export default {
         data
       }).then(res => {});
     },
+
     likeHandle() {
       if (this.content.fabulousstatus === 0) {
         this.getlike();
@@ -609,6 +708,7 @@ export default {
     canReceive() {
       //判断能否领取红包
       const currentAddress = JSON.parse(localStorage.getItem("currentAddress"));
+      console.log("currentAddress", currentAddress);
       console.log(currentAddress);
       const data = {
         id: this.uid,
@@ -631,6 +731,7 @@ export default {
         } else {
           this.isReceive = false;
           Toast(res.data.msg);
+          // Notify({ type: 'danger',background: '#ee0a2487', message: res.data.msg });
         }
       });
     }
@@ -642,6 +743,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.block {
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 15px;
+}
 /deep/.van-button--small {
   font-size: 14px;
 }
@@ -700,7 +813,7 @@ export default {
     position: absolute;
     top: 2.5rem;
     right: 4rem;
-    z-index: 200001;
+    z-index: 200002;
     // border:1px solid #000;
     overflow: hidden;
     /deep/ i {
@@ -779,29 +892,93 @@ export default {
   }
 }
 .my-swipe {
-  height: 9.125rem;
-  .van-swipe-item {
-    // height: 9.125rem;
-  }
+  height: 10rem;
   img {
     width: 100%;
     height: 100%;
   }
   /deep/.van-swipe__indicators {
     left: 90%;
+    .van-swipe__indicator {
+      opacity: 1;
+    }
+    .van-swipe__indicator--active {
+      background-color: rgb(5, 121, 252);
+    }
   }
 }
-.logo {
-  width: 4.375rem;
-  height: 4.375rem;
-  margin: -2.1875rem auto 0;
-  position: relative;
-  z-index: 99;
+#back {
+  padding: 0.3125rem;
+  position: absolute;
+  z-index: 2;
+  height: 2.25rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 100%;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.4);
+  text-indent: 0;
   overflow: hidden;
-  border-radius: 50%;
-  img {
-    width: 100%;
-    height: 100%;
+  top: 0;
+  margin: 0.5rem 0 0 0.5rem;
+}
+// 头像
+
+.logo {
+  width: calc(100% - 2rem);
+  margin: -2.1875rem 1rem 0rem;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  text-align: left;
+  div {
+    width: 4.94rem;
+    height: 4.94rem;
+    display: inline-block;
+    img {
+      width: 4.94rem;
+      height: 4.94rem;
+      border-radius: 50%;
+    }
+  }
+  // 行业
+  .industry {
+    display: inline-block;
+    width: calc(100% - 5rem);
+    text-align: right;
+    li {
+      display: inline-block;
+      height: 18px;
+      font-size: 10px;
+      font-family: PingFang-SC-Regular, PingFang-SC;
+      font-weight: 400;
+      line-height: 18px;
+      border-radius: 0.1875rem;
+      box-sizing: content-box;
+      padding: 0 0.3125rem;
+      margin-right: 0.625rem;
+      margin-bottom: 0.3125rem;
+      border-radius: 0px 3px 0px 3px;
+      // display: flex;
+      // /*实现垂直居中*/
+      // align-items: center;
+      // /*实现水平居中*/
+      // justify-content: center;
+
+      // text-align: justify;
+    }
+    li:nth-child(3n + 1) {
+      background-color: #e0eefe;
+      color: #0579fc;
+    }
+    li:nth-child(3n + 2) {
+      background-color: #e9f9e6;
+      color: #50c81b;
+    }
+    li:nth-child(3n + 3) {
+      background-color: #ffe9da;
+      color: #fa6400;
+    }
   }
 }
 .contentInfo {
@@ -810,6 +987,7 @@ export default {
 .title {
   h3 {
     // height: 1.25rem;
+    padding-left: 0.5rem;
     height: 2rem;
     font-size: 1rem;
     font-family: PingFang-SC-Bold, PingFang-SC;
@@ -821,7 +999,7 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     flex-direction: row;
-    justify-content: center;
+    justify-content: left;
   }
   span {
     display: inline-block;
@@ -834,6 +1012,7 @@ export default {
   }
   strong {
     position: relative;
+    font-size: 1.25rem;
     div {
       position: absolute;
       width: 0.8125rem;
@@ -845,14 +1024,22 @@ export default {
 }
 .classification {
   margin-top: 0.625rem;
+  padding-left: 0.5rem;
 }
 .classification > div {
-  // height: 1.0625rem;
-  font-size: 0.75rem;
-  font-family: PingFang-SC-Medium, PingFang-SC;
-  font-weight: 500;
-  color: #666666;
-  line-height: 1.0625rem;
+  // // height: 1.0625rem;
+  // font-family: PingFang-SC-Medium, PingFang-SC;
+  // font-weight: 500;
+  // color: #666666;
+  // line-height: 1.0625rem;
+  text-align: left;
+  strong {
+    font-size: 0.88rem;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #999999;
+    line-height: 1.25rem;
+  }
 }
 .numList {
   // height: 0.875rem;
@@ -895,55 +1082,82 @@ export default {
 .lableList {
   margin-top: 1.5rem;
   height: 1.9375rem;
-  border-top: 2px solid #e4e4e4;
-  border-bottom: 2px solid #e4e4e4;
+  border-top: 0.5rem solid #f6f6f6;
+  border-bottom: 0.06rem solid #f6f6f6;
   padding: 0 0.7813rem;
-  padding-top: 0.125rem;
+  padding-top: 0.81rem;
   box-sizing: content-box;
   ul {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: space-between;
+    justify-content: space-around;
   }
   li {
-    height: 1.75rem;
-    font-size: 0.8125rem;
-    font-family: PingFang-SC-Bold, PingFang-SC;
-    font-weight: bold;
-    color: #333333;
-    line-height: 1.75rem;
-    display: flex;
-    flex-direction: column;
+    font-size: 1rem;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #3a3a3e;
+    line-height: 1.38rem;
     span {
       display: block;
     }
     div {
       width: 2.25rem;
-      height: 0.125rem;
+      height: 0.19rem;
       margin: 0 auto -0.3125rem;
     }
   }
-  .cur div {
-    background-color: #0579fc;
+  .cur {
+    font-size: 1rem;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #0579fc;
+    line-height: 1.38rem;
+    text-shadow: 0px 0px 0px #e0eefe;
+    span {
+      margin-bottom: 0.4rem;
+    }
+    div {
+      background: linear-gradient(270deg, #0579fc 0%, #2367fe 0%, #49a0ff 100%);
+    }
   }
 }
 .detail {
-  margin-top: 0.625rem;
+  margin-top: 1.63rem;
   font-size: 0.9375rem;
   //  font-size:0.875rem;
   font-family: PingFang-SC-Bold, PingFang-SC;
   color: #333333;
   // line-height: 1.0625rem;
   line-height: 1.5625rem;
+  // 标题(介绍,联系方式,相册)
+
   .detailTitle {
-    font-weight: bold;
     text-align: left;
+    font-size: 1rem;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: bold;
+    color: #3a3a3e;
+    line-height: 1.13rem;
+    margin-bottom: 0.75rem;
   }
-  p {
+  // 展开
+  .img,
+  .img_S {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+  // 牛人介绍 内容
+  .IntroductionInformation {
     text-indent: 2em;
     text-align: justify;
     margin-bottom: 0.625rem;
+    font-size: 0.88rem;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #999999;
+    line-height: 1.25rem;
   }
   .detailPic {
     width: 100%;
@@ -952,6 +1166,94 @@ export default {
     img {
       width: 100%;
       height: 100%;
+      vertical-align: text-top;
+    }
+    span {
+      font-size: 0.8rem;
+      display: block;
+      text-align: right;
+    }
+  }
+  // 相册
+  .Album {
+    margin-top: 1rem;
+  }
+  //展开
+  .img {
+    animation: img_S 0.5s forwards;
+  }
+  .img_S {
+    animation: loading 0.5s forwards;
+  }
+  @-webkit-keyframes img_S {
+    0% {
+      transform: rotate3d(0, 0, 1, 180deg);
+    }
+
+    100% {
+      transform: rotate3d(0, 0, 1, 0deg);
+    }
+  }
+
+  @keyframes img_S {
+    0% {
+      transform: rotate3d(0, 0, 1, 180deg);
+    }
+
+    100% {
+      transform: rotate3d(0, 0, 1, 0deg);
+    }
+  }
+  @-webkit-keyframes loading {
+    0% {
+      transform: rotate3d(0, 0, 1, 0deg);
+    }
+
+    100% {
+      transform: rotate3d(0, 0, 1, 180deg);
+    }
+  }
+
+  @keyframes loading {
+    0% {
+      transform: rotate3d(0, 0, 1, 0deg);
+    }
+
+    100% {
+      transform: rotate3d(0, 0, 1, 180deg);
+    }
+  }
+  //
+  .position {
+    text-align: left;
+    img {
+      width: 1.38rem;
+      height: 1.38rem;
+      vertical-align: top;
+    }
+    .van-multi-ellipsis--l2 {
+      display: inline-block;
+      width: 80%;
+      margin-left: 0.5rem;
+
+      font-size: 0.88rem;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #6c6c73;
+      line-height: 1.38rem;
+      i {
+        vertical-align: middle;
+      }
+      // 电话拨打
+      a {
+        font-size: 0.88rem;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 800;
+        color: #0579fc;
+        line-height: 1.38rem;
+        margin-left: 0.6rem;
+        vertical-align: top;
+      }
     }
   }
 }
@@ -962,22 +1264,6 @@ export default {
   font-weight: 500;
   color: #333333;
   line-height: 1.25rem;
-  li {
-    border-bottom: 1px solid #e5e5e5;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    flex-direction: row;
-    padding: 0.625rem 0;
-  }
-  strong {
-    font-weight: normal;
-    width: 50%;
-    text-align: end;
-  }
-  em {
-    font-weight: normal;
-  }
 }
 .demo {
   // display: inline-block;
@@ -1005,13 +1291,16 @@ export default {
   display: block;
 }
 .operationBtn {
-  z-index: 30000;
+  z-index: 1;
   position: fixed;
   top: 24.0625rem;
   right: 0.6875rem;
-  width: 1.875rem;
   height: 9.6875rem;
   div {
+    img {
+      width: 2.31rem;
+      height: 2.06rem;
+    }
     span {
       display: block;
       // font-size: 0.625rem;

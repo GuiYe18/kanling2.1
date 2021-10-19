@@ -98,7 +98,7 @@ export default {
     height: 271px;
     display: inline-block;
     margin-top: 15px;
-    background-image: url("../../assets/images/kick/形状结合@2x.png");
+    background-image: url("../../assets/images/kick/ShapeCombination.png");
     background-size: 404px 271px;
     // 微信支付
     .van-submit-bar {

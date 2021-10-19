@@ -7,27 +7,30 @@
       <div class="main">
         <!--申请   -->
         <div class="welcome">
-
           <div class="success-bg"></div>
-          <p class="success-text">认证未通过</p>
-
-          <van-button type="info" block style="margin-bottom:49px;" @click="handleGoBack">重新填写</van-button>
+          <p >认证未通过</p>
+          <p class="success-text">认证未原因:{{$route.query.msg}}</p>
+          <van-button type="info" block style="margin-bottom: 49px" @click="handleGoBack">重新填写</van-button>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import cTitle from 'components/title'
+import cTitle from "components/title";
 export default {
-  components: {cTitle},
+  components: { cTitle },
+  
+  activated() {
+    console.log('this.$router',this.$route.params.msg);
+  },
   methods: {
     // 返回
     handleGoBack() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     }
   }
-}
+};
 </script>
 <style lang="scss" rel="stylesheet/scss" scoped>
 #income,
@@ -140,7 +143,7 @@ input {
         position: absolute;
         top: 0.1rem;
         right: 0.1rem;
-        background: url('../../../assets/images/close_iocn.png');
+        background: url("../../../assets/images/close_iocn.png");
         background-size: 100%;
       }
     }
@@ -360,7 +363,7 @@ input {
   margin-left: 8.625rem;
   width: 6.25rem;
   height: 7.5rem;
-  background: url('../../../assets/images/strongMan/exam_faild@2x.png') no-repeat;
+  background: url("../../../assets/images/strongMan/exam_faild@2x.png") no-repeat;
   background-size: 100%;
 }
 .success-text {

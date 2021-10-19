@@ -1,13 +1,12 @@
 <template>
   <div id="new_diy" v-if="showPage">
-
     <template v-if="$store.state.isWatchDiypage == 1">
       <top_navigation v-if="top_info.group_title" :id="id" :datas="top_info"></top_navigation>
 
       <!--新装修页面-->
       <template v-for="(item, index) in components">
         <component :key="index" :is="item.component_key" :isBottom="isBottom" :lastIndex="lastIndex" :btnFlag="btnFlag"
-                   :id="item.id" :page_id="page_id" :component_key="item.component_key" :datas="item.remote_data"
+                   :id="item.id" :page_id="page_id" :component_key="item.component_key+1" :datas="item.remote_data"
                    :index="index"></component>
       </template>
 
@@ -42,7 +41,7 @@
       </div>
     </template>
 
-    <U_foot :id="id+'1'" v-if="bottom_info" :diydatas="bottom_info"></U_foot>
+    <U_foot :id="id+'1'" v-if="bottom_info" :diydatas="bottom_info" :ppp='wwwwwwwww'></U_foot>
 
   </div>
 </template>

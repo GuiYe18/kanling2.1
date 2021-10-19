@@ -1,166 +1,78 @@
 <template>
-  <div
-    class="content"
-    @click.stop="clearReply"
-  >
-    <div
-      v-if="isReceive"
-      class="red"
-    >
+  <div class="content" @click.stop="clearReply">
+    <div v-if="isReceive" class="red">
       <div class="redDetail">
         <div v-if="!showRed">
-          <van-circle
-            stroke-width="60"
-            color="#f63a39"
-            class="redProgress"
-            v-model="rate"
-            :rate="val"
-            size="4.75rem"
-            layer-color="#ebedf0"
-          />
+          <van-circle stroke-width="60" color="#f63a39" class="redProgress" v-model="rate" :rate="val" size="4.75rem" layer-color="#ebedf0" />
         </div>
       </div>
     </div>
-    <div
-      class="redSuccess"
-      v-if="showRed"
-    >
-      <img
-        :src="redGif"
-        alt=""
-      />
-      <div @click="closeRed" class="closeIcon"><van-icon  color="#fff" name="cross" size="1rem" /></div>
-      <div
-        class="money"
-        v-show="delay"
-      >已领取{{ money }}元</div>
+    <div class="redSuccess" v-if="showRed">
+      <img :src="redGif" alt="" />
+      <div @click="closeRed" class="closeIcon"><van-icon color="#fff" name="cross" size="1rem" /></div>
+      <div class="money" v-show="delay">已领取{{ money }}元</div>
     </div>
     <div class="findItem">
       <div class="userInfo">
-        <div class="userPhoto"><img
-            :src="findItem.logourl"
-            alt=""
-          /></div>
+        <div class="userPhoto"><img :src="findItem.logourl" alt="" /></div>
         <div class="userName">
           <div>{{ findItem.qsn_name }}</div>
           <span>{{ findItem.createtime }}</span>
         </div>
       </div>
-      <p class="introduction">{{ findItem.content }}</p>
-      <div class="address">
-        <van-icon
-          color="#999"
-          class="addressIcon"
-          name="location"
-        />{{ findItem.sqnadress }}
-      </div>
-      <div class="itemType">{{ findItem.typename }}</div>
+      <p class="introduction">
+        <span class="typeName">{{ findItem.typename }}</span>
+        {{ findItem.content }}
+      </p>
+      <!-- <div class="address"><van-icon color="#999" class="addressIcon" name="location" />{{ findItem.sqnadress }}</div> -->
       <ul class="photo">
-        <li
-          v-for="(photoItem, photoIndex) in findItem.texturl"
-          :key="photoIndex"
-          @click="showImageHandle(photoIndex)"
-        >
-          <img
-            :src="photoItem"
-            alt=""
-          />
+        <li v-for="(photoItem, photoIndex) in findItem.texturl" :key="photoIndex" @click="showImageHandle(photoIndex)">
+          <img :src="photoItem" alt="" />
         </li>
       </ul>
-      <div
-        class="demo"
-        v-if="findItem.videourl"
-      >
-        <video-player
-          class="video-player vjs-custom-skin"
-          ref="videoPlayer"
-          :playsinline="true"
-          :options="playerOptions"
-        >
-        </video-player>
+      <div class="demo" v-if="findItem.videourl">
+        <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" :options="playerOptions"> </video-player>
       </div>
+
+      <div class="area">{{ findItem.sqnadress }}</div>
+
+      <!-- 红包 -->
       <div class="progress">
         <div class="progressBox">
-          <div
-            class="progressContent"
-            :style="'width:' + ((findItem.redmoneynum - findItem.surplusnum) / findItem.redmoneynum) * 100 + '%;'"
-          ></div>
+          <div class="progressContent" :style="'width:' + (findItem.surplusnum / findItem.redmoneynum) * 100 + '%;'"></div>
         </div>
-        <div class="surplus">
-          <span>已领{{ findItem.redmoneynum }}个</span>
-          <span>剩余{{ findItem.surplusnum }}个</span>
+        <div class="Remainder">
+          <template v-if="findItem.surplusnum == 0"> 红包已领完～ </template>
+          <template v-if="findItem.surplusnum > 0">
+            红包剩余 <span>{{ findItem.surplusnum }}</span> 个
+          </template>
         </div>
       </div>
     </div>
-    <div
-      class="comment"
-      ref="comment"
-    >
-      <div
-        class="commentTitle"
-        :class="{ fix: commentTop <= 0 }"
-      >
+    <div class="comment" ref="comment">
+      <div class="commentTitle" :class="{ fix: commentTop <= 0 }">
         <div class="commentNum">
           评论：<span>{{ findItem.comment }}</span>
         </div>
         <div class="operationPartent">
-          <div
-            class="like"
-            @click="likeHandle"
-          >
-            <van-icon
-              v-if="findItem.fabulousstatus === 0"
-              size="1.2rem"
-              name="like"
-              color="#dbdbdb"
-            />
-            <van-icon
-              v-else
-              size="1.2em"
-              name="like"
-              color="#f7173a"
-            />
-            <span>{{ findItem.fabulous }}</span>
+          <div class="like" @click="likeHandle">
+            <img v-if="findItem.fabulousstatus === 0" src="./img/like.png" alt="" />
+            <img v-else src="./img/like_ed.png" alt="" /> <span>{{ findItem.fabulous }}</span>
           </div>
-          <div
-            class="follow"
-            @click="followHandle"
-          >
-            <van-icon
-              v-if="findItem.followstatus === 0"
-              size="1.2rem"
-              name="star"
-              color="#dbdbdb"
-            />
-            <van-icon
-              v-else
-              size="1.2rem"
-              name="star"
-              color="#f2bb13"
-            />
+
+          <div class="follow" @click="followHandle">
+            <img v-if="findItem.followstatus === 0" src="./img/Collect.png" alt="" />
+            <img v-else src="./img/Collect_ed.png" alt="" />
             <span>{{ findItem.follow }}</span>
           </div>
         </div>
       </div>
       <div class="commentList">
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          @load="onLoad"
-          :offset="offset"
-        >
-          <van-cell
-            v-for="item in commentList"
-            :key="item.id"
-          >
+        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :offset="offset">
+          <van-cell v-for="item in commentList" :key="item.id">
             <div class="commentListItem">
               <div class="commenAavatar">
-                <img
-                  :src="item.avatar"
-                  alt="头像"
-                  style="width: 100%; height: 100%"
-                />
+                <img :src="item.avatar" alt="头像" style="width: 100%; height: 100%" />
               </div>
               <div class="commentItemContent">
                 <div class="commentUserName">{{ item.nickname }}</div>
@@ -174,16 +86,9 @@
               </div>
             </div>
             <ul class="commentChildren">
-              <li
-                v-for="commentChild in item.children"
-                :key="commentChild.id"
-              >
+              <li v-for="commentChild in item.children" :key="commentChild.id">
                 <div class="commenAavatar">
-                  <img
-                    :src="commentChild.avatar"
-                    alt="头像"
-                    style="width: 100%; height: 100%"
-                  />
+                  <img :src="commentChild.avatar" alt="头像" style="width: 100%; height: 100%" />
                 </div>
                 <div class="commentItemContent">
                   <div class="commentUserName">{{ commentChild.nickname }}</div>
@@ -202,43 +107,29 @@
     </div>
     <div class="submitComment">
       <van-cell-group>
-        <van-field
-          @click.stop="nothHandle"
-          ref="commentValue"
-          v-model="commentValue"
-          :placeholder="commentPlaceholder"
-        ></van-field>
+        <van-field @click.stop="nothHandle" ref="commentValue" v-model="commentValue" :placeholder="commentPlaceholder"></van-field>
       </van-cell-group>
-      <van-button
-        @click="submitComment"
-        size="small"
-        plain
-      >发送</van-button>
+      <van-button @click="submitComment" size="small" plain>发送</van-button>
     </div>
-    <van-image-preview
-      v-model="showImg"
-      :images="imagesList"
-      :startPosition="showImgIndex"
-      @change="onChange"
-    >
+    <van-image-preview v-model="showImg" :images="imagesList" :startPosition="showImgIndex" @change="onChange">
       <template v-slot:index>第{{ imgIndex }}页</template>
     </van-image-preview>
   </div>
 </template>
 
 <script>
-import { Toast, Circle, ImagePreview } from 'vant'
+import { Toast, Circle, ImagePreview } from "vant";
 export default {
   data() {
     return {
-      findId: '',
-      uid: JSON.parse(localStorage.getItem('tempIndex')).memberinfo.uid,
+      findId: "",
+      uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid,
       findItem: {},
       commentList: [],
       commentPage: 1,
       loading: false,
       finished: true,
-      commentValue: '',
+      commentValue: "",
       offset: 100000,
       commentTop: 1,
       isReceive: false, //是否显示红包进度条
@@ -246,16 +137,16 @@ export default {
       timer: 0,
       showRed: false,
       delay: false,
-      money: '',
-      timeoutOnoff: '',
+      money: "",
+      timeoutOnoff: "",
       timeStamp: new Date().getTime().toString(),
-      redGif: require('./img/red6.gif'),
+      redGif: require("./img/red6.gif"),
       imgIndex: 0,
-      showImgIndex:0,
+      showImgIndex: 0,
       showImg: false,
       imagesList: [],
       parent_id: 0,
-      commentPlaceholder: '写评论...',
+      commentPlaceholder: "写评论...",
       playerOptions: {
         //播放速度
         playbackRates: [0.5, 1.0, 1.5, 2.0],
@@ -266,24 +157,24 @@ export default {
         // 导致视频一结束就重新开始。
         loop: false,
         // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
-        preload: 'auto',
-        language: 'zh-CN',
+        preload: "auto",
+        language: "zh-CN",
         // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-        aspectRatio: '16:9',
+        aspectRatio: "16:9",
         // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
         fluid: true,
         sources: [
           {
             //类型
-            type: 'video/mp4',
+            type: "video/mp4",
             //url地址
-            src: ''
+            src: ""
           }
         ],
         //你的封面地址
-        poster: '',
+        poster: "",
         //允许覆盖Video.js无法播放媒体源时显示的默认信息。
-        notSupportedMessage: '此视频暂无法播放，请稍后再试',
+        notSupportedMessage: "此视频暂无法播放，请稍后再试",
         controlBar: {
           timeDivider: true,
           durationDisplay: true,
@@ -292,71 +183,71 @@ export default {
           fullscreenToggle: true
         }
       }
-    }
+    };
   },
   activated() {
-    window.scrollTo(0, 0)
-    this.showRed = false
-    this.isReceive = false
-    this.findId = this.$route.query.findId
-    this.uid = JSON.parse(localStorage.getItem('tempIndex')).memberinfo.uid
-    console.log(this.uid)
-    this.canReceive()
-    this.getDetail()
-    this.getCommentList()
-    window.addEventListener('scroll', this.slideHandle)
-    this.showRed = false
-    this.val = 0
-    this.redGif = this.redGif + '?' + this.timeStamp
-    this.browse()
+    window.scrollTo(0, 0);
+    this.showRed = false;
+    this.isReceive = false;
+    this.findId = this.$route.query.findId;
+    this.uid = JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid;
+    console.log(this.uid);
+    this.canReceive();
+    this.getDetail();
+    this.getCommentList();
+    window.addEventListener("scroll", this.slideHandle);
+    this.showRed = false;
+    this.val = 0;
+    this.redGif = this.redGif + "?" + this.timeStamp;
+    this.browse();
   },
   deactivated() {
-    clearInterval(this.timer)
-    this.showRed = false
-    clearTimeout(this.timeoutOnoff)
+    clearInterval(this.timer);
+    this.showRed = false;
+    clearTimeout(this.timeoutOnoff);
   },
   methods: {
     nothHandle() {},
     clearReply() {
-      this.parent_id = 0
-      this.commentPlaceholder = '写评论...'
+      this.parent_id = 0;
+      this.commentPlaceholder = "写评论...";
     },
     replyCommentHandle(item) {
-      console.log(item)
-      this.$refs.commentValue.focus()
-      this.parent_id = item.id
-      this.commentPlaceholder = '回复' + item.nickname
+      console.log(item);
+      this.$refs.commentValue.focus();
+      this.parent_id = item.id;
+      this.commentPlaceholder = "回复" + item.nickname;
     },
     showImageHandle(index) {
-      this.showImg = true
-      this.imgIndex = index + 1
-      this.showImgIndex = index
-      console.log( this.showImgIndex)
+      this.showImg = true;
+      this.imgIndex = index + 1;
+      this.showImgIndex = index;
+      console.log(this.showImgIndex);
     },
     onChange(index) {
-      this.imgIndex = index + 1
+      this.imgIndex = index + 1;
     },
     closeRed() {
-      this.showRed = false
-      this.isReceive = false
+      this.showRed = false;
+      this.isReceive = false;
     },
     browse() {
       const data = {
         uid: this.uid,
         sid: this.findId
-      }
-      console.log(data)
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/addfindvisit'
+      };
+      console.log(data);
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/addfindvisit";
       axios({
-        method: 'post',
+        method: "post",
         url: url,
         data
       }).then(res => {
-        console.log(res)
-      })
+        console.log(res);
+      });
     },
     getRed() {
-      const currentAddress = JSON.parse(localStorage.getItem('currentAddress'))
+      const currentAddress = JSON.parse(localStorage.getItem("currentAddress"));
       const data = {
         uid: this.uid,
         id: this.findId,
@@ -364,45 +255,45 @@ export default {
         addcode: currentAddress.adcode,
         latitude: currentAddress.lat,
         longitude: currentAddress.lng
-      }
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/watchfind'
+      };
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/watchfind";
       return axios({
-        method: 'post',
+        method: "post",
         url: url,
         data
       }).then(res => {
         if (res.data.result === 1) {
-          this.money = res.data.data
-          this.showRed = true
+          this.money = res.data.data;
+          this.showRed = true;
           this.timeoutOnoff = setTimeout(() => {
-            this.delay = true
-            clearTimeout(this.timeoutOnoff)
-          }, 1500)
+            this.delay = true;
+            clearTimeout(this.timeoutOnoff);
+          }, 1500);
           const hideRed = setTimeout(() => {
-            this.closeRed()
-            clearTimeout(hideRed)
-          }, 5000)
+            this.closeRed();
+            clearTimeout(hideRed);
+          }, 5000);
         } else {
-          this.isReceive = false
-          Toast(res.data.msg)
+          this.isReceive = false;
+          Toast(res.data.msg);
         }
-      })
+      });
     },
     setVal() {
       //红包进度条定时器
       this.timer = setInterval(() => {
-        this.val++
+        this.val++;
         if (this.val >= 100) {
-          console.log(this.timer)
-          this.getRed()
-          clearInterval(this.timer)
+          console.log(this.timer);
+          this.getRed();
+          clearInterval(this.timer);
         }
-      }, 50)
+      }, 50);
     },
     canReceive() {
       //判断能否领取红包
-      const currentAddress = JSON.parse(localStorage.getItem('currentAddress'))
-      console.log(currentAddress)
+      const currentAddress = JSON.parse(localStorage.getItem("currentAddress"));
+      console.log(currentAddress);
       const data = {
         id: this.findId,
         uid: this.uid,
@@ -410,76 +301,76 @@ export default {
         addcode: currentAddress.adcode,
         latitude: currentAddress.lat,
         longitude: currentAddress.lng
-      }
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/judgefind'
+      };
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/judgefind";
       axios({
-        method: 'post',
+        method: "post",
         url: url,
         data
       }).then(res => {
-        console.log(res)
+        console.log(res);
         if (res.data.result === 1) {
-          this.isReceive = true
-          this.setVal()
+          this.isReceive = true;
+          this.setVal();
         } else {
-          this.isReceive = false
-          Toast(res.data.msg)
+          this.isReceive = false;
+          Toast(res.data.msg);
         }
-      })
+      });
     },
     followHandle() {
       //收藏
       if (this.findItem.followstatus === 0) {
-        this.getfollow()
+        this.getfollow();
       } else {
-        this.updatefollow()
+        this.updatefollow();
       }
     },
     getfollow() {
       const data = {
         sid: this.findId,
-        uid: JSON.parse(localStorage.getItem('tempIndex')).memberinfo.uid
-      }
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/addfindollow'
+        uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid
+      };
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/addfindollow";
       axios({
-        method: 'post',
+        method: "post",
         url: url,
         data
       }).then(res => {
         if (res.data.result === 1) {
-          this.findItem.followstatus = 1
-          this.findItem.follow++
-          Toast(res.data.msg)
+          this.findItem.followstatus = 1;
+          this.findItem.follow++;
+          Toast(res.data.msg);
         } else {
-          Toast(res.data.msg)
+          Toast(res.data.msg);
         }
-      })
+      });
     },
     updatefollow() {
       const data = {
         sid: this.findId,
-        uid: JSON.parse(localStorage.getItem('tempIndex')).memberinfo.uid
-      }
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/cancelfindfollow'
+        uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid
+      };
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/cancelfindfollow";
       axios({
-        method: 'post',
+        method: "post",
         url: url,
         data
       }).then(res => {
         if (res.data.result === 1) {
-          this.findItem.followstatus = 0
-          this.findItem.follow--
-          Toast(res.data.msg)
+          this.findItem.followstatus = 0;
+          this.findItem.follow--;
+          Toast(res.data.msg);
         } else {
-          Toast(res.data.msg)
+          Toast(res.data.msg);
         }
-      })
+      });
     },
     likeHandle() {
       if (this.findItem.fabulousstatus === 0) {
-        this.getlike()
+        this.getlike();
       } else {
-        this.updatelike()
+        this.updatelike();
       }
     },
     getlike() {
@@ -487,61 +378,61 @@ export default {
       const data = {
         type: 1,
         sid: this.findId,
-        uid: JSON.parse(localStorage.getItem('tempIndex')).memberinfo.uid
-      }
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/getlike'
+        uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid
+      };
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/getlike";
       axios({
-        method: 'post',
+        method: "post",
         url: url,
         data
       }).then(res => {
         if (res.data.result === 1) {
-          this.findItem.fabulousstatus = 1
-          this.findItem.fabulous++
-          Toast(res.data.msg)
+          this.findItem.fabulousstatus = 1;
+          this.findItem.fabulous++;
+          Toast(res.data.msg);
         } else {
-          Toast(res.data.msg)
+          Toast(res.data.msg);
         }
-      })
+      });
     },
     updatelike() {
       //取消点赞
       const data = {
         type: 1,
         sid: this.findId,
-        uid: JSON.parse(localStorage.getItem('tempIndex')).memberinfo.uid
-      }
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/updatelike'
+        uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid
+      };
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/updatelike";
       axios({
-        method: 'post',
+        method: "post",
         url: url,
         data
       }).then(res => {
         if (res.data.result === 1) {
-          this.findItem.fabulousstatus = 0
-          this.findItem.fabulous--
-          Toast(res.data.msg)
+          this.findItem.fabulousstatus = 0;
+          this.findItem.fabulous--;
+          Toast(res.data.msg);
         } else {
-          Toast(res.data.msg)
+          Toast(res.data.msg);
         }
-      })
+      });
     },
     slideHandle() {
       // console.log(this.$refs.comment.getBoundingClientRect().top)
-      this.commentTop = this.$refs.comment.getBoundingClientRect().top
+      this.commentTop = this.$refs.comment.getBoundingClientRect().top;
     },
     onLoad() {
-      this.commentPage++
-      this.getCommentList()
+      this.commentPage++;
+      this.getCommentList();
     },
     submitComment() {
-      if (this.commentValue === '') {
-        Toast('请输入内容')
-        return
+      if (this.commentValue === "") {
+        Toast("请输入内容");
+        return;
       }
       if (this.commentValue.length > 20) {
-        Toast('字数限制20字')
-        return
+        Toast("字数限制20字");
+        return;
       }
       const data = {
         parent_id: this.parent_id,
@@ -549,35 +440,35 @@ export default {
         sid: this.findId,
         uid: this.uid,
         common_text: this.commentValue
-      }
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/getcomment'
+      };
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/getcomment";
       axios({
-        method: 'post',
+        method: "post",
         url: url,
         data
       }).then(res => {
         if (res.data.result === 1) {
-          Toast('评论成功')
-          this.commentPlaceholder = '写评论...'
-          this.parent_id = 0
-          this.findItem.comment++
-          this.commentPage = 1
-          this.commentList = []
-          this.commentValue = ''
-          this.finished = true
-          this.getCommentList()
+          Toast("评论成功");
+          this.commentPlaceholder = "写评论...";
+          this.parent_id = 0;
+          this.findItem.comment++;
+          this.commentPage = 1;
+          this.commentList = [];
+          this.commentValue = "";
+          this.finished = true;
+          this.getCommentList();
         }
-      })
+      });
     },
     getCommentList() {
       const data = {
         id: this.findId,
         type: 1,
         page: this.commentPage
-      }
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/comments'
+      };
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/comments";
       axios({
-        method: 'post',
+        method: "post",
         url: url,
         data
       }).then(res => {
@@ -585,38 +476,47 @@ export default {
           if (res.data.data.length !== 0) {
             this.$nextTick(() => {
               res.data.data.forEach(item => {
-                this.commentList.push(item)
-              })
-            })
-            this.loading = false
-            this.finished = false
+                this.commentList.push(item);
+              });
+            });
+            this.loading = false;
+            this.finished = false;
           } else {
-            this.finished = true
+            this.finished = true;
           }
         }
-      })
+      });
     },
     getDetail() {
       const data = {
         uid: this.uid,
         id: this.findId
-      }
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/finddetails'
+      };
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/finddetails";
       axios({
-        method: 'post',
+        method: "post",
         url: url,
         data
       }).then(res => {
-        console.log(res)
+        console.log(res);
         if (res.data.result === 1) {
-          this.findItem = res.data.data
-          this.imagesList = res.data.data.texturl
-          this.playerOptions.sources[0].src = this.findItem.videourl
+          res.data.data;
+          if (res.data.data.sqnadress.indexOf("省") == -1) {
+            if (res.data.data.sqnadress.indexOf("市") != -1) {
+              res.data.data.sqnadress = res.data.data.sqnadress.split("市")[0];
+            }
+          } else {
+            res.data.data.sqnadress = res.data.data.sqnadress.split("省")[0];
+          }
+
+          this.findItem = res.data.data;
+          this.imagesList = res.data.data.texturl;
+          this.playerOptions.sources[0].src = this.findItem.videourl;
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" rel="stylesheet/scss" scoped>
@@ -697,6 +597,14 @@ export default {
       }
     }
   }
+
+  .area {
+    font-size: 0.63rem;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #999999;
+    margin-top: 0.5rem;
+  }
   .introduction {
     box-sizing: content-box;
     // height: 2.75rem;
@@ -707,15 +615,21 @@ export default {
     line-height: 1.375rem;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
-    // padding: 0.5rem 0;
-    // text-overflow: -o-ellipsis-lastline;
-    // overflow: hidden;
-    // text-overflow: ellipsis;
-    // display: -webkit-box;
-    // -webkit-line-clamp: 2;
-    // -webkit-box-orient: vertical;
+
     padding-bottom: 0.5rem;
-    // border-bottom: 1px dashed #e4e4e4;
+    .typeName {
+      display: inline-block;
+      height: 1.25rem;
+      background: linear-gradient(135deg, #7faafe 0%, #1783fd 100%);
+      border-radius: 0.19rem;
+      font-size: 0.75rem;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #ffffff;
+      line-height: 1.25rem;
+      padding: 0 0.4rem;
+      vertical-align: text-bottom;
+    }
   }
   .address {
     // height: 1.25rem;
@@ -766,17 +680,31 @@ export default {
   }
   .progress {
     margin-top: 0.5rem;
+    .Remainder {
+      display: inline-block;
+      font-size: 0.63rem;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #9c9ca6;
+      line-height: 0.88rem;
+      width: 34%;
+      text-align: center;
+      span {
+        color: #fc575a;
+      }
+    }
   }
   .progressBox {
+    display: inline-flex;
+    width: 66%;
     height: 0.4rem;
     background-color: #fbeded;
     border-radius: 0.25rem;
     overflow: hidden;
-    display: flex;
     justify-content: flex-end;
     .progressContent {
       height: 0.4rem;
-      background-color: #d9021b;
+      background: linear-gradient(270deg, #ff8068 0%, #ff5665 100%);
       //  width:30%;
       border-radius: 0.25rem;
     }
@@ -836,9 +764,10 @@ export default {
   }
   .like,
   .follow {
-    font-size: 1rem;
-    line-height: 1rem;
-    margin: 0 5px;
+    img {
+      width: 1.6rem;
+      height: 1.4rem;
+    }
     span {
       display: inline-block;
       margin-left: 0.1563rem;
@@ -971,7 +900,7 @@ export default {
     width: 3.7rem;
     height: 3rem;
     background-size: 100% 100%;
-    background-image: url('../../assets/newImg/detail/redtop2.png');
+    background-image: url("../../assets/newImg/detail/redtop2.png");
   }
   .redDown {
     box-sizing: content-box;
@@ -1010,7 +939,7 @@ export default {
 }
 .redProgress {
   background-size: 3.7rem 3rem;
-  background-image: url('../../assets/newImg/detail/redtop2.png');
+  background-image: url("../../assets/newImg/detail/redtop2.png");
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -1052,16 +981,16 @@ export default {
     color: #fff;
   }
   .closeIcon {
-    width:2rem;
+    width: 2rem;
     height: 2rem;
     position: absolute;
     top: 2.5rem;
     right: 4rem;
-    z-index: 200001;
+    z-index: 200002;
     // border:1px solid #000;
     overflow: hidden;
-    /deep/ i{
-      margin:0.5rem auto;
+    /deep/ i {
+      margin: 0.5rem auto;
     }
   }
 }

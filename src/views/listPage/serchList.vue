@@ -36,7 +36,7 @@
               <span class="addressInfo"> {{ item.sqnadress }} </span>
             </div> -->
             <ul class="labelInfo">
-              <li v-for="(labelItem, labelIndex) in item.catename" :key="labelIndex">{{ labelItem }}</li>
+              <li >{{ item.catename }}</li>
             </ul>
             <ul class="photo">
               <li v-for="(photoItem, photoIndex) in item.texturl" :key="photoIndex">
@@ -497,23 +497,16 @@ export default {
     }
   }
   .labelInfo {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: flex-start;
+
     // padding: 0.5rem 0;
-    padding-left: 1.125rem;
     li {
-      height: 0.9rem;
       font-size: 0.625rem;
       font-family: PingFang-SC-Regular, PingFang-SC;
       font-weight: 400;
       color: #0579fc;
       line-height: 0.9rem;
       border-radius: 0.1875rem;
-      border: 0.0313rem solid #0579fc;
       box-sizing: content-box;
-      padding: 0 0.3125rem;
       margin-right: 0.625rem;
       margin-bottom: 0.3125rem;
     }

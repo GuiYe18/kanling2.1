@@ -34,6 +34,7 @@ export default {
       InitialTime: 6,
       // 协议同意倒计时 计算时间
       AgreementTime: 0,
+
       // 协议同意倒计时时间单位
       AgreementTimeUnit: "s",
 
@@ -86,7 +87,7 @@ export default {
         address: "", // 详细地址
         custom_value: ""
       },
-      is_password: "1",
+      is_password: "0",
       custom_title: "",
       is_custom: false,
       is_edit: true,
@@ -173,7 +174,7 @@ export default {
   watch: {
     // 监控用户是否点击协议 (倒计时)
     protocolshow: function (N, O) {
-      console.log("params", N, O);
+      // console.log("params", N, O);
       if (N == true) {
         this.AgreementTime = this.AgreementTime - 1;
       }
@@ -184,7 +185,7 @@ export default {
       if (N >= 1) {
         setTimeout(() => {
           this.AgreementTime = this.AgreementTime - 1;
-          console.log('少时诵诗书所所所所所所所所');
+          // console.log('少时诵诗书所所所所所所所所');
         }, 1000);
       }
       // 倒计时结束 时间.单位 清空  允许点击
@@ -197,26 +198,34 @@ export default {
   },
 
   methods: {
+    tongyi() {
+      this.protocolshow = !this.protocolshow
+    },
     /**
      * @Author: 飞
-     * @Date: 2021-06-18 15:15:35
-     * @Describe: 协议
-     * @param {*} item
+     * @Date: 2021-09-26 18:58:26
+     * @Describe: 关闭6秒协议
      */
-    NoAgree() {
+    // /**
+    //  * @Author: 飞
+    //  * @Date: 2021-06-18 15:15:35
+    //  * @Describe: 协议
+    //  * @param {*} item
+    //  */
+    // NoAgree() {
+    //   // 初始化倒计时时间(默认6秒)
+    //   this.AgreementTime = this.InitialTime;
+    //   // 显示协议
+    //   this.protocolshow = !this.protocolshow;
+    //   // 同意  不让点击
+    //   this.AgreementAllowClick = false;
 
-      // 初始化倒计时时间(默认6秒)
-      this.AgreementTime = this.InitialTime;
-      // 显示协议
-      this.protocolshow = !this.protocolshow;
-      // 同意  不让点击
-      this.AgreementAllowClick = false;
-
-    },
+    // },
     // 用户点击不同意修改状态
     cancel() {
       if (this.AgreementAllowClick) {
         this.checked = false;
+        this.agreementCB = false;
         this.protocolshow = false;
       }
     },
@@ -224,12 +233,14 @@ export default {
     confirm() {
       if (this.AgreementAllowClick) {
         this.checked = true;
+        this.agreementCB = true;
+
         this.protocolshow = false;
       }
     },
     onSelect(item) {
-      console.log(item);
-      console.log(item);
+      // console.log(item);
+      // console.log(item);
       if (item.gender == 1) {
         this.form.gender = "1";
         this.sexName = "男";
@@ -281,7 +292,7 @@ export default {
     },
     // 城市结果
     resultAdd(district) {
-      console.log(district);
+      // console.log(district);
       this.initDistrict("", district);
     },
     initDistrict(data, district) {
@@ -321,13 +332,13 @@ export default {
       }
     },
     handleConfirm(ret) {
-      // console.log("handleConfirm=" + ret)
-      console.log(ret.Format("yyyy-MM-dd"));
+      // // console.log("handleConfirm=" + ret)
+      // console.log(ret.Format("yyyy-MM-dd"));
       this.form.birthday = ret.Format("yyyy-MM-dd");
       this.dateshow_2 = false;
     },
     setDate(ret) {
-      console.log(ret.Format("yyyy-MM-dd"));
+      // console.log(ret.Format("yyyy-MM-dd"));
       this.diydata.forEach(item => {
         if (item.name == this.currentDateKey) {
           this.$set(item, "value", ret.Format("yyyy-MM-dd"));
@@ -343,7 +354,7 @@ export default {
     getAllData() {
       var that = this;
       this.isset = sessionStorage.getItem("isset");
-      console.log(this.isset);
+      // console.log(this.isset);
       var dataSource = {};
       if (this.isset) {
         sessionStorage.removeItem("isset");
@@ -378,7 +389,7 @@ export default {
               this.default_invite = response.data.getInviteCode.default_invite;
               this.getInviteCode(response.data.getInviteCode);
             }
-            console.log(response.data.get_member_protocol);
+            // console.log(response.data.get_member_protocol);
             if (response.data.get_member_protocol) {
               if (response.data.get_member_protocol.form) {
                 if (response.data.get_member_protocol.form.base) {
@@ -391,7 +402,13 @@ export default {
                 this.requimg = response.data.get_member_protocol.register.top_img;
                 this.title1 = response.data.get_member_protocol.register.title1;
                 this.title2 = response.data.get_member_protocol.register.title2;
-                that.is_password = response.data.get_member_protocol.register.is_password;
+
+                /**
+                 * @Author: 飞
+                 * @Date: 2021-09-26 18:55:11
+                 * @Describe: 设置密码关闭
+                 */
+                // that.is_password = response.data.get_member_protocol.register.is_password;
               }
               if (response.data.get_member_protocol.custom_field) {
                 this.is_custom = response.data.get_member_protocol.custom_field.is_custom == "1" ? true : false;
@@ -412,7 +429,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error);
+          // console.log(error);
         });
     },
     // 初始化自定义表单
@@ -440,7 +457,7 @@ export default {
         this.invite = data.status;
         this.isrequired = data.required;
         if (data.invitation_code) {
-          console.log("111111111111111111111111111111111");
+          // console.log("111111111111111111111111111111111");
           this.form.invite_code = data.invitation_code.invite_code;
         }
       } else {
@@ -466,7 +483,7 @@ export default {
       // }
       //   },
       //   response => {
-      //     console.log(response.msg);
+      //     // console.log(response.msg);
       //     that.agreementStatus = false;
       //   }
       // );
@@ -488,7 +505,7 @@ export default {
     //       that.diyStatus = 0;
     //     }
     //   }, (response) => {
-    //     console.log(response.msg);
+    //     // console.log(response.msg);
     //     that.diyStatus = 0;
     //   });
     // },
@@ -500,7 +517,7 @@ export default {
       //   .get("plugin.diyform.api.diy-form.get-diy-form-by-id", { form_id: id })
       //   .then(
       //     response => {
-      // console.log(response)
+      // // console.log(response)
       // if (response.result == 1) {
       that.diyform = data;
       var fields = that.diyform.fields;
@@ -540,20 +557,20 @@ export default {
         }
 
         that.diydata.push(f);
-        console.log(this.diydata);
+        // console.log(this.diydata);
       }
       // } else {
       // }
       //   },
       //   response => {
-      //     console.log(response.msg);
+      //     // console.log(response.msg);
       //   }
       // );
     },
 
     chooseUpload(name) {
       this.upload_name = name;
-      console.log(this.upload_name);
+      // console.log(this.upload_name);
       return true;
     },
     //发送验证码
@@ -602,7 +619,7 @@ export default {
               }
             },
             response => {
-              console.log(response.msg);
+              // console.log(response.msg);
             }
           );
       }
@@ -659,7 +676,7 @@ export default {
         sessionStorage.removeItem("isset");
         isclose = 1;
       }//判断有没有开启邀请码绑定上级
-      console.log(isclose);
+      // console.log(isclose);
       let is_form = {
         invite_code: this.form.invite_code,
         country: this.form.country,
@@ -678,7 +695,7 @@ export default {
       };
       is_form.address = adress;
       is_form.customDatas = is_customDatas.customDatas;
-      console.log(this.form);
+      // console.log(this.form);
       let that = this;
 
       if (this.fun.isTextEmpty(this.form.country)) {
@@ -696,10 +713,10 @@ export default {
         return;
       }
 
-      if (this.fun.isTextEmpty(this.form.code)) {
-        Toast("请填验证码");
-        return;
-      }
+      // if (this.fun.isTextEmpty(this.form.code)) {
+      //   Toast("请填验证码");
+      //   return;
+      // }
       if (this.is_password == "1") {
         if (this.fun.isTextEmpty(this.form.password)) {
           Toast("请填写密码");
@@ -715,14 +732,21 @@ export default {
           return;
         }
       }
+      /**
+       * @Author: 飞
+       * @Date: 2021-09-26 18:57:18
+       * @Describe: 关闭 已同意用户协议   判断
+       * @param {*} this
+       */
+      // if (this.fun.isTextEmpty(this.checked)) {
+      //   Toast("请点击查看注册协议");
+      //   return;
+      // }
 
-      if (this.fun.isTextEmpty(this.checked)) {
-        Toast("请点击查看注册协议");
-        return;
-      }
 
-      console.log(this.isrequired);
-      console.log(this.form.invite_code);
+
+      // console.log(this.isrequired);
+      // console.log(this.form.invite_code);
       if (this.isrequired == 1) {
         if (this.fun.isTextEmpty(this.form.invite_code)) {
           Toast("请填写邀请码");
@@ -759,35 +783,80 @@ export default {
       this.repeatStatus = true;
 
       //判断是否从设置页面跳转
-      console.log(is_form);
+      // console.log(is_form);
       if (!this.isset) {
         const { ...formData } = is_form;
-        console.log(formData);
+        // console.log(formData);
         is_form = formData;
       }
-      console.log(is_form);
+      /**
+       * @Author: 飞
+       * @Date: 2021-09-16 16:44:57
+       * @Describe:  推荐人的id 传过去
+       */
+
+      // is_form.tuid = window.localStorage.getItem('tuid')
+
+      // console.log(is_form);
       $http.post("member.member.bindMobile", is_form, "绑定中...").then(
         response => {
           that.repeatStatus = false;
           if (response.result == 1) {
-            if (this.diyStatus == 0) {
+            /**
+             * @Author: 飞
+             * @Date: 2021-09-16 17:18:11
+             * @Describe: 
+             */
+            //提交推广二维码
+            // that.setIntroduce()
+            if (window.localStorage.getItem('tuid') != null) {
+              const tuid = window.localStorage.getItem('tuid') * 1
+              const uid = JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid * 1;
+              const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/getIntroduce";
+              axios({
+                url,
+                method: "POST",
+                data: {
+                  uid,
+                  tuid
+                }
+              })
+            }
+            /**
+             * @Author: 飞
+             * @Date: 2021-07-11 23:54:30
+             * @Describe: 注册赠送积分
+             */
 
-
-              //提交推广二维码
-              // that.setIntroduce()
-              if (window.localStorage.getItem('tuid') != 'undefined') {
-                const tuid = window.localStorage.getItem('tuid')
-                const uid = JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid;
-                const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/getIntroduce";
-                axios({
-                  url,
-                  method: "POST",
-                  data: {
-                    uid,
-                    tuid
-                  }
-                })
+            var tuids = ''
+            if (window.localStorage.getItem('tuid') != null) {
+              tuids = window.localStorage.getItem('tuid')
+            }
+            /**
+             * @Author: 飞
+             * @Date: 2021-07-08 16:28:10
+             * @Describe: 注册赠送积分
+             */
+            axios({
+              url: 'https://tpkl.minpinyouxuan.com/index.php/api/v2/respond',
+              method: "POST",
+              data: {
+                mobile: that.form.mobile * 1,
+                point: -1,
+                tuid: tuids
               }
+            }).then(response => {
+            })
+              .catch(error => {
+              });
+
+
+
+
+
+
+
+            if (this.diyStatus == 0) {
 
               this.$dialog.alert({
                 message: "绑定成功"
@@ -813,7 +882,7 @@ export default {
                     return;
                   }
                 } catch (error) {
-                  console.log(error);
+                  // console.log(error);
                 }
                 that.$router.go(-1);
               }
@@ -821,6 +890,8 @@ export default {
               //去提交diy
               this.postDiy();
             }
+
+
           } else {
             this.$dialog.alert({
               message: response.msg
@@ -834,11 +905,15 @@ export default {
         }
       );
     },
+    ExchangePoints_TwoThousand() {
+
+
+    },
     //先验证是否导致会员id变更
     getPrepBind() {
       this.form.customDatas = this.customDatas;
 
-      console.log(this.form);
+      console.log('this.form', this.form);
       let that = this;
       if (this.fun.isTextEmpty(this.form.country)) {
         Toast("请输入国际区号");
@@ -870,8 +945,8 @@ export default {
           return;
         }
       }
-      console.log(this.isrequired);
-      console.log(this.form.invite_code);
+      // // console.log(this.isrequired);
+      // // console.log(this.form.invite_code);
       if (this.isrequired == 1) {
         if (this.fun.isTextEmpty(this.form.invite_code)) {
           Toast("请填写邀请码");
@@ -956,7 +1031,7 @@ export default {
             }
           })
           .catch(error => {
-            console.log(error);
+            // console.log(error);
           });
       }
     },
@@ -980,12 +1055,12 @@ export default {
       for (let i = 0; i < That.diydata.length; i++) {
         if (That.upload_name == That.diydata[i].name) {
           real_name = That.diydata[i].name;
-          console.log(real_name);
+          // console.log(real_name);
           index = i;
           max_length = That.diydata[i].data.tp_max;
           real_list1 = That.diydata[i][real_name + "Value1"];
           real_list2 = That.diydata[i][real_name + "Value2"];
-          console.log(That.diydata[i][real_name + "Value1"]);
+          // console.log(That.diydata[i][real_name + "Value1"]);
           break;
         }
       }
@@ -1024,7 +1099,7 @@ export default {
             this.diydata[index][real_name + "Value1"].push({
               url: responseData.data.img
             });
-            console.log(this.diydata[index][real_name + "Value1"]);
+            // console.log(this.diydata[index][real_name + "Value1"]);
 
             if (flag === true) {
               this.diydata[index][real_name + "Value2"].push({
@@ -1042,18 +1117,18 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error);
+          // console.log(error);
           Toast.clear();
         });
     },
     removeImg_1: function (item, delIndex) {
-      console.log(item);
+      // console.log(item);
       var index = 0;
       var real_name = "";
       for (let i = 0; i < this.diydata.length; i++) {
         if (item.name == this.diydata[i].name) {
           real_name = this.diydata[i].name;
-          console.log(real_name);
+          // console.log(real_name);
           index = i;
           break;
         }
@@ -1097,11 +1172,11 @@ export default {
                 return;
               }
             } catch (error) {
-              console.log("error", error);
+              // console.log("error", error);
             }
             that.$router.go(-1);
           } else {
-            console.log(this.isrequired != 0);
+            // console.log(this.isrequired != 0);
             if (this.isrequired != 0) {
               this.$dialog.alert({
                 message: response.msg
@@ -1122,8 +1197,8 @@ export default {
 
     setCity(ret) {
       var retCity = ret.itemName1 + " " + ret.itemName2 + " " + ret.itemName3;
-      console.log("retCity", retCity);
-      console.log("currentCityKey", this.currentCityKey);
+      // console.log("retCity", retCity);
+      // console.log("currentCityKey", this.currentCityKey);
       this.diydata.forEach(item => {
         if (item.name == this.currentCityKey) {
           this.$set(item, "value", retCity);
@@ -1132,7 +1207,7 @@ export default {
     },
     openPicker(name) {
       this.currentDateKey = name;
-      console.log("name", name);
+      // console.log("name", name);
       this.pickerValueShow = true;
       // this.$refs.picker.open();
     },
@@ -1144,10 +1219,10 @@ export default {
     //验证参数
     validation() {
       this.isValidation = true;
-      console.log(this.diydata, 33);
+      // console.log(this.diydata, 33);
       this.diydata.forEach(item => {
         if (item.data.tp_must == 1 && !item.value && item.type != "diyimg") {
-          console.log(item.data.tp_name, item.value);
+          // console.log(item.data.tp_name, item.value);
           Toast(item.data.tp_name + "必须填写哦");
 
           this.isValidation = false;
@@ -1159,7 +1234,7 @@ export default {
           }
         }
         if (item.type == "diycheckbox" && item.value.length == 0) {
-          console.log(item.data.tp_name, item.value);
+          // console.log(item.data.tp_name, item.value);
           Toast(item.data.tp_name + "必须选择哦");
           this.isValidation = false;
         }
@@ -1197,7 +1272,7 @@ export default {
           geolocation.getCurrentPosition();
           AMap.event.addListener(geolocation, "complete", (obj) => {
             Toast.clear();
-            //console.log("执行1");
+            //// console.log("执行1");
             resolev({
               positioning_success: 1,
               register_province: obj.addressComponent.province,
@@ -1206,7 +1281,7 @@ export default {
           }); // 返回定位信息
           AMap.event.addListener(geolocation, "error", () => {
             Toast.clear();
-            //console.log("执行2");
+            //// console.log("执行2");
             resolev({
               positioning_success: 0,
               register_province: "",
@@ -1246,7 +1321,7 @@ export default {
     // this.getimgdata();
     if (!this.fun.isTextEmpty(this.$route.params.code)) {
       this.form.invite_code = String(this.$route.params.code);
-      console.log(this.form.invite_code, "传过来的邀请码");
+      // console.log(this.form.invite_code, "传过来的邀请码");
     }
     if (this.$route.query.from == "signPage") {
       this.ys_short_url_redirect_url = this.fun.getCookie("ys_short_url_redirect_url");
@@ -1255,7 +1330,7 @@ export default {
     if (this.$route.params.is_edit == "1") {
       this.is_edit = false;
     }
-    console.log(this.is_edit, "true就是显示会员资料");
+    // console.log(this.is_edit, "true就是显示会员资料");
     if (this.ys_short_url_redirect_tel) {
       this.form.mobile = this.ys_short_url_redirect_tel;
     }

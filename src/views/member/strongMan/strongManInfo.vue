@@ -5,13 +5,19 @@
       <div style="height: 40px"></div>
 
       <div class="main">
-        <!--申请   -->
+        <!--已申请牛人   -->
         <div class="welcome">
           <h2 class="strong-title">认证信息</h2>
           <van-cell-group>
             <van-cell title="牛人姓名" :value="form.name" />
             <van-cell title="身份证" value="已认证" is-link @click="imagePreview" />
             <van-cell title="地址" :value="form.sqnadress" is-link @click="tolocation" />
+
+            <van-cell required title="牛人地址" :value="form.sqnadress" placeholder="请选择牛人地址" is-link @click="show = true" />
+            <van-popup v-model="show" round position="bottom">
+              <van-cascader v-model="cascaderValue" title="请选择所在区域" :options="options" @close="show = false" @finish="onFinish" :field-names="fieldNames" />
+            </van-popup>
+
             <van-cell title="民族" :value="form.shopcate" />
           </van-cell-group>
 
@@ -42,7 +48,22 @@
           <div class="upload-container">
             <img-cropper :file-list="rotationFileList" :limit="3" :fixed-number="fixedNumber" @after-read="afterReadRotation" @after-del="handleDeleteRotation" />
           </div>
-
+          <el-dialog :visible.sync="RoundBroadcastCut" width="96%" class="Shear" :close-on-click-modal="false" @close="closeDialog">
+            <div class="home" style="webkit-overflow-scrolling: touch; overflow-y: scroll">
+              <vueCropper
+                style="height: 300px"
+                ref="cropper"
+                :img="option.img"
+                :autoCrop="option.autoCrop"
+                :centerBox="option.centerBox"
+                :fixedNumber="option.fixedNumber"
+                :infoTrue="option.infoTrue"
+                :fixed="option.fixed"
+              ></vueCropper>
+              <van-icon name="replay" size="24" @click="rotateLeft" class="Rotate" style="font-size: 24px; display: inline-block; line-height: 45px" />
+              <van-button type="default" class="ConfirmShear" @click="save" style="vertical-align: bottom; margin-left: 34px; margin-top: 11px">确认剪切</van-button>
+            </div>
+          </el-dialog>
           <van-cell value="牛人头像" :border="false" />
           <div class="upload-container">
             <div class="upload-item">
@@ -85,10 +106,47 @@
 import cTitle from "components/title";
 import ImgCropper from "components/ImgCropper";
 import { Toast, ImagePreview } from "vant";
+import { VueCropper } from "vue-cropper";
 export default {
-  components: { cTitle, ImgCropper },
+  components: { cTitle, ImgCropper, VueCropper },
   data() {
     return {
+      show: false, //展示隐藏
+      cascaderValue: "", //展示
+      options: regionData, //地址库
+      fieldNames: {
+        //属性名 重置
+        text: "label",
+        value: "value",
+        children: "children"
+      },
+      ShearAction: false, //是否有剪切的动作
+      Blob: [],
+      RoundBroadcastCut: false, //轮播剪切
+      option: {
+        img: "", //裁剪图片的地址
+        outputSize: 0.5, //裁剪生成图片的质量(可选0.1 - 1)
+        outputType: "jpeg", //裁剪生成图片的格式（jpeg || png || webp）
+        info: true, //图片大小信息
+        canScale: true, //图片是否允许滚轮缩放
+        autoCrop: true, //是否默认生成截图框
+        autoCropWidth: 230, //默认生成截图框宽度
+        autoCropHeight: 150, //默认生成截图框高度
+        fixed: true, //是否开启截图框宽高固定比例
+        fixedNumber: [2, 1], //截图框的宽高比例
+        full: false, //false按原比例裁切图片，不失真
+        fixedBox: true, //固定截图框大小，不允许改变
+        canMove: false, //上传图片是否可以移动
+        canMoveBox: true, //截图框能否拖动
+        original: false, //上传图片按照原始比例渲染
+        centerBox: true, //截图框是否被限制在图片里面
+        height: true, //是否按照设备的dpr 输出等比例图片
+        infoTrue: false, //true为展示真实输出图片宽高，false展示看到的截图框宽高
+        maxImgSize: 3000, //限制图片最大宽度和高度
+        enlarge: 1, //图片根据截图框输出比例倍数
+        mode: "230px 150px" //图片默认渲染方式
+      },
+
       fixedNumber: [375, 146],
       isupLoad: false,
       rotationFileList: [],
@@ -111,7 +169,8 @@ export default {
         qsnvideo: "", // 视频
         texturl: "", // 详情图片
         qsnurl: "", // 身份证
-        typea: "" //类型
+        typea: "", //类型
+        adcode: "" //地址编码
       }
     };
   },
@@ -130,9 +189,7 @@ export default {
       }
     }
   },
-  // created() {
-  //   this.getValidInfo()
-  // },
+
   activated() {
     this.form.typea = Number(window.localStorage.getItem("typea"));
   },
@@ -144,6 +201,74 @@ export default {
     });
   },
   methods: {
+    // 全部选项选择完毕后，会触发 finish 事件
+    onFinish({ selectedOptions }) {
+      this.show = false;
+      this.form.sqnadress = selectedOptions.map(option => option.label).join("/");
+      this.form.adcode = selectedOptions[2].value; //编码
+    },
+    // 关闭剪切板
+    closeDialog() {
+      // 判断是否有剪切的动作  进行下一步
+      if (!this.ShearAction) {
+        console.log("关闭剪切");
+        this.rotationFileList.pop();
+      }
+      this.ShearAction = false;
+    },
+
+    //  图片左旋转
+    rotateLeft() {
+      this.$refs.cropper.rotateLeft();
+    },
+
+    save() {
+      console.log("确认剪辑", this.rotationFileList);
+      // return
+      // 用于上传后展示
+      this.$refs.cropper.getCropData(base64Data => {
+        this.rotationFileList[this.rotationFileList.lastIndex].content = base64Data;
+      });
+      //用于 新上传的 等待上传
+      this.$refs.cropper.getCropBlob(getCropBlob => {
+        // 存起来Blob
+        getCropBlob["name"] = this.rotationFileList[this.rotationFileList.lastIndex].file.name;
+        this.Blob.push(getCropBlob);
+
+        const formData = new FormData();
+        formData.append("type", 1);
+
+        setTimeout(() => {
+          formData.append("image[]", getCropBlob, Date.now() + ".jpg");
+          this.isupLoad = true;
+          axios({
+            method: "POST",
+            url: "https://tpkl.minpinyouxuan.com/index.php/api/image",
+            data: formData,
+            headers: { "Content-Type": "multipart/form-data" }
+          })
+            .then(res => {
+              if (res.data.result === 1) {
+                this.isupLoad = false;
+                this.RoundBroadcastCut = false; //轮播剪切板关闭
+                this.ShearAction = true; //是否有剪切的动作
+
+                if (this.form.topurl == "") {
+                  this.form.topurl = res.data.data.img_path;
+                } else {
+                  this.form.topurl = this.form.topurl.concat("," + res.data.data.img_path);
+                }
+              } else {
+                Toast(res.data.msg);
+              }
+            })
+            .catch(reason => {
+              console.log(reason);
+            });
+          console.log("确认剪辑后", this.rotationFileList);
+        }, 1000);
+      });
+    },
     // 图片预览
     imagePreview() {
       ImagePreview(this.form.qsnurl);
@@ -165,6 +290,11 @@ export default {
 
     // 轮播上传
     async afterReadRotation(file, fileList) {
+      this.RoundBroadcastCut = true; //打开剪贴板
+
+      this.option.img = file.content;
+      return;
+
       // console.log(this.rotationFileList)
       this.rotationFileList = fileList;
       const type = 1; // 图片类型
@@ -204,6 +334,12 @@ export default {
 
     // 头像上传
     async afterReadAvatar(file) {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       const type = 1; // 图片类型
       const urlArr = [];
       const fileArr = [];
@@ -216,6 +352,7 @@ export default {
       });
       const formData = this.generatorFormData(fileArr, type);
       this.form.logourl = urlArr.concat(await this.upload(formData)).join(",");
+      loading.close();
     },
     // 头像删除
     async handleDeleteAvatar(file) {
@@ -248,9 +385,16 @@ export default {
 
     // 详情图片上传
     async afterReadDetail(file) {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       const type = 1; // 图片类型
       const urlArr = [];
       const fileArr = [];
+
       this.detailFileList.forEach(item => {
         if (item.url) {
           urlArr.push(item.url);
@@ -260,6 +404,15 @@ export default {
       });
       const formData = this.generatorFormData(fileArr, type);
       this.form.texturl = urlArr.concat(await this.upload(formData)).join(",");
+
+      var p_url = [];
+      if (this.form.texturl.indexOf(",") == -1) {
+        p_url.push(this.form.texturl);
+      } else {
+        p_url = this.form.texturl.split(",");
+      }
+      this.detailFileList = this.imgReview(p_url);
+      loading.close();
     },
     // 详情图片删除
     async handleDeleteDetail(file) {
@@ -292,12 +445,13 @@ export default {
     // 提交
     handleSubmit() {
       const length = this.form.texturl.split(",").length;
-      if (length < 3) {
-        this.$dialog({
-          message: "请至少上传3张详情图片!"
-        });
-        return;
-      }
+      console.log('this.form.texturl',this.form.texturl);
+      // if (length < 3) {
+      //   this.$dialog({
+      //     message: "请至少上传3张详情图片!"
+      //   });
+      //   return;
+      // }
       this.requestToSave(this.form);
     },
 
@@ -403,8 +557,11 @@ export default {
           if (res.data.result === 1) {
             this.$router.push(this.fun.getUrl("enterpriseInfoSubmitSuccess"));
             return res.data;
-          } else {
-            Toast(res.data.msg);
+          }
+          if (res.data.result === 0) {
+            if ((res.data.msg = "地址code不能为空")) {
+              Toast("请选择地址再提交");
+            }
           }
         })
         .catch(reason => {
@@ -715,8 +872,7 @@ input {
 .upload-container {
   display: flex;
   padding-left: 0.875rem;
-  .upload-item {
-  }
+
 }
 
 video {

@@ -6,25 +6,25 @@
     <div class="addressBook">
       <div class="addressTop">
         <div>
-          <img src="../../assets//images/kick/寄件@2x.png" alt="" />
+          <img src="../../assets//images/kick/Send.png" alt="" />
         </div>
         <div>
           <span>{{ postName }}</span
           >&#32;&#32;<span>{{ postIphone }}</span>
           <div>{{ postIp }}</div>
         </div>
-        <div @click="addressBook">地址簿</div>
+        <!-- <div @click="addressBook">地址簿</div> -->
       </div>
 
       <div class="addressTop">
         <div>
-          <img src="../../assets//images/kick/收件@2x.png" alt="" />
+          <img src="../../assets//images/kick/Recipient.png" alt="" />
         </div>
         <div>
-          <span>{{ getName }}</span
-          >&#32;&#32;<span>{{ getIphone }}</span>
+          <span>{{ receiveAddress.realname }}</span
+          >&#32;&#32;<span>{{ receiveAddress.mobile }}</span>
 
-          <div>{{ getIp }}</div>
+          <div>{{ receiveAddress.address }}</div>
         </div>
         <div style="width: 46px"></div>
       </div>
@@ -60,7 +60,7 @@
                   </span>
                 </template>
               </van-radio>
-              <van-radio name="3">
+              <van-radio name="3" :disabled="!hideC">
                 <template #icon="props">
                   <span :class="props.checked ? 'Selected Outer' : 'Outer'">
                     <div :class="hideC == false ? 'hide' : 'display'">
@@ -70,7 +70,7 @@
                   </span>
                 </template>
               </van-radio>
-              <van-radio name="4">
+              <van-radio name="4" :disabled="!hideD">
                 <template #icon="props">
                   <span :class="props.checked ? 'Selected Outer' : 'Outer'">
                     <div :class="hideD == false ? 'hide' : 'display'">
@@ -80,7 +80,7 @@
                   </span>
                 </template>
               </van-radio>
-              <van-radio name="5">
+              <van-radio name="5" :disabled="!hideE">
                 <template #icon="props">
                   <span :class="props.checked ? 'Selected Outer' : 'Outer'">
                     <div :class="hideE == false ? 'hide' : 'display'">
@@ -123,27 +123,33 @@ export default {
       displayC: true,
       displayD: true,
       displayE: true,
-
+      Year: new Date().getFullYear(),
       nowDate: "", // 当前日期
       tomorrowDate: "", // 明天
       acquiredDate: "", //后天
       acquiredDateweek: "", //后天 周几
       attime: [],
       radio: "", //选中的时间段
-      DataOfPickup: ["3月5日(今天)", "3月5日(明天)", "3月5日(周日)"], //取件时间
-
-      active: 0,
+      DataOfPickup: [], //取件时间
+      twentyFourHourTimetableState: ["09:00:00", "11:00:00", "13:00:00", "15:00:00", "17:00:00"], //24小时时间表开始
+      twentyFourHourTimetableEnd: ["11:00:00", "13:00:00", "15:00:00", "17:00:00", "19:00:00"], //24小时时间表
+      moonParameter: "", //月参数
+      dayParameter: "", //日参数
+      TimeParameters: "", //时间参数
+      active: 4,
       show: false,
 
       postName: "",
       postIphone: "",
       postIp: "",
 
-      getName: "王先生",
-      getIphone: "13700000000",
-      getIp: "北京市海淀区知春里65号卫星通信大厦A座10层10层",
+      // getName: "王先生",
+      // getIphone: "13700000000",
+      // getIp: "北京市海淀区知春里65号卫星通信大厦A座10层10层",
+
+      receiveAddress: {}, //收件人地址
       list: [],
-      chosenAddressId: "2" //选中第几个
+      chosenAddressId: "" //选中第几个
     };
   },
   watch: {
@@ -184,18 +190,82 @@ export default {
     this.GetShippingAddress();
   },
   mounted() {},
-  methods() {
-    console.log("listName", listName);
-  },
+
   activated() {
     this.formatDate();
     this.TimeRange();
+    this.order_id = this.$route.query.order_id;
+    console.log("this.order_id", this.order_id);
+
+    // 获取收件人的地址信息
+    this.getReceiversAddress();
+
+    // 初始化
+    this.active = "";
+    this.radio = "";
   },
   methods: {
+    // 获取收件人的地址信息
+    getReceiversAddress() {
+      var that = this;
+      axios({
+        method: "post",
+        url: "https://tpkl.minpinyouxuan.com/index.php/api/v2/order_detail",
+        data: {
+          order_id: this.order_id
+        }
+      })
+        .then(res => {
+          if (res.data.result == 1) {
+            // 获取寄件人的地址信息id
+            that.chosenAddressId = res.data.data.goods_id;
+            that.receiveAddress = res.data.data.address;
+          }
+
+          if (res.data.result == 0) {
+            Toast("接口有误请联系看领客服人员");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     //   提交
     sub() {
+      var that = this
       if (this.radio) {
-        Toast("提交");
+        var timeStart = this.Year + `-` + this.moonParameter + `-` + (this.dayParameter + this.active) + ` ` + this.twentyFourHourTimetableState[this.radio * 1 - 1];
+        var timeEnd = this.Year + `-` + this.moonParameter + `-` + (this.dayParameter + this.active) + ` ` + this.twentyFourHourTimetableEnd[this.radio * 1 - 1];
+        console.log("radio", timeStart, timeEnd);
+        axios({
+          method: "post",
+          url: "https://tpkl.minpinyouxuan.com/index.php/api/v2/up_sto_order",
+          data: {
+            order_id: this.order_id,
+            start_time: timeStart,
+            end_time: timeEnd
+          }
+        })
+          .then(res => {
+
+
+            if (res.data.result == 1) {
+              Toast(res.data.msg);
+              setTimeout(() => {
+                that.$router.push(this.fun.getUrl("BookingInfo", {}, { order_id: that.order_id }));
+              }, 500);
+            }
+            if (res.data.result == 0) {
+              // 预约失败返回捐赠中心
+              Toast(res.data.msg);
+              setTimeout(() => {
+                that.$router.push(this.fun.getUrl("DonationCenter", {}));
+              }, 500);
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
       } else {
         Toast("请选择时间段");
       }
@@ -205,39 +275,56 @@ export default {
       let month = date.getMonth() + 1; // 月
       let day = date.getDate(); // 日
       let week = date.getDay(); // 星期
-      let weekArr = ["周二", "周三", "周四", "周五", "周六","周日", "周一" ];
+      let weekArr = ["周二", "周三", "周四", "周五", "周六", "周日", "周一"];
 
       //   this.nowDate = `${year}/${month}/${day} ${hour}:${minute}:${second} ${weekArr[week]}`;
+
       this.nowDate = `${month}月${day}日`;
+
       this.tomorrowDate = `${month}月${day + 1}日`;
       this.acquiredDate = `${month}月${day + 2}日`;
       this.acquiredDateweek = `${weekArr[week]}`;
+
       //   console.log("日期", this.nowDate,this.tomorrowDate,this.acquiredDate,this.acquiredDateweek);
       this.attime = [];
       this.attime.push(this.nowDate + "(今天)");
       this.attime.push(this.tomorrowDate + "(明天)");
       this.attime.push(this.acquiredDate + "(" + this.acquiredDateweek + ")");
+
+      if (month < 10) {
+        this.moonParameter = `0` + month;
+      } else {
+        this.moonParameter = month;
+      }
+      if (day < 10) {
+        this.dayParameter = `0` + day;
+      } else {
+        this.dayParameter = day;
+      }
+
+      this.TimeParameters = this.moonParameter + `-` + this.dayParameter;
     },
     TimeRange() {
       let date = new Date();
       let hour = date.getHours(); // 时
       hour = hour < 10 ? "0" + hour : hour; // 如果只有一位，则前面补零
-      console.log('hour',hour);
+      console.log("hour", hour);
+      if (9 <= hour && hour < 11) {
+        this.hideA = false;
+      }
       if (11 <= hour && hour < 13) {
         this.hideA = false;
+        this.hideB = false;
       } else if (13 <= hour && hour < 15) {
         this.hideA = false;
         this.hideB = false;
+        this.hideC = false;
       } else if (15 <= hour && hour < 17) {
         this.hideA = false;
         this.hideB = false;
         this.hideC = false;
-      } else if (17 <= hour && hour < 19) {
-        this.hideA = false;
-        this.hideB = false;
-        this.hideC = false;
         this.hideD = false;
-      } else if (19 <= hour) {
+      } else if (17 <= hour) {
         this.hideA = false;
         this.hideB = false;
         this.hideC = false;
@@ -271,6 +358,7 @@ export default {
       this.show = false;
     },
     // 获取地址列表
+
     GetShippingAddress() {
       var that = this;
       $http.get("member.member-address.index", "获取中").then(

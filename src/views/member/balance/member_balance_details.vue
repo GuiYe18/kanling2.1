@@ -1,7 +1,7 @@
 <template>
   <div id="details">
     <c-title :hide="false" text="详情"></c-title>
-    <div style="height: 40px;"></div>
+    <div style="height: 40px"></div>
     <div id="tbs">
       <div class="left">订单编号</div>
       <div class="right">{{ item.serial_number }}</div>
@@ -11,9 +11,15 @@
       <div class="right">{{ item.service_type_name }}</div>
       <div class="left">{{ balanceLang }}</div>
       <div class="right">{{ item.new_money }}</div>
-      <div class="left"  v-if="item.action_type">{{ item.action_type }}ID</div>
+
+      <template v-if="uid == '685' || uid == '443' || uid == '1'">
+        <div class="left">收益来自于</div>
+        <div class="right">{{item.profit_name}}</div>
+      </template>
+
+      <div class="left" v-if="item.action_type">{{ item.action_type }}ID</div>
       <div class="right" v-if="item.action_type">{{ item.transfer_member_id }}</div>
-       <div class="left"  v-if="item.action_type">{{ item.action_type }}名称</div>
+      <div class="left" v-if="item.action_type">{{ item.action_type }}名称</div>
       <div class="right" v-if="item.action_type">{{ item.transfer_member_name }}</div>
     </div>
   </div>

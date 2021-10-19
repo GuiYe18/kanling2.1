@@ -34,7 +34,7 @@ export default {
         if (response.result === 1) {
           this.goods_audit = response.data.goods_audit;
         }
-      }, function(response) {
+      }, function (response) {
         Toast(response.msg);
       }).catch((err) => {
         console.log(err);
@@ -77,7 +77,7 @@ export default {
             Toast("下架失败");
           }
         }
-      }, function(response) {
+      }, function (response) {
         Toast(response.msg);
       }).catch((err) => {
         console.log(err);
@@ -102,7 +102,7 @@ export default {
           sid: that.$route.params.store_id
         };
       }
-      $http.post(urls, json, "加载中").then(function(response) {
+      $http.post(urls, json, "加载中").then(function (response) {
         if (response.result === 1) {
           that.commodity_data = [];
           if (that.$route.params.store == "store") {
@@ -132,7 +132,7 @@ export default {
           // that.$message.error(response.msg);
           that.$notify(response.msg);
         }
-      }, function(response) {
+      }, function (response) {
         console.log(response);
       });
     },
@@ -159,7 +159,7 @@ export default {
       } else {
         this.page = this.page + 1;
         json.page = that.page;
-        $http.get(urls, json, "加载中").then(function(response) {
+        $http.get(urls, json, "加载中").then(function (response) {
           that.isLoadMore = true;
           if (response.result === 1) {
             if (that.$route.params.store == "store") {
@@ -177,7 +177,7 @@ export default {
             that.page = that.page - 1;
             that.isLoadMore = false;
           }
-        }, function(response) {
+        }, function (response) {
           // error callback
         });
 
@@ -210,6 +210,7 @@ export default {
         this.commodity_data[i].edit_active = false;
       }
     },
+
     //商品编辑
     editJumpEvent(index) {
       this.$router.push(this.fun.getUrl("CommodityRelease", {
@@ -219,6 +220,7 @@ export default {
         store: this.$route.params.store
       }));
     },
+
     //商品删除
     commodityDelete(index) {
       // console.log(index);
@@ -245,7 +247,8 @@ export default {
           };
         }
 
-        $http.post(urls, json, "加载中...").then(function(response) {
+
+        $http.post(urls, json, "加载中...").then(function (response) {
           console.log("显示", response);
           if (response.result === 1) {
             that.$notify({
@@ -260,7 +263,7 @@ export default {
             // that.$message.error(response.msg);
             that.$notify(response.msg);
           }
-        }, function(response) {
+        }, function (response) {
           console.log(response);
         });
       }).catch(() => {

@@ -1,55 +1,59 @@
 <template>
-  <div id="search"
-       transition="fadeInLeft">
-    <div id="soso"
-         class="uou"
-         :class="{ mout: amout }"
-         :style="{width:(this.fun.getPhoneEnv() == 3?'375px':'100%')}">
+  <div id="search" transition="fadeInLeft">
+    <div id="soso" class="uou" :class="{ mout: amout }" :style="{ width: this.fun.getPhoneEnv() == 3 ? '375px' : '100%' }">
       <div class="search">
-        <div slot="prepend"
-            @click="goback">
-			<i class="iconfont icon-back"></i>
-		</div>
+        <div slot="prepend" @click="goback">
+          <i class="iconfont icon-back"></i>
+        </div>
         <div class="searchBox">
-          <form @submit.prevent
-                action="#">
-            <input type="search"
-                   placeholder="搜索当前品牌商品标题"
-                   @keypress="enterSearch"
-                   v-model="inputs" />
+          <form @submit.prevent action="#">
+            <input type="search" placeholder="搜索当前品牌商品标题" @keypress="enterSearch" v-model="inputs" />
           </form>
-          <div class="img-icon"
-               @click="search">
+          <div class="img-icon" @click="search">
             <div class="img-icon-btn"></div>
           </div>
         </div>
 
-        <div style="position: absolute; right: 1rem; top: 1rem;">
-          <i class="fa fa-th-large"
-             v-show="view"
-             @click="$store.commit('views')"></i>
-          <i class="fa fa-th-list"
-             v-show="!view"
-             @click="$store.commit('views')"></i>
+        <div style="position: absolute; right: 1rem; top: 1rem">
+          <i class="fa fa-th-large" v-show="view" @click="$store.commit('views')"></i>
+          <i class="fa fa-th-list" v-show="!view" @click="$store.commit('views')"></i>
         </div>
       </div>
-      <c-sort :goods="datas"
-              v-on:sortIn="sortOut"
-              text="搜索结果"></c-sort>
+      <c-sort :goods="datas" v-on:sortIn="sortOut" text="搜索结果"></c-sort>
     </div>
-    <div style="height: 2.5rem; display: block;"></div>
-    <div class="page-loadmore-wrapper"
-         ref="wrapper"
-         :style="{ height: wrapperHeight + 'px' }"
-         v-if="hidden">
+    <div style="height: 2.5rem; display: block"></div>
+    <div class="page-loadmore-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }" v-if="hidden">
       <van-pull-refresh v-model="isLoading" @refresh="loadTop" success-text="刷新成功">
-        <c-goodsList :goods="datas"
-                     :goods_template="goods_template"
-                     text="搜索结果"
-                     class="osll"
-                     :loading="loading"></c-goodsList>
+        <c-goodsList :goods="datas" :goods_template="goods_template" text="搜索结果" class="osll" :loading="loading"></c-goodsList>
       </van-pull-refresh>
     </div>
+
+    <!--  name:飞 
+          time:2021-4-20  
+    -->
+    <!-- 捐物 按鈕 -->
+    <template v-if="typegoosID == 5">
+      <div class="contribution">
+        <img @click="onmount" src="../../assets/images/goods/tax_C.gif" alt="" />
+      </div>
+      <div class="gobo" v-show="Mask" @click="outGobo">
+        <div class="contributionWant">
+          <router-link :to="fun.getUrl('releaseContribution')">
+            <img src="../../assets/images/goods/contribution_Img.png" alt="" />
+            <span>我要捐物</span>
+          </router-link>
+          <!-- <router-link :to="fun.getUrl('donate')">
+              <img src="../../assets/images/goods/Donate_img@2x.png" alt="" />
+              <span>我要捐款</span>
+            </router-link> -->
+          <!-- 我要捐款二维码   -->
+          <router-link :to="fun.getUrl('DonationQRCode')">
+            <img src="../../assets/images/goods/Donate_img@2x.png" alt="" />
+            <span>我要捐款</span>
+          </router-link>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -74,12 +78,14 @@ export default {
       bottomStatus: "",
       wrapperHeight: 0,
       datas: [],
-      goods_template:'',
+      goods_template: "",
       // 分页
       page: 1, //分页数，当前页数
       isLoadMore: true, //判断是否要加载更多的标志
       total_page: 0, //总页数
-      isLoading:false
+      isLoading: false,
+      Mask: false, //遮罩
+      typegoosID: ""
     };
   },
   computed: {
@@ -93,6 +99,14 @@ export default {
   },
 
   methods: {
+    // 点击捐物 展示隐藏 画布
+    onmount() {
+      this.Mask = !this.Mask;
+    },
+    // 捐物 展开  点击空白区域   隐藏画布
+    outGobo() {
+      this.Mask = false;
+    },
     ...mapMutations(["views"]),
     enterSearch(event) {
       if (event.keyCode === 13) {
@@ -132,7 +146,7 @@ export default {
 
     slider() {
       let that = this;
-      window.onscroll = function() {
+      window.onscroll = function () {
         var top = document.documentElement.scrollTop || document.body.scrollTop;
         if (top < 80) {
           that.amout = false;
@@ -237,7 +251,7 @@ export default {
             console.log(error);
           });
       }
-    },
+    }
   },
   activated() {
     this.hidden = true;
@@ -252,9 +266,7 @@ export default {
     //this.loadMore();
     else if (this.$route.params.fromHome !== 1) {
       // 不是从上一级点进的不清空
-      this.wrapperHeight =
-        document.documentElement.clientHeight -
-        this.$refs.wrapper.getBoundingClientRect().top;
+      this.wrapperHeight = document.documentElement.clientHeight - this.$refs.wrapper.getBoundingClientRect().top;
       // this.wrapperHeight=window.scrollTo(0,0)
     } else {
       // this.wrapperHeight = 83;
@@ -264,6 +276,9 @@ export default {
       this.inputs = "";
       this.gotoSearch(n);
     }
+
+    // 获取分类
+    this.typegoosID = this.$route.params.id;
   },
   created() {
     // this.hidden = true;
@@ -378,12 +393,46 @@ export default {
         left: 50%;
         margin-left: -0.5rem;
         margin-top: -0.5rem;
-        background:
-          url("../../assets/images/search.png") no-repeat center
-          center;
+        background: url("../../assets/images/search.png") no-repeat center center;
         background-size: 80% 80%;
       }
     }
+  }
+}
+.contribution {
+  position: fixed;
+  right: 31px;
+  bottom: 198px;
+  z-index: 11;
+  img {
+    width: 66px;
+  }
+}
+// 遮布
+.gobo {
+  height: 100%;
+  width: 100%;
+  background: #00000065;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+}
+.contributionWant {
+  width: 58px;
+  right: 113px;
+  bottom: 103px;
+  text-align: center;
+  position: absolute;
+  span {
+    margin: 2px auto;
+    color: #ffffff;
+    margin-bottom: 30px;
+    display: block;
+    font-weight: 700;
+  }
+  a img {
+    width: 52px;
   }
 }
 </style>

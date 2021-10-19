@@ -1,3 +1,10 @@
+<!--
+ * @Author: 飞
+ * @Date: 2021-04-20 11:08:35
+ * @LastEditTime: 2021-08-12 18:42:42
+ * @FilePath: \you-shop1\src\views\detail\a.vue
+ * @Describe: 
+-->
 <template>
   <div>
     <van-circle

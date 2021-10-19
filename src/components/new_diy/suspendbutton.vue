@@ -11,10 +11,11 @@
         :style="{ top: `${datas.over_top - index * (datas.list.button_padding + 50)}px` }"
       >
         <!--悬浮按钮静态-->
-        <div class="btn" :style="button_style">
+        <div class="btn 1" :style="button_style">
           <a :href="'tel:' + item.phone" v-if="item.is_minApp == 3">
             <img :src="item.image || emptyImage" />
           </a>
+          <!-- <img :src="item.image" alt=""> -->
           <img :src="item.image || emptyImage" v-if="item.is_minApp != 3" @click="toUrl(item)" />
           <div
             style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border-radius: 50%;"

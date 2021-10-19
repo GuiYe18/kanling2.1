@@ -2335,7 +2335,6 @@ export default auction_goods_order_controller;
     background-color: #fff;
 
     input {
-      text-wrap: unset;
       padding: 0.625rem 0.875rem;
       font-size: 14px;
       line-height: 1.5rem;
@@ -2458,7 +2457,6 @@ export default auction_goods_order_controller;
         display: inline-block;
         position: relative;
         width: 70%;
-        float: right;
         box-sizing: border-box;
         padding-top: 0.5rem;
       }

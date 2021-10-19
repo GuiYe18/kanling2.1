@@ -1,26 +1,27 @@
 <template>
   <div class="content">
     <!-- 证书个数 -->
+    <van-nav-bar left-text="返回" title="捐赠证书" left-arrow @click-left="onClickLeft" />
     <div class="NumberOfCertificates">
       <!-- 每个元素的两侧间隔相等 -->
       <van-row type="flex" justify="space-around">
         <van-col span="6">
           <div class="img">
-            <img src="./发布成功@2x.png" alt="" /><br />
+            <img src="./img/FirstClassCertificate.png" alt="" /><br />
             <span>一级证书</span> <br />
             <span>5个</span>
           </div>
         </van-col>
         <van-col span="6">
           <div class="img">
-            <img src="./发布成功@2x.png" alt="" /><br />
+            <img src="./img/SecondaryCertificate.png" alt="" /><br />
             <span>二级证书</span> <br />
             <span>5个</span>
           </div>
         </van-col>
         <van-col span="6">
           <div class="img">
-            <img src="./发布成功@2x.png" alt="" /><br />
+            <img src="./img/ThreeLevelCertificate.png" alt="" /><br />
             <span>三级证书</span> <br />
             <span>5个</span>
           </div>
@@ -30,16 +31,13 @@
     <!-- 证书历史 -->
     <div class="CertificateHistory">
       <div>
-        <span>10月</span>
-        <li @click="open">
-          <img src="./证书.png" alt="" />
-        </li>
-        <li>
-          <img src="./证书.png" alt="" />
-        </li>
-        <li>
-          <img src="./证书.png" alt="" />
-        </li>
+        <span>8月</span>
+        <div class="imgDiv">
+          <img src="./certificate.png" alt="" />
+          <img src="./certificate.png" alt="" />
+          <img src="./certificate.png" alt="" />
+          <img src="./certificate.png" alt="" />
+        </div>
       </div>
     </div>
   </div>
@@ -60,11 +58,15 @@ export default {
   //   });
   // },
   methods: {
-    open() {
-      ImagePreview({
-            images: ["https://img01.yzcdn.cn/vant/apple-1.jpg", "https://img01.yzcdn.cn/vant/apple-2.jpg"],
-      });
+    // 返回上一步
+    onClickLeft() {
+      this.$router.go(-1);
     }
+    // open() {
+    //   ImagePreview({
+    //     images: ["https://img01.yzcdn.cn/vant/apple-1.jpg", "https://img01.yzcdn.cn/vant/apple-2.jpg"]
+    //   });
+    // }
   }
 };
 </script>
@@ -84,16 +86,15 @@ export default {
       line-height: 18px;
       padding-bottom: 10px;
     }
-    li {
+    .imgDiv {
       display: inline-block;
-      margin-bottom: 10px;
+      display: inline-flex;
+      flex-wrap: wrap;
+      flex-direction: row;
       img {
-        width: 160px;
-        height: 113px;
+        width: 45%;
+        margin-bottom: 1rem;
       }
-    }
-    li:nth-child(2n) img {
-      margin-right: 20px;
     }
   }
   // 证书个数

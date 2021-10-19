@@ -7,28 +7,62 @@
       <div class="main">
         <!--申请   -->
         <div class="welcome">
-
           <div class="success-bg"></div>
           <p class="success-text">信息已提交</p>
-          <p class="success-exam-text">等待审核</p>
+          <p class="success-exam-text"></p>
+          <van-loading v-if="!show" text-color="#1989fa" type="spinner" size="30px">审核中...</van-loading>
+          <p class="success-exam-text"></p>
 
-          <van-button type="info" block style="margin-bottom:49px;" @click="handleTo">返回个人中心</van-button>
+          <van-button v-if="show" type="info" block style="margin-bottom: 49px" @click="handleTo">返回个人中心</van-button>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import cTitle from 'components/title'
+import cTitle from "components/title";
 export default {
-  components: {cTitle},
+  data() {
+    return {
+      show: false
+    };
+  },
+  components: { cTitle },
   methods: {
     // 返回个人中心
     handleTo() {
-      this.$router.push(this.fun.getUrl('member'))
+      this.$router.push(this.fun.getUrl("member"));
     }
+  },
+
+  activated() {
+    var that = this;
+    const url = "https://tpkl.minpinyouxuan.com/api/v1/pay_money_status";
+    axios({
+      method: "POST",
+      url,
+      data: { uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid }
+    }).then(async res => {
+      console.log(res.data.data);
+
+      if (res.data.result === 1) {
+        that.show = true;
+      }
+      if (res.data.result === 0) {
+        setTimeout(() => {
+          that.$router.push(that.fun.getUrl("member"));
+          that.$router.push(that.fun.getUrl("strongManManage"));
+          that.$router.push(that.fun.getUrl("promotionRecord"));
+          that.$router.push(that.fun.getUrl("redPackets"));
+        }, 2000);
+      }
+    });
+
+    // setTimeout(() => {
+    //   this.$router.push(this.fun.getUrl("redPackets"));
+    // }, 3000);
   }
-}
+};
 </script>
 <style lang="scss" rel="stylesheet/scss" scoped>
 #income,
@@ -141,7 +175,7 @@ input {
         position: absolute;
         top: 0.1rem;
         right: 0.1rem;
-        background: url('../../../assets/images/close_iocn.png');
+        background: url("../../../assets/images/close_iocn.png");
         background-size: 100%;
       }
     }
@@ -361,7 +395,7 @@ input {
   margin-left: 8.625rem;
   width: 6.25rem;
   height: 7.5rem;
-  background: url('../../../assets/images/strongMan/submit_success@2x.png') no-repeat;
+  background: url("../../../assets/images/strongMan/submit_success@2x.png") no-repeat;
   background-size: 100%;
 }
 .success-text {
@@ -377,7 +411,7 @@ input {
   font-size: 14px;
   font-family: PingFang-SC-Medium, PingFang-SC;
   font-weight: 500;
-  color: #0579FC;
+  color: #0579fc;
   line-height: 20px;
 }
 </style>

@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-11 17:35:30
- * @LastEditTime: 2021-05-25 16:12:48
+ * @LastEditTime: 2021-07-21 10:31:19
  * @FilePath: \you-shop1\src\views\Sifu\FourSupportDetails.vue
  * @Describe: 
 -->
@@ -20,14 +20,14 @@
       <van-panel title="身份证号码" :desc="s_idcard"> </van-panel>
       <van-panel title="证件照片" desc="查看" @click="open"></van-panel>
       <div class="img">
-        <img src="./img/残疾人ed.png" alt="" v-show="s_type == 1" />
-        <img src="./img/军烈属ed.png" alt="" v-show="s_type == 2" />
-        <img src="./img/低保户ed.png" alt="" v-show="s_type == 3" />
-        <img src="./img/五保户ed.png" alt="" v-show="s_type == 4" />
-        <img src="./img/其他ed.png" alt="" v-show="s_type == 5" />
+        <img src="./img/Disabled_ed.png" alt="" v-show="s_type == 1" />
+        <img src="./img/MilitaryCommander_ed.png" alt="" v-show="s_type == 2" />
+        <img src="./img/Low_cost_ed.png" alt="" v-show="s_type == 3" />
+        <img src="./img/FiveGuaranteedHousehold_ed.png" alt="" v-show="s_type == 4" />
+        <img src="./img/other_ed.png" alt="" v-show="s_type == 5" />
       </div>
       <div class="Certification">
-        <img src="./img/已认证.png" alt="" />
+        <img src="./img/verified.png" alt="" />
       </div>
     </div>
   </div>
@@ -48,8 +48,8 @@ export default {
   activated() {
     // 每次进来后置顶
     window.scrollTo(0, 0);
-    console.log("", this.$route.query.uid);
-    this.uid = this.$route.query.uid;
+    console.log("", JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid);
+    this.uid = JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid;
     this.getMessage();
   },
   methods: {

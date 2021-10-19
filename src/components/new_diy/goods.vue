@@ -131,12 +131,14 @@
                 <img src="../../assets/images/new_diy/new@2x.png" v-if="datas.good_tag.choose_icon == 3" alt="" />
                 <!-- 推荐 -->
 
-                <div v-if="datas.good_tag.choose_icon == 1" style="display: block">
-                  <!-- <input type="text" :value="item.icon"> -->
-                  <img src="../../assets/images/new_diy/personageNew@2x.png" v-if="item.icon == 2" alt="" />
-                  <img src="../../assets/images/new_diy/entirelyNew@2x.png" v-if="item.icon == 1 || item.icon == 0" alt="" />
-                  <img src="../../assets/images/new_diy/Personalsecond-hand.png" v-if="item.icon == 3" alt="" />
-                </div>
+                <template v-if="item.brand_id == 5">
+                  <div v-if="datas.good_tag.choose_icon == 1" style="display: block">
+                    <!-- <input type="text" :value="item.icon"> -->
+                    <img src="../../assets/images/new_diy/personageNew@2x.png" v-if="item.icon == 2" alt="" />
+                    <img src="../../assets/images/new_diy/entirelyNew@2x.png" v-if="item.icon == 1 || item.icon == 0" alt="" />
+                    <img src="../../assets/images/new_diy/Personalsecond-hand.png" v-if="item.icon == 3" alt="" />
+                  </div>
+                </template>
 
                 <!-- 自定义 -->
                 <img :src="datas.good_tag.image" style="width: 100%" v-if="datas.good_tag.choose_icon == 7" alt="" />
@@ -145,9 +147,11 @@
             </div>
             <div class="threeChild_b">
               <span class="Child_title s van-multi-ellipsis--l2" v-if="datas.content_list.includes('1')">
-                <div class="NewGifts" v-if="item.icon == 1 || item.icon == 0" style="display: inline-block">企业全新</div>
-                <div class="NewGifts" v-if="item.icon == 2" style="display: inline-block">个人全新赠品</div>
-                <div class="NewGifts" v-if="item.icon == 3" style="display: inline-block">个人二手</div>
+                <template v-if="item.brand_id == 5">
+                  <div class="NewGifts" v-if="item.icon == 1 || item.icon == 0" style="display: inline-block">企业全新</div>
+                  <div class="NewGifts" v-if="item.icon == 2" style="display: inline-block">个人全新赠品</div>
+                  <div class="NewGifts" v-if="item.icon == 3" style="display: inline-block">个人二手</div>
+                </template>
                 {{ item.name | escapeTitle }}
               </span>
 
@@ -172,9 +176,10 @@
                   <!-- <em >{{ $i18n.t("money") }}</em> -->
                   <!-- {{item}} -->
                   <!-- {{ Number(item.vip_level_status && item.vip_level_status.status == 1 ? item.vip_level_status.word : item.pricenow).toFixed(2) }}&#32;&#32; -->
-                  {{ Number(item.vip_level_status && item.vip_level_status.status == 1 ? item.vip_level_status.word : item.pricenow) }}&#32;&#32;
+                  <span style="font-size: 22px">¥{{ Number(item.vip_level_status && item.vip_level_status.status == 1 ? item.vip_level_status.word : item.pricenow) }}</span>
                   <!-- {{Number(item.vip_level_status && item.vip_level_status.status == 1 ? item.vip_level_status.word : item.pricenow)}} -->
                   <!-- {{ item.vip_level_status && item.vip_level_status.status == 1 ? item.vip_level_status.word : item.pricenow }}积分1 -->
+                  <span style="font-size: 12px" v-if="item.brand_id == 7">{{ item.integrals }}</span>
                 </div>
                 <div
                   class="Child_now_price"
@@ -706,30 +711,6 @@
       </div>
       <div style="clear: both"></div>
     </div>
-    <!--  name:飞 
-          time:2021-4-20  
-    -->
-    <!-- 捐物 按鈕 -->
-    <div class="contribution">
-      <img @click="onmount" src="../../assets/images/goods/tax_C.gif" alt="" />
-    </div>
-    <div class="gobo" v-show="Mask" @click="outGobo">
-      <div class="contributionWant">
-        <router-link :to="fun.getUrl('releaseContribution')">
-          <img src="../../assets/images/goods/contribution_Img.png" alt="" />
-          <span>我要捐物</span>
-        </router-link>
-        <!-- <router-link :to="fun.getUrl('donate')">
-          <img src="../../assets/images/goods/Donate_img@2x.png" alt="" />
-          <span>我要捐款</span>
-        </router-link> -->
-        <!-- 我要捐款二维码   -->
-        <router-link :to="fun.getUrl('DonationQRCode')">
-          <img src="../../assets/images/goods/Donate_img@2x.png" alt="" />
-          <span>我要捐款</span>
-        </router-link>
-      </div>
-    </div>
 
     <div :style="{ backgroundColor: datas.preview_color }" v-if="datas.sort_style.choose_icon != 5">
       <div class="loadMore" v-if="isLoadMore" @click="getMoreData">
@@ -737,6 +718,8 @@
       </div>
       <div class="loadMore" v-if="lastIndex == index && allLoaded">{{ $i18n.t("没有更多了") }}~~</div>
     </div>
+
+
   </div>
 </template>
 
@@ -818,7 +801,8 @@ export default {
       integral: "",
 
       clientWidth: "375",
-      Mask: false //遮罩
+      Mask: false ,//遮罩
+      showOfficialAccounts: false,
     };
   },
   props: ["isBottom", "lastIndex", "index", "page_id", "id", "datas", "component_key", "tabcontrol", "isLast"],
@@ -928,14 +912,7 @@ export default {
     //     return Number(newRealVal)
 
     // },
-    // 点击捐物 展示隐藏 画布
-    onmount() {
-      this.Mask = !this.Mask;
-    },
-    // 捐物 展开  点击空白区域   隐藏画布
-    outGobo() {
-      this.Mask = false;
-    },
+
     //复制商品链接
     copyGoodsUrl(id) {
       let _link = this.fun.getSiteRoot() + "/addons/yun_shop/" + "?menu#" + "/goods/" + id + "?i=" + this.fun.getKeyByI();
@@ -1060,6 +1037,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 // 默认
 .component-wrapper {
   width: 100%;
@@ -1406,7 +1384,7 @@ export default {
     flex-wrap: wrap;
     justify-content: space-between;
     // height: 26px;
-    line-height: 26px;
+    line-height: 23px;
 
     .Child_now_price {
       color: #ff2c29;
@@ -1433,11 +1411,11 @@ export default {
   .Child_buyBtn {
     text-align: center;
     font-weight: bold;
-    width: 32%;
+    width: 20%;
 
     /* color: #fff; */
     .buyBtn {
-      height: 26px;
+      height: 23px;
       border-radius: 13.5px;
       display: flex;
       align-items: center;
@@ -1582,40 +1560,4 @@ export default {
 /* 门店拼团 */
 
 // 浮动捐
-.contribution {
-  position: fixed;
-  right: 31px;
-  bottom: 198px;
-  z-index: 11;
-  img {
-    width: 66px;
-  }
-}
-// 遮布
-.gobo {
-  height: 100%;
-  width: 100%;
-  background: #00000065;
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
-}
-.contributionWant {
-  width: 58px;
-  right: 113px;
-  bottom: 103px;
-  text-align: center;
-  position: absolute;
-  span {
-    margin: 2px auto;
-    color: #ffffff;
-    margin-bottom: 30px;
-    display: block;
-    font-weight: 700;
-  }
-  a img {
-    width: 52px;
-  }
-}
 </style>

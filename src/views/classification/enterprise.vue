@@ -2,23 +2,17 @@
   <div class="content">
     <ul class="leftList">
       <!-- <li> -->
-      <li
-        v-for="item in oneList"
-        :key="item.id"
-      >
-        <div class="title"><span>-</span>
-          <div><span>{{ item.name }}</span></div><span>-</span>
+      <li v-for="item in oneList" :key="item.id">
+        <div class="title">
+          <span>-</span>
+          <div>
+            <span>{{ item.name }}</span>
+          </div>
+          <span>-</span>
         </div>
         <ul>
-          <li
-            v-for="(oneItem, oneIndex) in item.children"
-            :key="oneItem.id"
-          >
-            <div
-              @click="checkoutOneList(oneItem, oneIndex,item)"
-              class="twoName"
-              :class="{ cur: overalOneIndex === oneItem.id }"
-            >
+          <li v-for="(oneItem, oneIndex) in item.children" :key="oneItem.id">
+            <div @click="checkoutOneList(oneItem, oneIndex, item)" class="twoName" :class="{ cur: overalOneIndex === oneItem.id }">
               <span>{{ oneItem.name }}</span>
             </div>
           </li>
@@ -26,24 +20,13 @@
       </li>
     </ul>
     <ul class="rightList">
-      <li
-        v-for="item in rightList"
-        :key="item.id"
-      >
+      <li v-for="item in rightList" :key="item.id">
         <div class="rightTitle">
           <span>{{ item.name }}</span>
         </div>
         <ul class="rightFourList">
-          <li
-            class="fourList"
-            v-for="threeItem in item.children"
-            :key="threeItem.id"
-          >
-            <div
-              @click="checkoutFourList(item, threeItem)"
-              class="fourTitle"
-              :class="{ fourCur: overalTowIndex === item.id && overalThreeIndex === threeItem.id }"
-            >
+          <li class="fourList" v-for="threeItem in item.children" :key="threeItem.id">
+            <div @click="checkoutFourList(item, threeItem)" class="fourTitle" :class="{ fourCur: overalTowIndex === item.id && overalThreeIndex === threeItem.id }">
               {{ threeItem.name }}
             </div>
           </li>
@@ -56,7 +39,7 @@
 <script>
 //企业分类
 export default {
-  name: 'people',
+  name: "people",
   data() {
     return {
       url: process.env,
@@ -67,56 +50,60 @@ export default {
       rightList: [],
       oneLeave: {},
       twoLevel: {}
-    }
+    };
   },
   activated() {
-    window.scrollTo(0,0);
-    this.getCateList()
+    window.scrollTo(0, 0);
+    this.getCateList();
   },
   methods: {
     checkoutOneList(oneItem, oneIndex, oneLeave) {
       // this.towIndex = towId
-      this.overalOneIndex = oneItem.id
-      console.log(oneItem)
-      this.rightList = oneItem.children
-      this.oneLeave = oneLeave
-      this.twoLevel = oneItem
+      this.overalOneIndex = oneItem.id;
+      console.log(oneItem);
+      this.rightList = oneItem.children;
+      this.oneLeave = oneLeave;
+      this.twoLevel = oneItem;
     },
     checkoutFourList(twoLevel, threeLevel) {
-      this.overalTowIndex = twoLevel.id
-      this.overalThreeIndex = threeLevel.id
-      if (this.$route.query.tag === 'enterpriseInfo') {
-        this.$router.push(this.fun.getUrl('enterpriseInfo', { category: threeLevel }))
-      } else if (this.$route.query.tag === 'listEnterprise') {
-        let result = []
-        result = result.concat({id:this.oneLeave.id,name:this.oneLeave.name}).concat({id:this.twoLevel.id,name:this.twoLevel.name}).concat( {id:twoLevel.id,name:twoLevel.name}).concat( {id:threeLevel.id,name:threeLevel.name})
-        this.$router.push(this.fun.getUrl('listEnterprise','',{from:'classificationentErprise'}))
-        window.localStorage.setItem('classificationentErprise',JSON.stringify(result))
+      this.overalTowIndex = twoLevel.id;
+      this.overalThreeIndex = threeLevel.id;
+      if (this.$route.query.tag === "enterpriseInfo") {
+        this.$router.push(this.fun.getUrl("enterpriseInfo", { category: threeLevel }));
+      } else if (this.$route.query.tag === "listEnterprise") {
+        let result = [];
+        result = result
+          .concat({ id: this.oneLeave.id, name: this.oneLeave.name })
+          .concat({ id: this.twoLevel.id, name: this.twoLevel.name })
+          .concat({ id: twoLevel.id, name: twoLevel.name })
+          .concat({ id: threeLevel.id, name: threeLevel.name });
+        this.$router.push(this.fun.getUrl("listEnterprise", "", { from: "classificationentErprise" }));
+        window.localStorage.setItem("classificationentErprise", JSON.stringify(result));
       }
     },
     // 获取分类数据
     getCateList() {
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/admin/catelists'
+      const url = "https://tpkl.minpinyouxuan.com/index.php/admin/catelists";
       const formData = {
         type: 1
-      }
+      };
       axios({
-        method: 'POST',
+        method: "POST",
         url: url,
         data: formData
       }).then(res => {
         // 设置所有分类数据
-        this.oneList = res.data.data
-        console.log(222, this.oneList[0].children[0].id)
+        this.oneList = res.data.data;
+        console.log(222, this.oneList[0].children[0].id);
         // 初始化右侧数据
-        this.rightList = this.oneList[0].children[0].children
-        this.overalOneIndex = this.oneList[0].children[0].id
-        this.oneLeave = this.oneList[0]
-        this.twoLevel = this.oneList[0].children[0]
-      })
+        this.rightList = this.oneList[0].children[0].children;
+        this.overalOneIndex = this.oneList[0].children[0].id;
+        this.oneLeave = this.oneList[0];
+        this.twoLevel = this.oneList[0].children[0];
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

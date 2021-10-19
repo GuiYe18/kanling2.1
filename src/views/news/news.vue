@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-04-20 11:09:03
- * @LastEditTime: 2021-06-22 19:30:28
+ * @LastEditTime: 2021-09-13 16:11:03
  * @FilePath: \you-shop1\src\views\news\news.vue
  * @Describe: 
 -->
@@ -22,13 +22,12 @@
       <!-- <span class="CreateAGroupChat" @click="openChat"> -->
       <span class="CreateAGroupChat">
         <van-popover v-model="showPopover" trigger="click" :actions="actions" placement="bottom-end" @select="onSelect">
-          <template #reference>
-            <!-- <van-button type="primary">展示图标</van-button> -->
+          <!-- 创建群聊 -->
+          <!-- <template #reference>
             <van-icon name="add-o" />
-          </template>
+          </template> -->
         </van-popover>
       </span>
-
 
       <van-tabs v-model="active">
         <van-tab title="关注" badge=""></van-tab>
@@ -44,12 +43,12 @@
       </div>
     </template>
     <template>
-      <div v-show="active == 1">
+      <div v-show="active == 1" style="height: 100%">
         <Messages />
       </div>
     </template>
     <template>
-      <div v-show="active == 2">
+      <div v-show="active == 2" class="是啥" style="height: calc(100% - 148px); overflow: auto">
         <Fans />
       </div>
     </template>
@@ -57,7 +56,6 @@
     <van-action-sheet v-model="show" :title="listNum" :style="{ height: '80%' }">
       <CreateGroupChat :chat="show" :list="list" :CreateAGroupChat="CreateAGroupChat" :Allocation="Allocation" @func="getMsgFormSon" :PoonsTheButton="PoonsTheButton" />
     </van-action-sheet>
-    
   </div>
 </template>
 
@@ -97,7 +95,7 @@ export default API;
     right: 16px;
     i {
       font-size: 20px;
-    padding-right: 13px;
+      padding-right: 13px;
     }
   }
   // 导航
@@ -124,7 +122,7 @@ export default API;
           }
         }
         .van-tab--active {
-          color: #000;
+          color: #0579fc;
           font-weight: bolder;
         }
         .van-tabs__line {

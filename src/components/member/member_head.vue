@@ -14,6 +14,7 @@
 
       <member_head_bottom :Params="Params"
                           :Order="Order"
+
                           :member_order="member_order">
       </member_head_bottom>
     </template>

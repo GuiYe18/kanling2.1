@@ -10,7 +10,7 @@
           <div class="bg"></div>
           <div class="header">
             <div class="title">
-              <span>推广余额</span>
+              <span>推广金额</span>
               <span>单位(元)</span>
               <!-- <button @click="toDetails">领取明细</button> -->
             </div>

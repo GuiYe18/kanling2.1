@@ -117,13 +117,7 @@ export default {
          */
         // 好友列表
         FriendsList: {},
-        /**
-         * @Author: 飞
-         * @Date: 2021-06-07 13:20:06
-         * @Describe: 
-         */
-        //存信息列表个数 
-        SaveInformationList: {},
+
         /**
          * @Author: 飞
          * @Date: 2021-06-07 16:39:23
@@ -138,6 +132,13 @@ export default {
          */
         //粉丝列表
         FansList: {},
+
+        /**
+         * @Author: 飞
+         * @Date: 2021-08-16 20:25:27
+         * @Describe: 粉丝列表 重新排序
+         */
+        newarryfanc: {},
         /**
          * @Author: 飞
          * @Date: 2021-06-09 00:03:31
@@ -180,12 +181,8 @@ export default {
          * @Describe:群聊ID号 
          */
         GroupchatIDNumber: {},
-        /**
-         * @Author: 飞
-         * @Date: 2021-06-18 18:00:51
-         * @Describe: 
-         */
-        Homogeneous: '',
+
+
     },
     getters: {
         // // 获取新消息  和记录
@@ -194,16 +191,7 @@ export default {
         // }const getters = {
     },
     mutations: {
-        /**
-         * @Author: 飞
-         * @Date: 2021-06-18 18:00:17
-         * @Describe:首页存高度 
-         */
-        Homogeneous(state, heightdata) {
-            console.log('高度', heightdata);
 
-            state.Homogeneous = heightdata
-        },
         /**
          * @Author: 飞
          * @Date: 2021-06-16 10:35:22
@@ -214,20 +202,39 @@ export default {
                 state[data.SaveDataitem] = data.SaveDataValue
             }
         },
+        setSwitchCity(state, show) {
+            state.isSwitchCity = show;
+        },
+        /**
+         * @Author: 飞
+         * @Date: 2021-08-27 14:39:44
+         * @Describe: 新版被动 有消息
+         */
+        NewVersionPassiveNews(state, data) {
+            state.NewArray = data;
+        },
+
         // 被动  有消息 就存
         NewArray(state, data) {
             // state.NewArray.push(NewArray)
-            console.log('state.SaveInformationList', data, state.SaveInformationList);
-
+            // console.log('state.NewArray', data, state.NewArray);
+            var Unread = 0
             var NewArray = data.NewArray
             var msg_idArry = state.msg_idArry
             // 判断数据结构里面是否有此人
-            if (!state.SaveInformationList.hasOwnProperty(NewArray.from_id)) {
+            if (!state.NewArray.hasOwnProperty(NewArray.from_id)) {
+                Unread = window.JIM.SingleChatMessageUnread(NewArray.from_id)
+
                 // 没有就存起来
-                state.SaveInformationList[NewArray.from_id] = NewArray.from_id
+                state.NewArray[NewArray.from_id] = NewArray.from_id
 
                 // 添加新结构给我发的信息
                 NewArray.informationTypesOf = 'L'
+
+
+
+
+
 
 
                 /**
@@ -235,8 +242,9 @@ export default {
                  * @Date: 2021-06-17 11:24:41
                  * @Describe: 单聊添加未读数
                  */
-                NewArray.SessionNotRead = 1
+                NewArray.SessionNotRead = Unread
                 NewArray.topurl = state.IDtopurl[NewArray.from_id]
+
                 /**
                  * @Author: 飞
                  * @Date: 2021-06-17 15:48:14
@@ -254,24 +262,26 @@ export default {
                  * @Describe: 消息个数库
                  */
                 msg_idArry[NewArray.from_id] = 0
-                msg_idArry[NewArray.from_id] = msg_idArry[NewArray.from_id] + 1
+                msg_idArry[NewArray.from_id] = Unread
                 state.msg_idArry = Object.assign({}, msg_idArry)
 
 
 
             } else {
+                Unread = window.JIM.SingleChatMessageUnread(NewArray.from_id)
                 // 有此人 增加类型  添加 
                 // 信息数库
-                msg_idArry[NewArray.from_id] = msg_idArry[NewArray.from_id] + 1
+                msg_idArry[NewArray.from_id] = Unread
                 state.msg_idArry = Object.assign({}, msg_idArry)
-                console.log('信息个数库', state.msg_idArry);
-
-                // 单聊左
-                NewArray.informationTypesOf = 'L'
+                // console.log('信息个数库', state.msg_idArry);
 
                 // 单聊单人未读+1
                 NewArray.SessionNotRead = msg_idArry[NewArray.from_id]
 
+                NewArray.SessionNotRead = Unread
+
+                // 单聊左
+                NewArray.informationTypesOf = 'L'
                 // 单聊头像
                 NewArray.topurl = state.IDtopurl[NewArray.from_id]
 
@@ -285,8 +295,16 @@ export default {
 
 
             }
-            console.log('接收', NewArray);
+            // console.log('接收', NewArray);
+            /**
+             * @Author: 飞
+             * @Date: 2021-06-30 14:09:29
+             * @Describe: 被动接收完信息后  就把会话记录下来
+             */
+            // localStorage.setItem("VuexDate_NewArray", JSON.stringify(state.NewArray));
+
             localStorage.setItem("VuexDate", JSON.stringify(state));
+            localStorage.setItem("VuexDate_NewArray", JSON.stringify(state.NewArray));
 
 
         },
@@ -319,6 +337,9 @@ export default {
              * @Describe: 更新总聊天数
              */
             // Object.assign({}, dataitem)
+
+            // 已读个数
+            localStorage.setItem("VuexDate_NewArray", JSON.stringify(state.NewArray));
         },
 
 
@@ -327,9 +348,9 @@ export default {
         ActiveMessage(state, ActiveMessage) {
             console.log('主动发信息', ActiveMessage);
             // 判断数据结构里面是否有此人
-            if (!state.SaveInformationList.hasOwnProperty(ActiveMessage.from_id)) {
+            if (!state.NewArray.hasOwnProperty(ActiveMessage.from_id)) {
                 // 没有就存起来
-                state.SaveInformationList[ActiveMessage.from_id] = ActiveMessage.from_id
+                state.NewArray[ActiveMessage.from_id] = ActiveMessage.from_id
 
                 // 添加新结构给我发的信息
                 ActiveMessage.informationTypesOf = 'R'//会话类型  L左  R右
@@ -365,7 +386,15 @@ export default {
             console.log('发送', ActiveMessage);
             console.log('总数据', state.NewArray);
             // state.NewArray.push(ActiveMessage)
+            /**
+             * @Author: 飞
+             * @Date: 2021-06-30 14:09:29
+             * @Describe: 主动发完信息后  就把会话记录下来
+             */
+            // localStorage.setItem("VuexDate_NewArray", JSON.stringify(state.NewArray));
             localStorage.setItem("VuexDate", JSON.stringify(state));
+
+            localStorage.setItem("VuexDate_NewArray", JSON.stringify(state.NewArray));
 
         },
 
@@ -481,6 +510,7 @@ export default {
             }
             // 收完信息存VuexDate
             localStorage.setItem("VuexDate", JSON.stringify(state));
+            localStorage.setItem("VuexDate_NewArray", JSON.stringify(state.NewArray));
         },
         /**
          * @Author: 飞
@@ -543,22 +573,13 @@ export default {
         },
         // 粉丝列表
         FansList(state, FansList) {
-
+            console.log('FansList', FansList);
             state.FansList = FansList
-            // 标给便利出来
-            var titleFens = state.FansList.map(function (item, index, ary) {
-                return item.letter
-            })
-            var Lettercombination = [];
-            for (var i = 0; i < titleFens.length; i++) {
-                if (Lettercombination.indexOf(titleFens[i]) == -1) {
-                    Lettercombination.push(titleFens[i])
-                }
-            }
-            state.Lettercombination = Lettercombination
-            // var ABC = { "abcd": 0 }  //暂存字母
 
             state.FansList.map(function (item, index, ary) {
+                // item.letter
+
+
                 // 获取头像
                 if (item.username != '') {
                     state.IDtopurl[item.username] = item.photo_wx
@@ -570,22 +591,46 @@ export default {
                  * @Describe: 如果存在   就存起来
                  */
                 // console.log('ABC', state.Placement);
-                if (state.Placement == item.letter) {
-                    return item.letter = ''
-                } else {
-                    state.Placement = item.letter
-                }
+                // if (state.Placement == item.letter) {
+                //     return item.letter = ''
+                // } else {
+                //     state.Placement = item.letter
+                // }
+            })
+            // 标给便利出来
+            var titleFens = state.FansList.map(function (item, index, ary) {
+                return item.letter
             })
 
+            var Lettercombination = [];
+            for (var i = 0; i < titleFens.length; i++) {
+                if (Lettercombination.indexOf(titleFens[i]) == -1) {
+                    Lettercombination.push(titleFens[i])
+                }
+            }
+
+
+            // 重新排序
+            var newarryfanc = {}
+            var zimu = ''
+            state.FansList.forEach((item, index, arr) => {
+                if (zimu != item.letter) {
+                    zimu = item.letter
+                    newarryfanc[zimu] = []
+                    newarryfanc[zimu].push(item)
+                } else {
+                    newarryfanc[zimu].push(item)
+                }
+            })
+            state.newarryfanc = newarryfanc
+            console.log('newarryfanc', newarryfanc,);
 
 
 
 
 
-
-
-
-            console.log('粉丝列表', state.FansList, Lettercombination,);
+            state.Lettercombination = Lettercombination
+            // var ABC = { "abcd": 0 }  //暂存字母
 
 
         },
@@ -677,6 +722,7 @@ export default {
         },
         views(state) {
             state.view = !state.view;
+            console.log('statestatestatestate', state.view);
         },
         MESSAGE(state, value) {
             state.message = value || state.message;
@@ -780,6 +826,7 @@ export default {
         setNearLoadMore(state, data) {
             state.temp.item.data[data.index].isLoadMore = data.isLoadMore;
         },
+
         setmemberNearMoreData(state, data) {
             state.member_temp.data[data.index].get_info.data = state.member_temp.data[
                 data.index

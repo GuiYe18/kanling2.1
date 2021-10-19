@@ -181,7 +181,6 @@
 </template>
 <script>
 import { Toast, Search } from "vant";
-import { EventBus } from "@/../event-bus.js";
 
 export default {
   //select_inde-当前选择行,datasource-数据源,currentdata-当前选择的数据
@@ -237,9 +236,7 @@ export default {
     // 测试全局事件(主动)
     decrease() {
       console.log("发送");
-      EventBus.$emit("decreased", {
-        num: "6"
-      });
+
     },
 
     toStore(order) {

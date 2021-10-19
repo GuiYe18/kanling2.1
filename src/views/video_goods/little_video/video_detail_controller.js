@@ -22,9 +22,10 @@ export default {
               that.getMoreData();
             }
             // console.log(that.popularVideo, "popularVideo");
-            // 手指触碰拖动最后一张时执行
+            // 手指一触碰拖动最后张时执行
           },
           slideChangeTransitionEnd() {
+            console.log('测试这个是干嘛的');
             // that.$refs.video.pause();
             that.show = false;
             that.showVideo = that.popularVideo[this.realIndex];
@@ -288,7 +289,9 @@ export default {
       this.show = true;
       this.amount_id = this.popularVideo[index].id;
       this.$set(this.popularVideo[index], "show", true);
+      
       this.$refs.video.play();
+
       // this.addVideoPlayEnd();
       this.$refs.pic[index].offsetHeight > Math.ceil(window.innerHeight * (7 / 8))
         ? (this.minStyle = false)

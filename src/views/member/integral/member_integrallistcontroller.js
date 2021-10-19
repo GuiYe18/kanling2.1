@@ -103,7 +103,7 @@ export default {
     this.initData();
     this.toi = this.fun.getKeyByI();
     this.getIntegralInfo();
-    this.fun.setWXTitle(this.integral+'列表');
+    // this.fun.setWXTitle(this.integral+'列表');
   },
   components: { cTitle }
 };

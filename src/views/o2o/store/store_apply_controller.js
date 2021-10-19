@@ -15,6 +15,11 @@ var self = null;
 export default {
   data() {
     return {
+
+      realname_RegionalAgent: '',//区域代理姓名
+      mobile_RegionalAgent: '',//区域代理手机号
+      addressName_RegionalAgent: "",//区域代理
+
       optionsId: '',
       show1: false,
       service_QRcode: '',
@@ -70,6 +75,7 @@ export default {
       categoryShow: false,
 
       addressShow: false,
+      addressShow_RegionalAgent: false,//区域代理
 
       streetShow: false,
 
@@ -127,11 +133,11 @@ export default {
       bannerImg: null, //顶部图片
       stopButton: false,
 
-      is_business_license:0,//营业执照是否必填
-      startTimeTag:false,
-      beginTime:'00:00',
-      endTimeTag:false,
-      endTime:'00:00',
+      is_business_license: 0,//营业执照是否必填
+      startTimeTag: false,
+      beginTime: '00:00',
+      endTimeTag: false,
+      endTime: '00:00',
 
       shop_commission: false,//是否开启平台提成
     };
@@ -190,15 +196,15 @@ export default {
 
       //逻辑处理
       switch (modes) {
-      case 1:
-        modes = 1;
-        break;
-      case 2:
-        modes =  2;
-        break;
-      case 3:
-        modes =  sValue.length < 8 ? 2 : 3;
-        break;
+        case 1:
+          modes = 1;
+          break;
+        case 2:
+          modes = 2;
+          break;
+        case 3:
+          modes = sValue.length < 8 ? 2 : 3;
+          break;
       }
       return modes;
     },
@@ -293,7 +299,12 @@ export default {
       } else {
         url = "plugin.store-cashier.frontend.store.store.verify-apply-status";
       }
+      // plugin.store-cashier.frontend.store.store.apply
+//       status: 2
+// top_thumb: ""
 
+// status: 3
+// msg: "已经是门店,不能重复申请"
       $http.get(url, json, "加载中...").then(
         function (response) {
           if (response.result === 1) {
@@ -386,6 +397,23 @@ export default {
     // 提交数据
     setApplyData() {
       // console.log(this.applyModel)
+
+
+
+      if (this.fun.isTextEmpty(this.realname_RegionalAgent)) {
+        Toast("请填写区域代理姓名");
+        return;
+      }
+      if (this.fun.isTextEmpty(this.mobile_RegionalAgent)) {
+        Toast("请填写区域代理手机号");
+        return;
+      }
+      if (this.fun.isTextEmpty(this.addressName_RegionalAgent)) {
+        Toast("请填写区域代理地址");
+        return;
+      }
+      this.applyModel.remark = `姓名:` + this.realname_RegionalAgent+`    手机号:`+this.mobile_RegionalAgent+`    地址:`+this.addressName_RegionalAgent
+
 
       if (this.fun.isTextEmpty(this.applyModel.username)) {
         Toast("请填写账号");
@@ -719,9 +747,14 @@ export default {
           console.log(error);
         });
     },
+    addressCallback_RegionalAgent(obj) {
+      this.addressName_RegionalAgent =
+        obj.itemName1 + " " + obj.itemName2 + " " + obj.itemName3;
+    },
 
     // 地址回调
     addressCallback(obj) {
+      console.log('objobjobjobjobjobjobjobj', obj);
       // this.form.street = ""
       // this.districtVal = ""
       this.addressName =
@@ -895,48 +928,48 @@ export default {
             Toast.clear();
 
             switch (That.selectImgIndex) {
-            case 1:
-              //门店logo
-              if (flag === true) {
-                That.imageUrl = URL.createObjectURL(e);
-              } else {
-                That.imageUrl = URL.createObjectURL(e.file);
-              }
-              That.applyModel.storeImg = responseData.data.img_url;
-              That.stopButton = false;
-              break;
-            case 2:
-              //门店banner
-              That.applyModel.bannerImg = responseData.data.img_url;
-              That.stopButton = false;
-              break;
-            case 4:
-              //营业执照
-              // That.fileList2 = [];
-              // if (flag) {
-              //   That.fileList2[0] = URL.createObjectURL(e);
-              // } else {
-              //   That.fileList2[0] = URL.createObjectURL(e.file);
-              // }
-              // console.log("aaaaaa", That.fileList2);
-              That.aptitudeImgurl = responseData.data.img_url;
-              That.fileList2 = [responseData.data.img_url];
-              That.applyModel.aptitudeImg[0] = responseData.data.img_url;
-              That.stopButton = false;
-              break;
-            case 5:
-              //身份证正面
-              That.idCardImg_0 = responseData.data.img_url;
-              That.stopButton = false;
-              break;
-            case 6:
-              //身份证反面
-              That.idCardImg_1 = responseData.data.img_url;
-              That.stopButton = false;
-              break;
-            default:
-              That.stopButton = false;
-              return;
+              case 1:
+                //门店logo
+                if (flag === true) {
+                  That.imageUrl = URL.createObjectURL(e);
+                } else {
+                  That.imageUrl = URL.createObjectURL(e.file);
+                }
+                That.applyModel.storeImg = responseData.data.img_url;
+                That.stopButton = false;
+                break;
+              case 2:
+                //门店banner
+                That.applyModel.bannerImg = responseData.data.img_url;
+                That.stopButton = false;
+                break;
+              case 4:
+                //营业执照
+                // That.fileList2 = [];
+                // if (flag) {
+                //   That.fileList2[0] = URL.createObjectURL(e);
+                // } else {
+                //   That.fileList2[0] = URL.createObjectURL(e.file);
+                // }
+                // console.log("aaaaaa", That.fileList2);
+                That.aptitudeImgurl = responseData.data.img_url;
+                That.fileList2 = [responseData.data.img_url];
+                That.applyModel.aptitudeImg[0] = responseData.data.img_url;
+                That.stopButton = false;
+                break;
+              case 5:
+                //身份证正面
+                That.idCardImg_0 = responseData.data.img_url;
+                That.stopButton = false;
+                break;
+              case 6:
+                //身份证反面
+                That.idCardImg_1 = responseData.data.img_url;
+                That.stopButton = false;
+                break;
+              default:
+                That.stopButton = false;
+                return;
             }
           } else {
             Toast(responseData.msg);
@@ -987,39 +1020,39 @@ export default {
             Toast.clear();
 
             switch (That.selectImgIndex) {
-            case 3:
-              //门店介绍
-              if (flag === true) {
-                That.fileList1.push({
-                  url: URL.createObjectURL(e)
-                });
-              } else {
-                That.fileList1.push({
-                  url: URL.createObjectURL(e.file)
-                });
-              }
-              That.applyModel.information_thumb.push(
-                responseData.data.img_url
-              );
-              That.stopButton = false;
-              break;
-            case 7:
-              //其他图片
-              if (flag === true) {
-                That.fileList3.push({
-                  url: URL.createObjectURL(e)
-                });
-              } else {
-                That.fileList3.push({
-                  url: URL.createObjectURL(e.file)
-                });
-              }
-              That.applyModel.otherImg.push(responseData.data.img_url);
-              That.stopButton = false;
-              break;
-            default:
-              That.stopButton = false;
-              return;
+              case 3:
+                //门店介绍
+                if (flag === true) {
+                  That.fileList1.push({
+                    url: URL.createObjectURL(e)
+                  });
+                } else {
+                  That.fileList1.push({
+                    url: URL.createObjectURL(e.file)
+                  });
+                }
+                That.applyModel.information_thumb.push(
+                  responseData.data.img_url
+                );
+                That.stopButton = false;
+                break;
+              case 7:
+                //其他图片
+                if (flag === true) {
+                  That.fileList3.push({
+                    url: URL.createObjectURL(e)
+                  });
+                } else {
+                  That.fileList3.push({
+                    url: URL.createObjectURL(e.file)
+                  });
+                }
+                That.applyModel.otherImg.push(responseData.data.img_url);
+                That.stopButton = false;
+                break;
+              default:
+                That.stopButton = false;
+                return;
             }
           } else {
             Toast(responseData.msg);

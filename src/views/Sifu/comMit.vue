@@ -1,13 +1,13 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-11 16:03:35
- * @LastEditTime: 2021-05-25 16:23:40
+ * @LastEditTime: 2021-07-14 16:03:58
  * @FilePath: \you-shop1\src\views\Sifu\comMit.vue
  * @Describe: 
 -->
 <template>
   <div class="content">
-    <div><img src="./img/提交成功.png" alt="" /></div>
+    <div><img src="./img/SubmittedSuccessfully.png" alt="" /></div>
     <p class="UnderReview">提交成功</p>
     <p class="UnderReviewText">信息提交后72小时内审核</p>
     <!-- 重新认证 -->

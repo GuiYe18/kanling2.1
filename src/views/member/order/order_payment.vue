@@ -1,7 +1,7 @@
 <template>
   <div id="balance_recharge">
     <c-title v-if="showTitle" :hide="false" text="订单支付"></c-title>
-    <div v-if="showTitle" style="height: 40px;"></div>
+    <div v-if="showTitle" style="height: 40px"></div>
     <div class="pay-box">
       <!-- 新支付页面 -->
       <div class="account">
@@ -11,7 +11,7 @@
         </div>
         <div class="span-two">
           <span>{{ balance }} </span>
-          <span class="b">{{ $i18n.t('元') }}</span>
+          <span class="b">{{ $i18n.t("元") }}</span>
         </div>
       </div>
 
@@ -28,11 +28,8 @@
       </div> -->
 
       <!-- 显示账户通兑余额 -->
-      <div class="account" v-show="order_pay==6">
-        <div class="span-first">
-          <span>通兑</span
-          ><span>：</span>
-        </div>
+      <div class="account" v-show="order_pay == 6">
+        <div class="span-first"><span>通兑</span><span>：</span></div>
         <div class="span-two">
           <span>{{ circulate }} </span>
           <span class="b">通兑</span>
@@ -44,69 +41,51 @@
         <div class="mid">
           <!-- 支付金额 飞 -->
           <!-- <span class="s">{{ $i18n.t('money') }}</span> <span>{{ money }}</span> -->
-          <span class="s"></span> <span>{{ (Number(money)).toFixed(0) }}</span>
+          <span class="s" ></span> <span v-show="order_pay != 7">{{ Number(money).toFixed(0) }}</span> 
+
+          <span class="s" ></span> <span v-show="order_pay == 7">{{ money }}</span>
         </div>
         <div class="bottom">
           支付流水号:<span>{{ order_sn }}</span>
         </div>
       </div>
     </div>
-    <div style="height: 1.25rem;"></div>
+    <div style="height: 1.25rem"></div>
     <!-- 新支付页面 -->
     <div id="payBtnList">
-      <div class="sureBtn s" @click="sureBtn" v-if="money == '0.00'">
-        确定
-      </div>
+      <div class="sureBtn s" @click="sureBtn" v-if="money == '0.00'">确定</div>
 
       <div class="title" v-if="money > 0">
         <span class="line"></span>
         <span>支付方式</span>
       </div>
 
-
       <template v-if="money > 0">
         <div class="mod_btns" v-for="(btn, i) in buttons" :key="i" v-show="btn.value != 57">
-          <a @click="confirm(btn)" class="mod_btn" :class="[btnclass(btn.value)]">
-            <i class="iconfont" :class="getIconUrl(btn)"></i>{{ btn.name }}{{ typename }}</a
-          >
+          <a @click="confirm(btn)" class="mod_btn" :class="[btnclass(btn.value)]"> <i class="iconfont" :class="getIconUrl(btn)"></i>{{ btn.name }}{{ typename }}</a>
           <i class="fa fa-angle-right"></i>
         </div>
       </template>
-
-
     </div>
-    <van-popup v-model="popupSpecs" position="bottom" >
+    <van-popup v-model="popupSpecs" position="bottom">
       <div class="ispaskey">
         <!-- 密码输入框 -->
-        <van-password-input
-          :value="payarr"
-          :focused="popupSpecs"
-          @focus="popupSpecs = true"
-        />
+        <van-password-input :value="payarr" :focused="popupSpecs" @focus="popupSpecs = true" />
         <!-- 数字键盘 -->
-        <van-number-keyboard
-          title="安全键盘"
-          v-model="value"
-          :show="true"
-          @blur="popupSpecs = false"
-          @input="onInput"
-          @delete="onDelete"
-        />
+        <van-number-keyboard title="安全键盘" v-model="value" :show="true" @blur="popupSpecs = false" @input="onInput" @delete="onDelete" />
       </div>
-
     </van-popup>
 
-
     <van-popup v-model="showQR" :style="{ width: '80%' }">
-      <img style="width: 15rem; height: 15rem; padding: 1rem;" :src="qrcode" alt="" />
-      <p style="font-weight: bold; font-size: 16px; padding-bottom: 0.5rem;">请用微信识别二维码支付</p>
+      <img style="width: 15rem; height: 15rem; padding: 1rem" :src="qrcode" alt="" />
+      <p style="font-weight: bold; font-size: 16px; padding-bottom: 0.5rem">请用微信识别二维码支付</p>
     </van-popup>
     <van-popup v-model="showZFBQR" :style="{ width: '80%' }">
       <template v-show="isZFBQR">
         <canvas id="qrccode-canvas"></canvas>
-        <p style="font-weight: bold; font-size: 16px; padding-bottom: 0.5rem;">请用支付宝识别二维码支付</p>
+        <p style="font-weight: bold; font-size: 16px; padding-bottom: 0.5rem">请用支付宝识别二维码支付</p>
       </template>
-      <p v-show="!isZFBQR" style="font-weight: bold; font-size: 16px; padding: 3rem;">正在为您生成二维码中，请稍后...</p>
+      <p v-show="!isZFBQR" style="font-weight: bold; font-size: 16px; padding: 3rem">正在为您生成二维码中，请稍后...</p>
     </van-popup>
     <div id="alipay-detail" v-if="alipayShow">
       <div class="bg">
@@ -118,15 +97,14 @@
     <van-overlay :show="showPacket" @click="closePacket">
       <div class="wrapper">
         <div class="block" @click.stop>
-          <img @click="toPacket" src="../../../assets/images/consume_packet.png"/>
+          <img @click="toPacket" src="../../../assets/images/consume_packet.png" />
         </div>
       </div>
     </van-overlay>
-
   </div>
 </template>
 <script>
-import order_paymentcontroller from './order_paymentcontroller';
+import order_paymentcontroller from "./order_paymentcontroller";
 export default order_paymentcontroller;
 </script>
 

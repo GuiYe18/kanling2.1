@@ -1120,7 +1120,7 @@ export default {
               that.Integration = Number(response.data.member.love_integral).toFixed(0);   //爱心积分 
               that.goods_price = response.data.order_pay.orders[0].goods_price//原价商品价格
               that.order_pay = Number(response.data.order_pay.orders[0].brand_id);
-
+                console.log('区分积分通兑',that.order_pay);
               that.money = Number(response.data.order_pay.amount).toFixed(2);
               that.uid = response.data.order_pay.uid;
               that.order_pay_id = response.data.order_pay.id; // 支付id

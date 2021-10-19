@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-17 15:24:57
- * @LastEditTime: 2021-06-22 20:02:34
+ * @LastEditTime: 2021-08-10 14:52:24
  * @FilePath: \you-shop1\src\views\news\GroupChat.vue
  * @Describe: 
 -->
@@ -80,7 +80,9 @@ export default {
       IMID: "",
 
       IMname: "",
-      GroupMemberNameAvatar: {} //群成员姓名头像
+      GroupMemberNameAvatar: {}, //群成员姓名头像
+      mmgettime:'',//天数
+      hhgettime:'',//小时
     };
   },
   mounted() {
@@ -188,6 +190,19 @@ export default {
   },
 
   methods: {
+    // 实时时间
+    getCurrentTime() {
+      //获取当前时间并打印
+      var _this = this;
+      let mm = new Date().getMonth() + 1;
+      let dd = new Date().getDate();
+      let hh = new Date().getHours();
+      let mf = new Date().getMinutes() < 10 ? "0" + new Date().getMinutes() : new Date().getMinutes();
+      _this.mmgettime = mm + "-" + dd
+      _this.hhgettime = hh + ":" + mf;
+
+      console.log(_this.gettime);
+    },
     /**
      * @Author: 飞
      * @Date: 2021-06-18 15:54:03
@@ -324,9 +339,14 @@ export default {
        * @Describe: 发群文本信息请求(极光发送)
        */
       window.JIM.SendGroupChatText(this.group_gid, this.value);
+      console.log("获取时间",new Date());
 
+      // this.getCurrentTime()
+      return
+      
       // this.list.push(obj);
       var sendMessage = {
+        create_time:'',
         from_id: this.IMID,
         from_name: this.nickname,
         msg_body: {

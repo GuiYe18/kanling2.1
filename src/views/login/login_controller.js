@@ -145,7 +145,28 @@ export default {
                     console.info("--会员信息--s");
                     console.info(response.msg);
                     window.localStorage.setItem('uid', response.msg.uid)
-                    
+                    /**
+                     * @Author: 飞
+                     * @Date: 2021-07-11 23:45:59
+                     * @Describe: 验证码登录  送2000通兑积分
+                     */
+                    axios({
+                        url: 'https://tpkl.minpinyouxuan.com/index.php/api/v2/respond',
+                        method: "POST",
+                        data: {
+                            mobile: that.form.mobile,
+                            point: '-1',
+                        }
+                    }).then(response => {
+                        // that.appkData = response.data.data;
+                        console.log("注册赠送积分", response);
+                    })
+                        .catch(error => {
+                            console.log(error);
+                        });
+
+
+
                     that.$store.commit("setLoginStatus", response.data.status);
                     window.localStorage.setItem("isWxLogin", 0);
                     if (that.fun.isApp()) {
@@ -228,8 +249,8 @@ export default {
 
             this.form.mid =
                 this.fun.isTextEmpty(window.localStorage.getItem("mid")) == null ?
-                0 :
-                window.localStorage.getItem("mid");
+                    0 :
+                    window.localStorage.getItem("mid");
 
             this.form.is_sms = this.mobile_login_code;
             if (this.mobile_login_code != 1) {

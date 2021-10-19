@@ -6,11 +6,13 @@
         <a class="nav1" :class="{ current: currentClass == 1 }" @click.stop="jump(1)">评价</a>
         <a class="nav1" :class="{ current: currentClass == 2 }" @click.stop="jump(2)">详情</a>
       </div>
+
       <div id="hoid" @click="goto" :class="{ hoet: hoet }" v-if="isCup">
         <div id="back">
           <i class="mintui mintui-back"></i>
         </div>
       </div>
+      
       <div id="cart" @click="gotoCart" :class="{ hoet: hoet }" v-if="isCup">
         <div id="back">
           <i class="iconfont icon-ai-home"></i>

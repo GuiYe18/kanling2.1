@@ -41,7 +41,7 @@ export default {
   props: ["goods_id", "goods_type", "goods_info", "touchClose", "is_room", "wx_video_link"],
   data() {
     return {
-      aixintongdui:'',//爱心通兑物品
+      aixintongdui: '',//爱心通兑物品
       showBigImg: false,
       bigImages: [], //商品详情富文本图片预览
       showss: false,
@@ -222,7 +222,8 @@ export default {
       supplierData: {},
       showShare: false, //分享弹窗
       showVideoLink: false,
-      article_url: "" //视频号链接
+      article_url: "", //视频号链接
+      firstActivityCon_test:''
     };
   },
 
@@ -379,7 +380,7 @@ export default {
   },
 
   methods: {
-   
+
     gotohuiyuan() {
       if (this.goods_info.selfbuy_discount && this.goods_info.selfbuy_discount.link_to_level_page && this.goods_info.selfbuy_discount.link_to_level_page.show == 1) {
         this.$router.push(this.fun.getUrl("MemberGradeList"));
@@ -462,7 +463,7 @@ export default {
 
     slider() {
       let that = this;
-      window.onscroll = function() {
+      window.onscroll = function () {
         var top = document.documentElement.scrollTop || document.body.scrollTop;
         // if (top < that.$refs.goodinfo.offsetTop) {
         //   that.goodTop = false;
@@ -643,13 +644,13 @@ export default {
 
       this.fun.wxShare(
         "",
-        { mid: this.fun.getKeyByMid(),goods_id: goods_id },
+        { mid: this.fun.getKeyByMid(), goods_id: goods_id },
         {
           title: (this.goodsInfo.has_one_share && this.fun.isTextEmpty(this.goodsInfo.has_one_share.share_title)) ? this.goodsInfo.title : this.goodsInfo.has_one_share.share_title,
           imgUrl: (this.goodsInfo.has_one_share && this.fun.isTextEmpty(this.goodsInfo.has_one_share.share_thumb)) ? this.goodsInfo.thumb : this.goodsInfo.has_one_share.share_thumb,
           description: this.goodsInfo.has_one_share.share_desc
         },
-        (data)=> {
+        (data) => {
           if (!this.fun.isTextEmpty(data.shop && data.shop.shop)) {
             this.initCservice(data.shop.shop.cservice); //客服重新赋值
           }
@@ -695,7 +696,7 @@ export default {
         this.beginTime = data.has_one_goods_limit_buy.start_time;
 
         console.log("isBuy:", this.isBuy);
-        if(this.isBuy) {
+        if (this.isBuy) {
           this.timeCompare(this.beginTime);
         }
 
@@ -720,9 +721,43 @@ export default {
               this.firstActivityCon += "," + item;
             }
           });
+
+
+
+          this.firstActivityCon = data.goods_sale.first_strip_key.value[0].split('元')[0].split('最高')[1]
+
+          this.firstActivityCon_test = "通兑" + this.firstActivityCon
         } else {
           this.firstActivityCon = data.goods_sale.first_strip_key.value;
         }
+
+
+        this.firstActivityCon = data.goods_sale.first_strip_key.value[0].split('元')[0].split('最高')[1]
+
+        this.firstActivityCon_test = "通兑" + this.firstActivityCon
+
+
+
+        //   // this.firstActivityCon = "最高抵扣" + data.has_one_sale.max_point_deduct;
+        //   // this.firstActivityCon_test = "通兑最高抵扣" + data.has_one_sale.max_point_deduct;
+
+
+        // } else {
+        //   // this.firstActivityCon = data.goods_sale.first_strip_key.value;
+        //   this.firstActivityCon = data.goods_sale.first_strip_key.value[0].split('元')[0].split('最高')[1]
+        //   this.firstActivityCon_test = "通兑" + this.firstActivityCon
+
+
+
+
+
+
+
+
+
+
+
+
 
         this.activitySwitch = true;
 
@@ -931,7 +966,7 @@ export default {
         response => {
           if (response.result === 1) {
             if (this.goodsInfo.has_one_invite_page && this.goodsInfo.has_one_invite_page.status === 1 && response.data.is_invite === 0) {
-              
+
               this.$router.push(this.fun.getUrl("Inviter", {}, { fromGood: 1 }));
               return;
             }
@@ -1044,7 +1079,7 @@ export default {
         mid: this.fun.getKeyByMid()
       };
       $http.get("from.div-from.isDisplay", jsons, "加载中").then(
-        function(response) {
+        function (response) {
           if (response.result === 1) {
             if (response.data.status && !response.data.member_status) {
               that.$dialog
@@ -1059,7 +1094,7 @@ export default {
                     })
                   );
                 })
-                .catch(() => {});
+                .catch(() => { });
             } else {
               that.addCartReq(_goodsId, _optionsId, _total);
             }
@@ -1067,7 +1102,7 @@ export default {
             console.log(response.msg);
           }
         },
-        function(response) {
+        function (response) {
           console.log(response);
           that.isGoods = false;
         }
@@ -1110,14 +1145,14 @@ export default {
         let that = this;
         let json = { goods_id: _goodsId, total: _total, option_id: _optionsId };
         $http.get("member.member-cart.store", json, "添加中...").then(
-          function(response) {
+          function (response) {
             if (response.result == 1) {
               Toast(response.msg);
             } else {
               that.$dialog.alert({ message: response.msg });
             }
           },
-          function(response) {
+          function (response) {
             console.log(response);
           }
         );
@@ -1147,7 +1182,7 @@ export default {
         submitActionTag = "yun_sign_goods";
       } else {
         submitActionTag = SUBMIT_ACTION_BUY;
-        
+
       }
 
 
@@ -1163,7 +1198,7 @@ export default {
         mid: this.fun.getKeyByMid()
       };
       $http.get("from.div-from.isDisplay", jsons, "加载中...").then(
-        function(response) {
+        function (response) {
           if (response.result == 1) {
             if (response.data.status && !response.data.member_status) {
               that.$dialog
@@ -1178,7 +1213,7 @@ export default {
                     })
                   );
                 })
-                .catch(() => {});
+                .catch(() => { });
             } else {
               if (!that.isCup) {
                 //柜子商品
@@ -1240,7 +1275,7 @@ export default {
                       goodsId: _goodsId,
                       optionsId: _optionsId,
                       total: _total,
-                      iddd:that.aixintongdui
+                      iddd: that.aixintongdui
                     }
                   )
                 );
@@ -1250,7 +1285,7 @@ export default {
             console.log(response.msg);
           }
         },
-        function(response) {
+        function (response) {
           console.log(response);
         }
       );
@@ -1294,7 +1329,7 @@ export default {
     //设置选择规格后的 价格、照片、库存
     setGoodsSpecsChangeInfo() {
       //根据ID 排序 specsManage.sort();
-      specsManage.sort(function(a, b) {
+      specsManage.sort(function (a, b) {
         return a.id - b.id;
       });
       if (specsManage.length == this.goodsInfo.has_many_specs.length) {
@@ -1327,7 +1362,7 @@ export default {
     setGoodsSpecsBySort(specs) {
       let _specs = specs.split("_"); //先变成数组
       //_specs.sort();//排序
-      _specs.sort(function(a, b) {
+      _specs.sort(function (a, b) {
         return a - b;
       });
 
@@ -1483,13 +1518,13 @@ export default {
         mid: this.fun.getKeyByMid()
       };
       $http.get("member.member-favorite.isFavorite", json).then(
-        function(response) {
+        function (response) {
           if (response.result === 1) {
             //已收藏
             that.favorite = response.data.status == 1 ? true : false;
           }
         },
-        function(response) {
+        function (response) {
           console.log(response);
         }
       );
@@ -1515,13 +1550,13 @@ export default {
         mid: this.fun.getKeyByMid()
       };
       $http.get("member.member-favorite.store", json, "处理中...").then(
-        function(response) {
+        function (response) {
           if (response.result == 1) {
             that.favorite = true;
             Toast("收藏成功");
           }
         },
-        function(response) {
+        function (response) {
           console.log(response);
         }
       );
@@ -1537,13 +1572,13 @@ export default {
         mid: this.fun.getKeyByMid()
       };
       $http.get("member.member-favorite.destroy", json, "处理中...").then(
-        function(response) {
+        function (response) {
           if (response.result == 1) {
             that.favorite = false;
             Toast("取消收藏");
           }
         },
-        function(response) {
+        function (response) {
           console.log(response);
         }
       );
@@ -1563,10 +1598,10 @@ export default {
         mark_id: this.fun.getKey("mark_id")
       };
       $http.get("member.member-history.store", json).then(
-        function(response) {
+        function (response) {
           console.log(response.msg);
         },
-        function(response) {
+        function (response) {
           console.log(response);
         }
       );
@@ -1609,7 +1644,7 @@ export default {
             console.error(response.msg);
           }
         },
-        function(response) {
+        function (response) {
           console.log(response);
         }
       );
@@ -1638,12 +1673,12 @@ export default {
         type: this.fun.getTyep()
       };
       $http.post("member.member.wxJsSdkConfig", json).then(
-        function(response) {
+        function (response) {
           if (response.result == 1) {
             that.appShare(response.data);
           }
         },
-        function(response) {
+        function (response) {
           console.log(response);
         }
       );
@@ -1665,7 +1700,7 @@ export default {
       console.log("share ", data);
       let that = this;
       wx.config(data.config);
-      wx.ready(function() {
+      wx.ready(function () {
         let _title = "";
         let _imgUrl = "";
         let _desc = "";
@@ -1691,10 +1726,10 @@ export default {
           title: _title, // 分享标题
           link: _link, // 分享链接
           imgUrl: _imgUrl, // 分享图标
-          success: function() {
+          success: function () {
             Toast("分享成功");
           },
-          cancel: function() {
+          cancel: function () {
             Toast("取消分享");
           }
         });
@@ -1706,10 +1741,10 @@ export default {
           imgUrl: _imgUrl, // 分享图标
           type: "link", // 分享类型,music、video或link，不填默认为link
           dataUrl: "", // 如果type是music或video，则要提供数据链接，默认为空
-          success: function() {
+          success: function () {
             Toast("分享成功");
           },
-          cancel: function() {
+          cancel: function () {
             Toast("取消分享");
           }
         });
@@ -1810,7 +1845,7 @@ export default {
       };
       // console.log(json);
       $http.get("goods.comment.get-comment", json, "获取中...").then(
-        function(response) {
+        function (response) {
           if (response.result === 1) {
             if (response.data.data.length < 20) {
               that.noMoreComment = true;
@@ -1828,7 +1863,7 @@ export default {
             is_third_content = false; //复位
           }
         },
-        function(response) {
+        function (response) {
           is_third_content = false; //复位
           console.log(response);
         }
@@ -2181,7 +2216,7 @@ export default {
               this.$dialog.alert({ message: response.msg });
             }
           },
-          response => {}
+          response => { }
         );
     },
 
@@ -2353,16 +2388,16 @@ export default {
 
                 wx.checkJsApi({
                   jsApiList: ["getLocation"],
-                  success: function(res) {
+                  success: function (res) {
                     if (res.checkResult.getLocation == false) {
                       alert("你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！");
                     }
                   }
                 });
-                wx.ready(function() {
+                wx.ready(function () {
                   wx.getLocation({
                     type: "gcj02", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-                    success: function(res) {
+                    success: function (res) {
                       wx.openLocation({
                         latitude: point.lat, // 纬度，浮点数，范围为90 ~ -90
                         longitude: point.lng, // 经度，浮点数，范围为180 ~ -180。
@@ -2371,13 +2406,13 @@ export default {
                         scale: 20 // 地图缩放级别,整形值,范围从1~28。默认为最大
                       });
                     },
-                    cancel: function(res) {
+                    cancel: function (res) {
                       alert("用户拒绝授权获取地理位置");
                     }
                   });
                 });
 
-                wx.error(function(response) {
+                wx.error(function (response) {
                   console.log(response);
                   window.location.href = `https://uri.amap.com/navigation?to=${point.lng},${point.lat},${that.o2oName}&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0`;
                 });
@@ -2388,7 +2423,7 @@ export default {
               window.location.href = `https://uri.amap.com/navigation?to=${point.lng},${point.lat},${that.o2oName}&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0`;
             }
           },
-          function(response) {
+          function (response) {
             console.log(response);
             window.location.href = `https://uri.amap.com/navigation?to=${point.lng},${point.lat},${that.o2oName}&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0`;
           }
@@ -2683,7 +2718,7 @@ export default {
     scroll() {
       this.loadSroll();
     },
-    touchClose: function(newVal, oldVal) {
+    touchClose: function (newVal, oldVal) {
       this.showComment = newVal;
     }
   },
@@ -2698,7 +2733,7 @@ export default {
         return { worker: "技师", project: "项目", service: "服务" };
       }
     },
-    minicartStyle: function() {
+    minicartStyle: function () {
       if (this.showCart) {
         return "display: block;transform: translateY(-100%)";
       }
@@ -2708,7 +2743,7 @@ export default {
         return "transform: translateX(-60px);";
       }
     },
-    showLogo: function() {
+    showLogo: function () {
       if (this.showCart) {
         return "show";
       }

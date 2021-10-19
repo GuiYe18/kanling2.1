@@ -25,11 +25,18 @@
     <c-foot v-if="!foot && $store.state.temp.item.menustyle && !$store.state.temp.item.menus.page_info"></c-foot>
     <!--旧装修的底部导航end-->
 
+    <!-- /**
+     * @Author: 飞
+     * @Date: 2021-06-23 21:29:12
+     * @Describe: 
+     */ -->
     <!--新装修的底部导航-->
     <U_foot
       v-if="!foot && ($store.state.temp.item.is_decorate === 1 || $store.state.temp.item.menus === '' || ($store.state.temp.item.menus && $store.state.temp.item.menus.page_info))"
-      :id="id + '1'"
+      :id="id + '1m'"
     ></U_foot>
+
+    <!-- <U_foot v-if="!foot"></U_foot> -->
 
     <!--新装修的底部导航end-->
     <qrCode v-if="fun.getPhoneEnv() == 3 && !fun.isApp() && (!$route.meta.isPC || ($store.state.caseLibrary != null && $store.state.caseLibrary.set.pc_style == 0))"></qrCode>
@@ -73,15 +80,19 @@ export default {
   computed: {
     isShowReturnLiveBtn() {
       return this.$store.state._isShowReturnLiveBtn;
+    },
+    // 监控会话
+    monitorNewArray() {
+      return this.$store.state.NewArray;
     }
-
-    // // 2021年6月10日11:33:34
-    // 监听是否有最新消息   来更新总的未读数
-    // NewArray() {
-    //   return this.$store.state.NewArray;
-    // }
   },
   watch: {
+    // 监控会话
+    monitorNewArray(val, cal) {
+      console.log("监控会话", val, cal);
+      // 监控会话 有变化 记录存起来
+      localStorage.setItem("VuexDate_NewArray", JSON.stringify(this.$store.state.NewArray));
+    },
     /**
      * @Author: 飞
      * @Date: 2021-06-16 13:40:57
@@ -90,6 +101,14 @@ export default {
 
     //监测路由变化
     $route(to, from) {
+      console.log("------------------------is_decorate--------------------", this.$router.options.routes);
+      // console.log("------------------------menus--------------------", this.$store.state.temp.item.menus);
+      // // console.log('------------------------page_info-------------------',this.$store.state.temp.item.menus.page_info);
+      // console.log("------------------------foot--------------------", to);
+      // if ((to.name != "index") || (to.name != "find") ||( to.name != "news" )|| (to.name != "home") || to.name != "member") {
+      //   this.foot == true;
+      // }
+
       if (from.path === "/") {
         if (this.fun.getKey("t")) {
           this.reload();
@@ -147,6 +166,22 @@ export default {
       that.delCookie("memberlogin_status");
     };
     /*区分关闭和刷新，关闭清理vid end*/
+    // 3秒之后首次登录
+    setTimeout(() => {
+      var lishi = 0;
+      if (window.localStorage.getItem("uid") != null) {
+          window.JIM.getSignature(lishi);
+        // 调用极光登录  有uid之后登录
+
+        if (localStorage.getItem("lishi") != "lishi_4") {
+          lishi = 1;
+          window.JIM.getSignature(lishi);
+          localStorage.setItem("lishi", "lishi_4");
+        } else {
+          lishi = 0;
+        }
+      }
+    }, 3000);
   },
   created() {
     /**
@@ -154,12 +189,10 @@ export default {
      * @Date: 2021-06-17 16:18:15
      * @Describe: 初始化cookie
      */
-    if (localStorage.getItem("initialization") != 'initialization-03') {
-
+    if (localStorage.getItem("initialization") != "initialization-06") {
       console.log("初始化cookie");
       window.localStorage.removeItem("VuexDate_NewArray");
       window.localStorage.removeItem("VuexDate_FriendsList");
-      window.localStorage.removeItem("VuexDate_SaveInformationList");
       window.localStorage.removeItem("VuexDate_IDtopurl");
       window.localStorage.removeItem("VuexDate_FansList");
       window.localStorage.removeItem("VuexDate_Unread");
@@ -168,12 +201,8 @@ export default {
       window.localStorage.removeItem("VuexDate_GroupchatIDNumber");
       window.localStorage.removeItem("VuexDate_GroupThatTotalList");
 
-      localStorage.setItem("initialization", "initialization-03");
-
-    }else{
-
+      localStorage.setItem("initialization", "initialization-06");
     }
-
 
     // this.getParams();
     this.getLanguage();
@@ -191,7 +220,6 @@ export default {
     // // 页面刷新  存取vuex 数据
 
     // 接收单聊消息
-
     window.latestNews = this.latestNews;
     // 接收好友列表
     window.SendAListOfFriends = this.SendAListOfFriends;
@@ -214,7 +242,7 @@ export default {
     window.GroupThatTotalList = this.GroupThatTotalList;
     window.addEventListener("beforeunload", e => {
       console.log("刷新刷刷新刷新刷新刷新刷新刷新刷新刷新刷新刷新刷新刷新刷新刷新刷新刷新");
-      // localStorage.setItem("VuexDate", JSON.stringify(this.$store.state));
+      localStorage.setItem("VuexDate", JSON.stringify(this.$store.state));
     });
     // 在页面加载时读取sessionStorage里的状态信息
     if (typeof localStorage.VuexDate == "string") {
@@ -225,8 +253,6 @@ export default {
       this.$store.commit("SaveData", { SaveDataitem: "NewArray", SaveDataValue: JSON.parse(localStorage.getItem("VuexDate_NewArray")) });
       // 好友列表
       this.$store.commit("SaveData", { SaveDataitem: "FriendsList", SaveDataValue: JSON.parse(localStorage.getItem("VuexDate_FriendsList")) });
-      // 存信息列表个数
-      this.$store.commit("SaveData", { SaveDataitem: "SaveInformationList", SaveDataValue: JSON.parse(localStorage.getItem("VuexDate_SaveInformationList")) });
       // 我关注的ID头像
       this.$store.commit("SaveData", { SaveDataitem: "IDtopurl", SaveDataValue: JSON.parse(localStorage.getItem("VuexDate_IDtopurl")) });
       // 粉丝列表
@@ -243,7 +269,6 @@ export default {
       this.$store.commit("SaveData", { SaveDataitem: "GroupThatTotalList", SaveDataValue: JSON.parse(localStorage.getItem("VuexDate_GroupThatTotalList")) });
 
       // this.$store.replaceState(Object.assign({}, this.$store.state.FriendsList, JSON.parse(localStorage.getItem("VuexDate_FriendsList"))));
-      // this.$store.replaceState(Object.assign({}, this.$store.state.SaveInformationList, JSON.parse(localStorage.getItem("VuexDate_SaveInformationList"))));
       // this.$store.replaceState(Object.assign({}, this.$store.state.IDtopurl, JSON.parse(localStorage.getItem("VuexDate_IDtopurl"))));
       // this.$store.replaceState(Object.assign({}, this.$store.state.FansList, JSON.parse(localStorage.getItem("VuexDate_FansList"))));
       // this.$store.replaceState(Object.assign({}, this.$store.state.Unread, JSON.parse(localStorage.getItem("VuexDate_Unread"))));
@@ -251,25 +276,23 @@ export default {
     }
 
     window.addEventListener("unload", e => {
-      // 会话
+      // // 会话
       localStorage.setItem("VuexDate_NewArray", JSON.stringify(this.$store.state.NewArray));
       // 好友列表
       localStorage.setItem("VuexDate_FriendsList", JSON.stringify(this.$store.state.FriendsList));
-      // 存信息列表个数
-      localStorage.setItem("VuexDate_SaveInformationList", JSON.stringify(this.$store.state.SaveInformationList));
       // 我关注的ID头像
       localStorage.setItem("VuexDate_IDtopurl", JSON.stringify(this.$store.state.IDtopurl));
       // 粉丝列表
       localStorage.setItem("VuexDate_FansList", JSON.stringify(this.$store.state.FansList));
       // 总未读数
       localStorage.setItem("VuexDate_Unread", JSON.stringify(this.$store.state.Unread));
-      // 总未读数
+      // 总未读库
       localStorage.setItem("VuexDate_msg_idArry", JSON.stringify(this.$store.state.msg_idArry));
       // 群聊会话
       localStorage.setItem("VuexDate_Group_Chat", JSON.stringify(this.$store.state.Group_Chat));
       // 群聊会话ID
       localStorage.setItem("VuexDate_GroupchatIDNumber", JSON.stringify(this.$store.state.GroupchatIDNumber));
-      // 群聊会话ID
+      // 群聊列表
       localStorage.setItem("VuexDate_GroupThatTotalList", JSON.stringify(this.$store.state.GroupThatTotalList));
     });
   },
@@ -289,13 +312,6 @@ export default {
   //   window.JIM.getSignature();
   // },
   methods: {
-    // // 2021年6月10日11:33:34
-    // // // 有新的消息就计算未读数
-    // Unread() {
-    //   var IMlist = this.$store.state.SaveInformationList;
-
-    //   this.$store.commit("Unread", Unread);
-    // },
     /**
      * @Author: 飞
      * @Date: 2021-06-16 15:54:58
@@ -332,6 +348,7 @@ export default {
 
     // 接收粉丝列表
     FansList(msg) {
+      console.log('获取粉丝列表');
       var that = this;
       axios({
         method: "post",
@@ -358,13 +375,20 @@ export default {
 
     // 离线消息
     OfflineMessage(msg) {
-      console.log("离线消息", msg);
+      // console.log("离线消息", msg);
 
       // this.$store.commit("OfflineMessage", msg);
       for (let index = 0; index < msg.length; index++) {
         for (let p = 0; p < msg[index].msgs.length; p++) {
-          console.log("离线信息", msg[index].msgs[p].content);
+          // console.log("离线信息", msg[index].msgs[p].content);
 
+          var _tiem = new Date(msg[index].msgs[p].content.create_time);
+          let mm = _tiem.getMonth() + 1;
+          let dd = _tiem.getDate();
+          let hh = _tiem.getHours();
+          let mf = _tiem.getMinutes() < 10 ? "0" + _tiem.getMinutes() : _tiem.getMinutes();
+          msg[index].msgs[p].content["mmgettime"] = mm + "-" + dd;
+          msg[index].msgs[p].content["hhgettime"] = hh + ":" + mf;
           // 单聊离线消息
           if (msg[index].msgs[p].content.target_type == "single") {
             // 离线信息id  内id相同  即可判断为离线信息
@@ -373,24 +397,51 @@ export default {
             }
           }
 
-          // 群聊离线消息
-          if (msg[index].msgs[p].content.target_type == "group") {
-
-            if (window.JGusername != msg[index].msgs[p].content.from_id) {
-              this.$store.commit("GroupChatNewInformation", { NewArray: msg[index].msgs[p] });
-            }
-
-          }
         }
       }
     },
 
     // 最新单聊消息
-    latestNews(msg) {
-      this.$store.commit("NewArray", { NewArray: msg.content });
+    latestNews(data) {
+
+      // // 消息内容
+      // var NewArray_msg = data.content;
+      // console.log('NewArray_msg',NewArray_msg);
+
+      // // 消息数
+      // var msg_idArry = this.$store.state.msg_idArry;
+
+      // // 消息体
+      // var NewArray_data = this.$store.state.NewArray;
+      // console.log('NewArray_data',data,NewArray_data.hasOwnProperty);
+      // // 库里面没有这个人
+      // if (!NewArray_data.hasOwnProperty(NewArray_msg.from_id)) {
+      //   // 添加新结构给我发的信息
+      //   NewArray_msg.informationTypesOf = "L";
+      //   // // 给新来的信息添加头像
+      //   // NewArray.topurl = state.IDtopurl[NewArray.from_id];
+
+      //   NewArray_data[NewArray_msg.from_id] = [];
+      //   NewArray_data[NewArray_msg.from_id].push(NewArray_msg);
+      // } else {
+      //   // 单聊左
+      //   NewArray_msg.informationTypesOf = "L";
+      //   NewArray_data[NewArray_msg.from_id].push(NewArray_msg);
+      // }
+
+
+      // console.log('NewArray_data',NewArray_data);
+      // this.$store.commit("NewVersionPassiveNews", NewArray_data);
+
+      // localStorage.setItem("VuexDate_NewArray", NewArray_data);
+
+
+      this.$store.commit("NewArray", { NewArray: data.content });
+      // this.UpdateAvatar()
       // 最新消息时获取总的消息数
       // this.Unread();
     },
+
     // 最新群聊消息
     GroupChatNewInformation(msg) {
       this.$store.commit("GroupChatNewInformation", { NewArray: msg });
@@ -433,7 +484,6 @@ export default {
       // document.getElementById("appMain").style.height = "100%";
       document.getElementById("appMain").style.margin = "0 auto";
       // }
-      console.log("router", this.$router);
     },
 
     initFoot(item) {
@@ -911,8 +961,8 @@ export default {
 // ----- #appMain.pcStyle 用于pc端样式适配
 
 #appMain {
-  height: calc(100% - 50px);
-  // height: 100%  ;
+  // height: calc(100% - 50px);
+  height: 100%;
 }
 #appMain.pcStyle {
   .mint-header {

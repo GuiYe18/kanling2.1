@@ -38,17 +38,18 @@
             :id="item.id"
             :datas="item.remote_data"
             :index="index"
-            :component_key="item.component_key"
+            :component_key="item.component_key + 3"
             :isClick="isMemberGrade"
             :member_item="member_item"
             :all="components.length"
             :member_order="member_order"
             :page_id="page_id"
             :notShow="notShow"
-            @openQrCode="openQrCode"
             :love_integral="love_integral"
-            :CashCodeStatus="CashCodeStatus"
-
+            :CashCodeStatus="CashCodeStatus" 
+            :payStype="payStype" 
+            :hangye="hangye"
+            @openQrCode="openQrCode"
           >
           </component>
         </template>
@@ -655,8 +656,8 @@
               </router-link>
             </li>
 
-            <li v-for="(item, i) in pluginsList.tool" :key="i" v-if="pluginsList.tool && notShow.indexOf(item.url) < 0">
-              <router-link :to="fun.getUrl(item.url)">
+            <li v-for="(item, i) in pluginsList.tool" :key="i">
+              <router-link :to="fun.getUrl(item.url)" v-if="pluginsList.tool && notShow.indexOf(item.url) < 0">
                 <!-- <i class="iconfont bankCard" :class="item.class"></i> -->
                 <i class="iconfont" :class="item.class"></i>
                 <div>{{ item.title }}</div>
@@ -681,10 +682,12 @@
               </div>
 
               <div class="cart">
-                <div class="list1" v-if="pluginsList.merchant && notShow.indexOf(item.url) < 0" v-for="(item, i) in pluginsList.merchant" :key="i" @click="pluginGoto(item)">
-                  <van-icon slot="icon" class="iconfont" :class="item.class" size="1.625rem" color="#f15353" style="margin-right: 0.375rem"></van-icon>
-                  <span slot="text">{{ item.title }}</span>
-                  <i class="fa fa-angle-right"></i>
+                <div class="list1" v-for="(item, i) in pluginsList.merchant" :key="i" @click="pluginGoto(item)">
+                  <template v-if="pluginsList.merchant && notShow.indexOf(item.url) < 0">
+                    <van-icon slot="icon" class="iconfont" :class="item.class" size="1.625rem" color="#f15353" style="margin-right: 0.375rem"></van-icon>
+                    <span slot="text">{{ item.title }}</span>
+                    <i class="fa fa-angle-right"></i>
+                  </template>
                 </div>
               </div>
             </van-collapse-item>
@@ -728,11 +731,13 @@
                 </router-link>
 
                 <div>
-                  <div class="list1" v-if="pluginsList.market && notShow.indexOf(item.url) < 0" v-for="(item, i) in pluginsList.market" :key="i" @click="pluginGoto(item)">
-                    <van-icon slot="icon" class="iconfont" :class="item.class" size="1.625rem" color="#f15353" style="margin-right: 0.375rem"></van-icon>
-                    <span slot="text">{{ item.title }}</span>
-                    <div class="Badge" v-show="item.total > 0">{{ item.total > 99 ? "99+" : item.total }}</div>
-                    <i class="fa fa-angle-right"></i>
+                  <div class="list1" v-for="(item, i) in pluginsList.market" :key="i" @click="pluginGoto(item)">
+                    <template v-if="pluginsList.market && notShow.indexOf(item.url) < 0">
+                      <van-icon slot="icon" class="iconfont" :class="item.class" size="1.625rem" color="#f15353" style="margin-right: 0.375rem"></van-icon>
+                      <span slot="text">{{ item.title }}</span>
+                      <div class="Badge" v-show="item.total > 0">{{ item.total > 99 ? "99+" : item.total }}</div>
+                      <i class="fa fa-angle-right"></i>
+                    </template>
                   </div>
                 </div>
               </div>
@@ -744,8 +749,8 @@
               </div>
 
               <div class="cart">
-                <div class="list1" v-if="pluginsList.asset_equity && notShow.indexOf(item.url) < 0" v-for="(item, i) in pluginsList.asset_equity" :key="i" @click="pluginGoto(item)">
-                  <div class="list1">
+                <div class="list1" v-for="(item, i) in pluginsList.asset_equity" :key="i" @click="pluginGoto(item)">
+                  <div class="list1" v-if="pluginsList.asset_equity && notShow.indexOf(item.url) < 0">
                     <van-icon slot="icon" class="iconfont" :class="item.class" size="1.625rem" color="#f15353" style="margin-right: 0.375rem"></van-icon>
                     <span slot="text">{{ item.title }}</span>
                     <i class="fa fa-angle-right"></i>
@@ -765,9 +770,11 @@
               {{ $i18n.t("member.商家管理") }}
             </h1>
             <ul class="box">
-              <li v-if="pluginsList.merchant && notShow.indexOf(item.url) < 0" v-for="(item, i) in pluginsList.merchant" :key="i" @click="pluginGoto(item)">
-                <i class="iconfont" :class="item.class"></i>
-                <span>{{ item.title }}</span>
+              <li v-for="(item, i) in pluginsList.merchant" :key="i" @click="pluginGoto(item)">
+                <template v-if="pluginsList.merchant && notShow.indexOf(item.url) < 0">
+                  <i class="iconfont" :class="item.class"></i>
+                  <span>{{ item.title }}</span>
+                </template>
               </li>
             </ul>
           </div>
@@ -808,10 +815,12 @@
                 </router-link>
               </li>
 
-              <li v-if="pluginsList.market && notShow.indexOf(item.url) < 0" v-for="(item, i) in pluginsList.market" :key="i" @click="pluginGoto(item)">
-                <i class="iconfont" :class="item.class"></i>
-                <span>{{ item.title }}</span>
-                <div class="Badge" v-show="item.total > 0">{{ item.total > 99 ? "99+" : item.total }}</div>
+              <li v-for="(item, i) in pluginsList.market" :key="i" @click="pluginGoto(item)">
+                <template v-if="pluginsList.market && notShow.indexOf(item.url) < 0">
+                  <i class="iconfont" :class="item.class"></i>
+                  <span>{{ item.title }}</span>
+                  <div class="Badge" v-show="item.total > 0">{{ item.total > 99 ? "99+" : item.total }}</div>
+                </template>
               </li>
             </ul>
           </div>
@@ -822,9 +831,11 @@
               {{ $i18n.t("member.资产权益") }}
             </h1>
             <ul class="box">
-              <li v-if="pluginsList.asset_equity && notShow.indexOf(item.url) < 0" v-for="(item, i) in pluginsList.asset_equity" :key="i" @click="pluginGoto(item)">
-                <i class="iconfont" :class="item.class"></i>
-                <span>{{ item.title }}</span>
+              <li v-for="(item, i) in pluginsList.asset_equity" :key="i" @click="pluginGoto(item)">
+                <template v-if="pluginsList.asset_equity && notShow.indexOf(item.url) < 0">
+                  <i class="iconfont" :class="item.class"></i>
+                  <span>{{ item.title }}</span>
+                </template>
               </li>
             </ul>
           </div>

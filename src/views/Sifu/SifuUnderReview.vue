@@ -7,7 +7,7 @@
 -->
 <template>
   <div class="content">
-    <div><img src="./img/审核中.png" alt="" /></div>
+    <div><img src="./img/underReview.png" alt="" /></div>
     <p class="UnderReview">审核中</p>
     <p class="UnderReviewText">信息提交后72小时内审核</p>
   </div>

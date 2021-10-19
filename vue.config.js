@@ -40,7 +40,9 @@ const cdn = {
             "/static/app/axios.min.js",
             // '/static/app/ydui.px.js',
             // '/static/app/mint-ui.js', 去掉mint
-            "https://webapi.amap.com/maps?v=1.4.9&key=43de56d8e65fe042493541213d9ad7b0&plugin=AMap.Autocomplete,AMap.PlaceSearch,AMap.Geocoder",
+            // "https://webapi.amap.com/maps?v=1.4.9&key=43de56d8e65fe042493541213d9ad7b0&plugin=AMap.Autocomplete,AMap.PlaceSearch,AMap.Geocoder",
+            "https://webapi.amap.com/maps?v=1.4.9&key=fecbee2d0e60081c5778c70cd6deb98a&plugin=AMap.Autocomplete,AMap.PlaceSearch,AMap.Geocoder",
+            // "https://webapi.amap.com/maps?v=2.0Beta&key=fecbee2d0e60081c5778c70cd6deb98a",
             "/static/app/YdbOnline.js",
             "/static/app/apps.js",
             "/static/app/fixifmheight.js",
@@ -74,7 +76,10 @@ const cdn = {
             "./static/app/axios.min.js",
             // './static/app/ydui.px.js',
             // './static/app/mint-ui.js',
-            "https://webapi.amap.com/maps?v=1.4.9&key=43de56d8e65fe042493541213d9ad7b0&plugin=AMap.Autocomplete,AMap.PlaceSearch,AMap.Geocoder",
+            // "https://webapi.amap.com/maps?v=1.4.9&key=43de56d8e65fe042493541213d9ad7b0&plugin=AMap.Autocomplete,AMap.PlaceSearch,AMap.Geocoder",
+            "https://webapi.amap.com/maps?v=1.4.9&key=fecbee2d0e60081c5778c70cd6deb98a&plugin=AMap.Autocomplete,AMap.PlaceSearch,AMap.Geocoder",
+            // "https://webapi.amap.com/maps?v=2.0Beta&key=fecbee2d0e60081c5778c70cd6deb98a",
+
             "./static/app/YdbOnline.js",
             "./static/app/apps.js",
             "./static/app/fixifmheight.js",
@@ -92,7 +97,7 @@ const cdn = {
 
 module.exports = {
     publicPath: process.env.NODE_ENV === "production" ? "/addons/yun_shop/" : "/", // 署应用包时的基本 URL。 vue-router hash 模式使用
-    //  publicPath: '/app/', //署应用包时的基本 URL。  vue-router history模式使用
+    //  publicPath: './app', //署应用包时的基本. URL。  vue-router history模式使用
     outputDir: "dist", //  生产环境构建文件的目录
     // outputDir: "../yz-front-dist", //  生产环境构建文件的目录
     assetsDir: process.env.NODE_ENV === "production" ? "./static/app" : "static", //  outputDir的静态资源(js、css、img、fonts)目录

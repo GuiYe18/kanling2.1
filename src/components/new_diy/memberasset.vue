@@ -33,6 +33,10 @@
               <span>{{ member_item.integral.text }}ss</span>
             </li> -->
             <!-- 通兑  -->
+            <li v-if="item.value === 'integral_v2' && member_item.integral" @click="goUrl('ToPromoteTheBalance')" :key="index">
+              <span>{{ member_item.tgmoney }}</span>
+              <span>推广余额</span>
+            </li>
             <li v-if="item.value === 'integral_v2' && member_item.integral" @click="goUrl(item.value)" :key="index">
               <span>{{ member_item.integral.data }}</span>
               <span>通兑</span>
@@ -96,6 +100,8 @@ export default {
   },
   methods: {
     goUrl(str) {
+      // if (str == "ToPromoteTheBalance") {
+      // }
       this.$router.push(this.fun.getUrl(str));
     },
     //自定义提现收入语言

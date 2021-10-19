@@ -1,3 +1,10 @@
+/*
+ * @Author: 飞
+ * @Date: 2021-04-20 11:08:53
+ * @LastEditTime: 2021-07-08 17:19:02
+ * @FilePath: \you-shop1\src\views\member\integral_v2\member_integral_v2Controller.js
+ * @Describe: 
+ */
 import cTitle from "components/title";
 
 export default {
@@ -85,7 +92,7 @@ export default {
   activated() {
     this.toi = this.fun.getKeyByI();
     this.getIntegral();
-    this.fun.setWXTitle(this.integral);
+    // this.fun.setWXTitle(this.integral);
   },
   components: { cTitle }
 };

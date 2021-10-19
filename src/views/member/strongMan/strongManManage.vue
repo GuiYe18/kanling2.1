@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-04-20 11:09:01
- * @LastEditTime: 2021-06-11 11:56:59
+ * @LastEditTime: 2021-08-02 20:40:25
  * @FilePath: \you-shop1\src\views\member\strongMan\strongManManage.vue
  * @Describe: 
 -->
@@ -20,10 +20,7 @@
       </div>
       <div class="ExistingContext">
         <div class="realTime">
-          <div class="realTimeLeft">
-            <span>今日实时</span>&#32;&#32;&#32;&#32;
-            <!-- <img src="../../../assets/images/dataAnalysis/感叹@2x.png" alt="" /> -->
-          </div>
+          <div class="realTimeLeft"><span>今日实时</span>&#32;&#32;&#32;&#32;</div>
           <div class="realTimeRight">
             <span>截止</span>
             <span>{{ statisticalTime }}</span>
@@ -34,28 +31,28 @@
           <van-radio name="1">
             <template #icon="props">
               <div :class="props.checked ? 'figureSelected span' : 'span'">
-                <span>本日访客</span>&#32;&#32;&#32;<img src="../../../assets/images/dataAnalysis/感叹@2x.png" alt="" /><br /><span>{{ visit_count }}</span>
+                <span>本日访客</span>&#32;&#32;&#32;<img src="../../../assets/images/dataAnalysis/sigh.png" alt="" /><br /><span>{{ visit_count }}</span>
               </div>
             </template>
           </van-radio>
           <van-radio name="2">
             <template #icon="props">
               <div :class="props.checked ? 'figureSelected span' : 'span'">
-                <span>本日新增</span>&#32;&#32;&#32;<img src="../../../assets/images/dataAnalysis/感叹@2x.png" alt="" /><br /><span>{{ follow_count }}</span>
+                <span>本日新增</span>&#32;&#32;&#32;<img src="../../../assets/images/dataAnalysis/sigh.png" alt="" /><br /><span>{{ follow_count }}</span>
               </div>
             </template>
           </van-radio>
           <van-radio name="3">
             <template #icon="props">
               <div :class="props.checked ? 'figureSelected span' : ' span'">
-                <span>累计粉丝</span>&#32;&#32;&#32;<img src="../../../assets/images/dataAnalysis/感叹@2x.png" alt="" /><br /><span>{{ fans_count }}</span>
+                <span>累计粉丝</span>&#32;&#32;&#32;<img src="../../../assets/images/dataAnalysis/sigh.png" alt="" /><br /><span>{{ fans_count }}</span>
               </div>
             </template>
           </van-radio>
           <van-radio name="4">
             <template #icon="props">
               <div :class="props.checked ? 'figureSelected span' : 'span'">
-                <span>粉丝互动</span>&#32;&#32;&#32;<img src="../../../assets/images/dataAnalysis/感叹@2x.png" alt="" /><br /><span>{{ interaction_count }}</span>
+                <span>粉丝互动</span>&#32;&#32;&#32;<img src="../../../assets/images/dataAnalysis/sigh.png" alt="" /><br /><span>{{ interaction_count }}</span>
               </div>
             </template>
           </van-radio>
@@ -68,7 +65,7 @@
             <span>客户不够多？来这里看看</span>
           </div>
           <div class="PromoteNowright">
-            <span>立即推广</span>
+            <span @click="toRedPackets">立即推广</span>
           </div>
         </div>
       </div>
@@ -112,7 +109,7 @@
 <script>
 import cTitle from "components/title";
 import * as echarts from "echarts";
-import { Toast } from 'vant';
+import { Toast } from "vant";
 
 export default {
   components: { cTitle },
@@ -141,6 +138,24 @@ export default {
     };
   },
   activated() {
+    var that = this;
+    const url = "https://tpkl.minpinyouxuan.com/api/v1/pay_money_status";
+    axios({
+      method: "POST",
+      url,
+      data: { uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid }
+    }).then(async res => {
+      console.log(res.data.data);
+
+      if (res.data.result === 1) {
+        that.show = true;
+      }
+      if (res.data.result === 0) {
+        that.$router.push(that.fun.getUrl("member"));
+        that.$router.push(that.fun.getUrl("redPackets"));
+      }
+    });
+
     this.uid = JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid;
 
     // if (window.localStorage.getItem("typea") == 3) {
@@ -170,8 +185,8 @@ export default {
 
   methods: {
     // 上传视频
-    UploadVideo(){
-      Toast('功能正在建设中...')
+    UploadVideo() {
+      Toast("功能正在建设中...");
     },
     attestationValue() {
       const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/nrstatus";
@@ -318,7 +333,6 @@ export default {
         data
       }).then(res => {
         if (res.data.result === 1) {
-          
           this.data_visit = res.data.data.datas_visit.data_visit; //本日访客
           this.datas_follow = res.data.data.datas_follow.data_follow; //本日新增
           this.datas_fans = res.data.data.datas_fans.data_fans; //累计粉丝
@@ -466,7 +480,7 @@ export default {
       height: 120px;
       background: #ffffff;
       border-radius: 8px;
-      background-image: url("../../../assets/images/dataAnalysis/数据分析@2x.png");
+      background-image: url("../../../assets/images/dataAnalysis/dataAnalysis.png");
       background-size: 120px;
       background-repeat: no-repeat;
       padding-left: 22px;
@@ -637,8 +651,9 @@ export default {
     display: inline-block;
     color: #0579fc;
     padding: 9px 0;
-        font-weight: bold;
-    font-size: 17px;
+    font-weight: bold;
+    // font-size: 17px;
+    font-size: 1.06rem;
   }
 }
 #income,

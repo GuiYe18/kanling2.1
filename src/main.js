@@ -29,7 +29,7 @@ import "core-js/stable";
 import "regenerator-runtime/runtime";
 import "whatwg-fetch";
 
-// import VideoPlayer from 'vue-video-player';
+import VideoPlayer from 'vue-video-player';
 /**
  * @Author: 飞
  * @Date: 2021-06-22 13:46:25
@@ -41,7 +41,24 @@ require('vue-video-player/src/custom-theme.css');
 // import 'videojs-flash';
 // import 'videojs-contrib-hls';
 // import 'videojs-contrib-hls/dist/videojs-contrib-hls';
-// Vue.use(VueVideoPlayer);
+Vue.use(VideoPlayer);
+
+
+/**
+ * @Author: 飞
+ * @Date: 2021-06-10 11:53:51
+ * @Describe: 即时通讯 引入imapi
+ */
+import './IM/IMAPI'
+
+
+/**
+ * @Author: 飞
+ * @Date: 2021-06-30 22:20:22
+ * @Describe: 图片截取vue-cropper
+ */
+import VueCropper from 'vue-cropper'
+Vue.use(VueCropper)
 
 // import vuefinger from 'vue-finger'
 // import Vant from 'vant'
@@ -74,9 +91,21 @@ import {
     FormItem,
     Input,
     Popover,
+    Dialog as EDialog,
+    Progress as EProgress,
+    loading as Eloading,
+    Checkbox as ElCheckbox,
+    Steps as ElSteps,
+    Step as ElStep,
+    Radio as ElRadio,
+    Table,
+
+    //   
+
 } from "element-ui";
 
-Vue.use(Select).use(Option).use(OptionGroup).use(Pagination).use(Tooltip).use(Upload).use(Carousel).use(CarouselItem).use(Form).use(FormItem).use(Input).use(Popover);
+Vue.use(Select).use(Option).use(OptionGroup).use(Pagination).use(Tooltip).use(Upload).use(Carousel).use(CarouselItem).use(Form).use(FormItem).use(Input).use(Popover).use(EDialog)
+    .use(EProgress).use(Eloading).use(Table).use(ElCheckbox).use(ElSteps).use(ElStep).use(ElRadio)
 
 // ydui的弹窗组件 $yddialog
 // import { Confirm, Alert } from "vue-ydui/dist/lib.rem/dialog";
@@ -162,7 +191,10 @@ import {
     Form as VForm,
     Calendar,
     Popover as VPopover,
-    Image as VanImage
+    Image as VanImage,
+    Tabbar,
+    TabbarItem,
+    ContactList
 } from "vant";
 
 
@@ -179,7 +211,8 @@ Vue.use(DatetimePicker).use(Cell).use(CellGroup).use(Popup).use(Icon).use(Lazylo
     .use(Dialog).use(Notify).use(Collapse).use(CollapseItem).use(Row).use(Col).use(DropdownMenu).use(Toast).use(Loading)
     .use(DropdownItem).use(ImagePreview).use(NoticeBar).use(Search).use(Stepper).use(Progress).use(Grid).use(GridItem).use(NumberKeyboard).use(PasswordInput)
     .use(SwipeCell).use(Switch).use(PullRefresh).use(List).use(Empty).use(Sticky).use(CountDown).use(ActionSheet).use(Circle).use(Card).use(SubmitBar).use(ShareSheet).use(Sku).use(Area)
-    .use(Tag).use(AddressList).use(Divider).use(Panel).use(Badge).use(IndexBar).use(IndexAnchor).use(Cascader).use(VForm).use(Calendar).use(VPopover).use(VanImage);
+    .use(Tag).use(AddressList).use(Divider).use(Panel).use(Badge).use(IndexBar).use(IndexAnchor).use(Cascader).use(VForm).use(Calendar).use(VPopover).use(VanImage)
+    .use(Tabbar).use(TabbarItem).use(ContactList);
 // Vue.use(MINT);
 // Vue.use(Vuex)
 Vue.use(VueRouter);
@@ -445,12 +478,6 @@ Vue.prototype.fun = Fun;
 
 window.$http = Http;
 
-/**
- * @Author: 飞
- * @Date: 2021-06-10 11:53:51
- * @Describe: 即时通讯 引入imapi
- */
-import './IM/IMAPI'
 // window.R = R;
 window.__lendApp__ = new Vue({
     el: "#app",

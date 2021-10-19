@@ -1,7 +1,7 @@
 <template>
   <div id="goodslist">
     <div class="mai">
-      <div class="main s" v-show="view == false || view">
+      <div class="main" v-show="view == false">
         <dl v-for="(item, i) in goods" :key="i" @click.stop.prevent="gotoDetail(item.goods_id || item.id)">
           <dt v-if="item.thumb">
             <img :src="item.thumb" @click.stop.prevent="gotoDetail(item.goods_id || item.id)" />
@@ -25,9 +25,9 @@
           <dd class="m-text" style="-webkit-box-orient: vertical">
             <div class="van-multi-ellipsis--l2">
               <span v-show="item.brand_id == '5'">
-                <div class="NewGifts" v-if="item.icon == 1 || item.icon == 0" style="display: inline-block">企业全新</div>
-                <div class="NewGifts" v-if="item.icon == 2" style="display: inline-block">个人全新</div>
-                <div class="NewGifts" v-if="item.icon == 3" style="display: inline-block">个人二手</div>
+                <div class="NewGifts" v-if="item.icon == 1 || item.icon == 0" style="display: inline-block">企业全新捐赠</div>
+                <div class="NewGifts" v-if="item.icon == 2" style="display: inline-block">个人全新捐赠</div>
+                <div class="NewGifts" v-if="item.icon == 3" style="display: inline-block">个人二手捐赠</div>
               </span>
               {{ item.title | escapeTitle }}
             </div>
@@ -47,20 +47,22 @@
               </span>
               <span class="s3-price-span2" v-else>
                 <!-- {{ item.price }} -->
-                {{ Number(item.price).toFixed(0) }}&#32;&#32; <span v-show="exchange == 6">通兑</span>
+                <span v-show="item.brand_id == 7">¥{{ item.price }}</span>
+                <span v-show="item.brand_id != 7">{{ Number(item.price).toFixed(0) }} </span>&#32;&#32; <span v-show="item.brand_id == 6">通兑</span>
+                <span class="mark" v-show="item.brand_id == '7'"> {{ item.integrals }}</span>
+
                 <!--  Number(item.vip_level_status && item.vip_level_status.status == 1 ? item.vip_level_status.word : item.pricenow).toFixed(0)-->
                 <!-- 捐物商城 兑换 -->
-                <div class="conversion" :class="exchange">
+                <div class="conversion" v-show="item.brand_id != 7">
                   <!-- <span>{{exchange}}</span> -->
-                  <span v-show="exchange == 5 || exchange == 7">购买</span>
-                  <span v-show="exchange == 6">兑换</span>
+                  <span v-show="item.brand_id == 5">购买</span>
+                  <span v-show="item.brand_id == 6">兑换</span>
                 </div>
               </span>
-              <!-- <div class="Child_buyBtn ss">
-                  <div class="buyBtn">
-                    兑换
-                  </div>
-              </div> -->
+              <div v-show="item.brand_id == 7" style="display: inline-block; float: right">
+                <van-icon name="add" size="24" />
+              </div>
+
             </div>
 
             <!-- <div style="color: #888; font-size: 12px" v-show="item.is_open_micro == 1">会员价:{{ $i18n.t("money") }}{{ item.price_level == 1 ? item.vip_price : item.vip_next_price }}</div> -->
@@ -116,9 +118,9 @@
           <!-- 模板二end -->
         </dl>
       </div>
-      <div class="main2 s" v-show="false">
+      <div class="main2 s" v-show="view != false">
         <!-- 模板一 -->
-        <div v-show="goods_list_template != '02'" class="list" v-for="(items, i) in goods" :key="i" @click.stop.prevent="gotoDetail(items.goods_id || item.id)">
+        <div v-show="goods_list_template != '02'" class="list 模板一" v-for="(items, i) in goods" :key="i" @click.stop.prevent="gotoDetail(items.goods_id || item.id)">
           <div class="imgs">
             <img :src="items.thumb" :key="items.thumb" v-if="items.thumb" />
             <img src="../assets/images/img_default.png" v-if="!items.thumb" />
@@ -149,6 +151,7 @@
                 <small></small>
                 会员价：{{ $i18n.t("money") }}{{ items.price_level == 1 ? items.vip_price : items.vip_next_price }}
               </dd>
+
               <div class="fit" v-if="items.estimated_commission > 0" style="color: #888; font-size: 12px">
                 <small>{{ $i18n.t("money") }}</small>
                 {{ $i18n.t("预估收益") }}：{{ items.estimated_commission }}
@@ -159,7 +162,7 @@
         <!-- 模板二 -->
         <div
           v-show="goods_list_template == '02'"
-          class="list"
+          class="list 模板二"
           style="flex-wrap: wrap; margin-bottom: 0.75rem"
           v-for="(items, i) in goods"
           :key="i"
@@ -172,6 +175,11 @@
           <div class="shop_info">
             <ul>
               <li class="title">
+                <span v-show="items.brand_id == '5'">
+                  <span class="TypesOf" v-if="items.icon == 1 || items.icon == 0">企业全新捐赠</span>
+                  <span class="TypesOf" v-if="items.icon == 2">个人全新捐赠</span>
+                  <span class="TypesOf" v-if="items.icon == 3">个人二手捐赠</span>
+                </span>
                 {{ items.title | escapeTitle }}
               </li>
             </ul>
@@ -181,6 +189,7 @@
                 <div class="discount-a" v-if="items.coupon.coupon_method == 2">折扣:{{ items.coupon.discount }}折</div>
                 <div class="discount-a" v-if="items.first_dividend">推广赚{{ $i18n.t("money") }}{{ items.first_dividend }}</div>
               </div>
+
               <div v-if="items.coupon">
                 <div class="now-price" v-if="items.coupon.deduct_price">{{ price }} {{ $i18n.t("money") }}{{ items.price }}</div>
                 <div class="discount-price" v-if="items.coupon.deduct_price">
@@ -190,24 +199,46 @@
                   <span v-else class="member-span-2"> {{ $i18n.t("money") }}{{ items.coupon.deduct_price }} </span>
                   <!-- <span v-else class="member-span-2"> {{ items.coupon.deduct_price }} </span> -->
                 </div>
+
                 <!-- <div class="discount-price" v-else>{{ price }} {{ $i18n.t('money') }}{{ items.price }}</div> -->
                 <!-- (Number(goodsInfo.has_option == 1 ? (goodsInfo.min_price == goodsInfo.max_price ? goodsInfo.max_price : goodsInfo.min_price + "-" + goodsInfo.max_price) : goodsInfo.price)).toFixed(0) -->
-                <div class="discount-price" v-else>{{ price }} {{ Number(items.price).toFixed(0) }}</div>
+                <div class="discount-price" v-else>
+                  <span v-show="items.brand_id != '6'">¥</span>
+                  <!-- <span >¥</span> -->
+                  <span v-show="items.brand_id == 7">{{ items.price }}</span>
+                  <span v-show="items.brand_id != 7">{{ Number(items.price).toFixed(0) }}</span>
+                  <span class="mark" v-show="items.brand_id == '7'">{{ items.integrals }}</span>
+                  <span class="mark" v-show="items.brand_id == '6'">通兑</span>
+                </div>
               </div>
+
               <dd class="s3" style="color: #888; font-size: 12px" v-show="items.is_open_micro == 1">
                 <small></small>
                 会员价：{{ $i18n.t("money") }}{{ items.price_level == 1 ? items.vip_price : items.vip_next_price }}积分
               </dd>
+
               <div class="fit" v-if="items.estimated_commission > 0" style="color: #888; font-size: 12px">
                 <small>{{ $i18n.t("money") }}</small>
                 {{ $i18n.t("预估收益") }}：{{ items.estimated_commission }}
               </div>
             </div>
+            <!-- 销量 -->
+            <div class="SalesDiv">
+              <span class="Sales">
+                <template> 销量 {{ items.total_sales }}</template>
+              </span>
+              <div class="conversion">
+                <!-- <span>{{exchange}}</span> -->
+                <span v-show="items.brand_id == 5 || items.brand_id == 7">购买</span>
+                <span v-show="items.brand_id == 6">兑换</span>
+              </div>
+            </div>
           </div>
-          <div class="list-b" style="border-top: 1px solid #eee; width: 100%">
+
+          <!-- <div class="list-b" style="border-top: 1px solid #eee; width: 100%">
             <div class="list-copy" @click.stop v-clipboard:copy="items.goods_link" v-clipboard:success="onCopy">复制标题</div>
             <div class="list-share" @click.stop="postShow(items.goods_id)">分享海报</div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -286,6 +317,7 @@ export default {
           that.$set(that.goods[index], "goods_link", val.title);
         }
       });
+      console.log("goods有变化", this.goods);
     },
     goods_list_template(val) {
       if (val == "02") {
@@ -547,26 +579,22 @@ export default {
       margin: 0.375rem 0.375rem 0.375rem 1rem;
       box-sizing: border-box;
       overflow: hidden;
-
+      border-radius: 0.42rem;
       img {
         width: 100%;
+        height: 100%;
       }
     }
 
     .shop_info {
+      width: calc(100% - 8rem);
+      padding: 0.375rem 1rem 0.375rem 0.375rem;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      -webkit-box-flex: 1;
-      -webkit-flex: 1;
-      text-align: left;
-      padding: 0.375rem 1rem 0.375rem 0.375rem;
-
       ul {
         flex: 1;
         display: flex;
         justify-content: space-between;
-        margin-bottom: 0.625rem;
       }
 
       .discount {
@@ -590,8 +618,13 @@ export default {
       }
 
       .discount-price {
-        font-size: 0.875rem;
         color: #f15353;
+        text-align: left;
+        font-size: 22px;
+        .mark {
+          font-size: 12px;
+          margin-left: 0.4rem;
+        }
       }
 
       .main2_price {
@@ -608,6 +641,7 @@ export default {
       }
 
       .title {
+        text-align: left;
         font-size: 14px;
         flex: 3;
         display: -webkit-box;
@@ -616,6 +650,16 @@ export default {
         overflow: hidden;
         height: 36px;
         line-height: 18px;
+        .TypesOf {
+          background: linear-gradient(270deg, #fd291a 0%, #ed683d 100%);
+          border-radius: 2px;
+          display: inline-block;
+          font-size: 9px;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #ffffff;
+          padding: 0 0.2rem;
+        }
       }
 
       .member {
@@ -643,6 +687,37 @@ export default {
 
     .fit {
       flex: 0 0 1rem;
+    }
+    // 销量
+    .SalesDiv {
+      display: inline-block;
+      width: 100%;
+      text-align: left;
+      .Sales {
+        vertical-align: -webkit-baseline-middle;
+        font-size: 10px;
+        font-family: SourceHanSansCN-Regular, SourceHanSansCN;
+        font-weight: 400;
+        color: #999999;
+        line-height: 15px;
+        width: 78%;
+        display: inline-block;
+      }
+      .conversion {
+        display: inline-block;
+        text-align: center;
+        height: 24px;
+        span {
+          width: 3rem;
+          line-height: 24px;
+          background-color: #ff2c29;
+          border-radius: 13.5px;
+          display: inline-block;
+          color: #fff;
+          font-size: 15px;
+          padding-top: 2px;
+        }
+      }
     }
   }
 
@@ -771,19 +846,36 @@ export default {
 
           .s3-price-span2 {
             // font-size: 16px;
-            font-size: 22px;
-            span {
+            span:nth-child(1) {
+              font-size: 22px;
+            }
+            span:nth-child(2) {
+              font-size: 22px;
+            }
+            span:nth-child(3) {
               font-size: 12px;
             }
-            div {
+            span:nth-child(4) {
+              font-size: 12px;
+            }
+
+            .conversion {
               color: #fff;
               background-color: #fb4a4a;
-              width: 33%;
-              height: 26px;
+              width: 30%;
+              height: 24px;
               display: inline-flex;
               border-radius: 13.5px;
               text-align: center;
-              font-size: 17px;
+              font-size: 15px;
+              span:nth-child(1) {
+                font-size: 15px;
+                // line-height: 24px;
+              }
+              span:nth-child(2) {
+                font-size: 15px;
+                // line-height: 24px;
+              }
             }
           }
         }
@@ -875,26 +967,26 @@ export default {
         }
       }
 
-      .list-b {
-        display: flex;
-        padding: 0.5rem 0;
-        justify-content: center;
+      // .list-b {
+      //   display: flex;
+      //   padding: 0.5rem 0;
+      //   justify-content: center;
 
-        .list-copy {
-          border-radius: 2rem;
-          color: #ff2c29;
-          border: 1px solid #ff2c29;
-          padding: 0.25rem 0.5rem;
-          margin-right: 0.5rem;
-        }
+      //   .list-copy {
+      //     border-radius: 2rem;
+      //     color: #ff2c29;
+      //     border: 1px solid #ff2c29;
+      //     padding: 0.25rem 0.5rem;
+      //     margin-right: 0.5rem;
+      //   }
 
-        .list-share {
-          border-radius: 2rem;
-          background: #ff2c29;
-          color: #fff;
-          padding: 0.35rem 0.5rem;
-        }
-      }
+      //   .list-share {
+      //     border-radius: 2rem;
+      //     background: #ff2c29;
+      //     color: #fff;
+      //     padding: 0.35rem 0.5rem;
+      //   }
+      // }
     }
   }
 }

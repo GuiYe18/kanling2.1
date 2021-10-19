@@ -139,17 +139,33 @@
                       </span>
 
                       <span id="price-num " v-else style="font-size: 22px">
-                        {{
-                          Number(
-                            goodsInfo.has_option == 1 ? (goodsInfo.min_price == goodsInfo.max_price ? goodsInfo.max_price : goodsInfo.min_price + "-" + goodsInfo.max_price) : goodsInfo.price
-                          ).toFixed(0)
-                        }}&#32;&#32;
+                        <!-- /**
+                         * @Author: 飞
+                         * @Date: 2021-07-07 17:49:28
+                         * @Describe: 
+                         */                         -->
+                        <span v-show="goodsInfo.brand_id != 7">
+                          {{
+                            Number(
+                              goodsInfo.has_option == 1 ? (goodsInfo.min_price == goodsInfo.max_price ? goodsInfo.max_price : goodsInfo.min_price + "-" + goodsInfo.max_price) : goodsInfo.price
+                            ).toFixed(0)
+                          }}
+                        </span>
+                        <span v-show="goodsInfo.brand_id == 7">
+                          {{ goodsInfo.has_option == 1 ? (goodsInfo.min_price == goodsInfo.max_price ? goodsInfo.max_price : goodsInfo.min_price + "-" + goodsInfo.max_price) : goodsInfo.price }}
+                        </span>
+
+                        &#32;&#32;
                         <!-- <span style="font-size: 14px;">爱心积分兑换</span> -->
                         <span v-show="goodsInfo.brand_id == 6" style="font-size: 14px">通兑</span>
+                        <span v-show="goodsInfo.brand_id == 7" style="font-size: 14px">{{firstActivityCon_test}}</span>
+
+                        
                         <!-- <span v-show="goodsInfo.brand_id == 5" style="font-size: 14px">爱心积分兑换</span> -->
 
                         <em v-if="isRent">/天</em>
                       </span>
+
                       <del id="original-del" v-if="parseInt(goodsInfo.market_price) && goodsInfo.market_price != goodsInfo.price">
                         <!-- 显示商品原价 -->
                         <!-- <span class="original-price s">{{ fun.getMarketPrice() }}:{{ $i18n.t("money") }}{{ goodsInfo.market_price }}</span> -->
@@ -265,15 +281,18 @@
               </li>
             </ul>
             <!-- 商品活动 -->
-            <ul class="act" @click="activityShowFun" v-if="activitySwitch">
+            <!-- <ul class="act" @click="activityShowFun" v-if="activitySwitch"> -->
+            <ul class="act"  v-if="activitySwitch">
               <li class="act1" style="color: #999">活动</li>
               <li class="act2">
-                <span>{{ firstActivityBtn }}</span>
+                <!-- <span>{{ firstActivityBtn }}</span> -->
+                <span v-if="goodsInfo.brand_id == 7">通兑</span>
                 <!-- <span>只能爱心积分抵扣</span> -->
               </li>
               <li class="act3">
                 <!-- <span>{{ firstActivityCon }}</span> -->
                 <!-- 详情页活动积分 -->
+                <span v-if="goodsInfo.brand_id == 7">{{firstActivityCon}}</span>
                 <span v-if="goodsInfo.brand_id == 6">只能通兑抵扣</span>
                 <span v-if="goodsInfo.brand_id == 5">只能爱心积分抵扣</span>
               </li>
@@ -390,20 +409,38 @@
               <div ref="goodPage" id="goodPage">
                 <div>
                   <!-- 商品详情第一张图 -->
-                  <!-- <img v-show="goodsInfo.brand_id == 5" src="../../views/kick/捐赠物品说明@2x.png" width="100%" alt="images/2/2021/04/grAsG266Gqdqq7Dg7g2VoFzSQQgsGa.png" /> -->
+                  <img v-show="goodsInfo.brand_id == 5" src="../../views/kick/img/DonationItemDescription.png" width="100%" alt="images/2/2021/04/grAsG266Gqdqq7Dg7g2VoFzSQQgsGa.png" />
+
                   <div id="goods_content ww" v-html="goodDetail.content" @click="handleHtml($event)"></div>
                   <!-- 商品详情最后一张图 -->
-                  <div class="OrderDescription" v-show="goodsInfo.brand_id == 5">
-                    <span>说明：</span>
-                    <p>&nbsp;</p>
+                  <!-- 重要提示 -->
+                  <div class="OrderDescription" style="padding-top: 12px">
+                    <span>重要提示</span>
                     <p>
-                      消费者通过捐领平台购买的所有爱心物资的货款，在确认收货后，爱心物资的卖家会把所有的货款全部捐入到指定的基金会账户内，进行公益慈善事业的发展。平台担保并承诺货款全额捐出。基金会负责监督执行。
+                      虽然我们会尽力确保产品信息正确无误，但有时生产商会修改其产品的配料表，因此产品实际包装上标明的信息可能与网页上展示的信息不一致。请不要只依赖于网页上展示的信息，务必在使用产品前仔细阅读产品标签、警告和使用说明。欲知更多产品信息，请咨询客服。本页面展示信息仅供参考。
+                    </p>
+                    <p style="text-indent: 0; font-size: 18px; font-family: fantasy">客服电话：400-8978-288</p>
+                    <p><br /></p>
+                  </div>
+                  <div class="OrderDescription">
+                    <span>说明</span>
+                    <p>
+                      自商品签收7个工作日内，如商品未使用及包装保持出售时原状且配件齐全，我们将提供退换货服务。退换货时，务必保持完好的品牌包装，及附件，如有赠品需同商品一起寄回。如商品包装破损或丢失，即使在退换货期内，也无法为您办理，质量问题除外。
                     </p>
                     <p><br /></p>
                   </div>
-                  <!-- <img v-show="goodsInfo.brand_id == 5" src="../../views/kick/温馨提示@2x.png" width="100%" alt="images/2/2021/04/grAsG266Gqdqq7Dg7g2VoFzSQQgsGa.png" style="background: #fff" /> -->
+                  <div class="OrderDescription" v-show="goodsInfo.brand_id == 5">
+                    <span>温馨提示</span>
+                    <p>符合条件的被捐赠者，根据系统提示，提交相关资料，通过三方审核通过后，方可以下单领取，如有以虚假身份冒领捐赠物资这，承担物品价值的两倍赔偿，并承担所有法律责任。</p>
+                    <p style="text-indent: 0; font-size: 18px; font-family: fantasy">客服电话：400-8978-288</p>
+
+                    <p><br /></p>
+                  </div>
+
+                  <!-- <img  src="./img/捐赠物品说明.jpg" width="100%" alt=""  /> -->
 
                   <p v-if="fun.isTextEmpty(goodDetail.content)" style="color: #666">暂无该商品详情 ~</p>
+                  
                   <div class="like-list" v-if="fun.isTextEmpty(goodDetail.show_push) ? false : true">
                     <div class="box06">
                       <div class="img">
@@ -468,7 +505,10 @@
             <div class="right">
               <div class="price">
                 {{ $i18n.t("money") }}
-                <span id="option_price">{{ Number(popPrice).toFixed(0) }}</span>
+
+                <span id="option_price" v-show="goodsInfo.brand_id != 7">{{ Number(popPrice).toFixed(0) }}</span>
+                <span id="option_price" v-show="goodsInfo.brand_id == 7">{{ popPrice }}</span>
+
                 <span v-if="isRent">/天</span>
               </div>
               <div class="option">库存{{ popStock }}{{ goodsInfo.sku }}</div>
@@ -516,7 +556,10 @@
               <div class="price">
                 <!-- {{ $i18n.t("money") }} -->
                 <!-- 商品单价-->
-                <span id="option_price ">{{ Number(popPrice).toFixed(0) }} </span>
+
+                <span id="option_price " v-show="goodsInfo.brand_id == 7">{{ popPrice }} </span>
+                <span id="option_price " v-show="goodsInfo.brand_id != 7">{{ Number(popPrice).toFixed(0) }} </span>
+
                 <!-- <span v-show="goodsInfo.brand_id == 5" style="font-size: 13px">爱心积分</span> -->
                 <span v-show="goodsInfo.brand_id == 6" style="font-size: 13px">通兑</span>
                 <!-- <span v-show="goodsInfo.brand_id==7"></span> -->

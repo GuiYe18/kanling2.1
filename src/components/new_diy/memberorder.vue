@@ -70,7 +70,7 @@
         </ul>
 
         <template v-for="(order, index) in datas.list">
-          <div class="order_all" v-if="order.uikey === 'U_memberorder' && active == index" :key="index">
+          <div class="order_all 1" v-if="order.uikey === 'U_memberorder' && active == index" :key="index">
             <div class="order_pub" v-for="(item, i) in order.datas.list.value" :key="i">
               <router-link :to="item.id == 4 ? fun.getUrl('aftersaleslist') : fun.getUrl('orderlist', { status: item.id.toString() })">
                 <div class="badge" v-if="U_memberorder[item.id - 1] && U_memberorder[item.id - 1].value != 0">{{ U_memberorder[item.id - 1].value }}</div>
@@ -117,48 +117,22 @@
           </div>
         </template>
       </div>
-      <!-- 新增捐物订单 -->
-      <div  id="new_orderlist">
-        
-          <router-link :to="fun.getUrl('MyDonation', {}, { age: 0 })">
-            <div  class="ordertltie">
-            <div  class="spare"></div>
-            <div  class="ordername">我的捐物</div>
-            <div >
-              <i  class="iconfont icon-member_right"></i>
-            </div>
+      <!-- /**
+       * @Author: 飞
+       * @Date: 2021-07-30 21:25:05
+       * @Describe: 
+       */       -->
+      <template>
+        <router-link :to="fun.getUrl('DonationCenter', {}, {sf_state:sf_state})">
+          <div id="DonationCenter">
+            <img src="./img/DonationCenter.png" alt="" />
+            <span>捐赠中心{{s_state}}</span>
+            <van-icon name="arrow" color="#FFF" />
           </div>
-          </router-link>
+        </router-link>
+      </template>
 
-        <div  class="order_all">
-          <div  class="order_pub">
-            <!--  全部订单等    订单参数 -->
-            <router-link :to="fun.getUrl('MyDonation', {}, { age: 0 })">
-              <!-- <div  class="badge">3</div> -->
-              <img  src="https://kl.minpinyouxuan.com/plugins/decorate/assets/myOrder_a.png" alt="" class="order_img" />
-              <span >已捐赠</span>
-            </router-link>
-          </div>
-          <div  class="order_pub">
-            <!--  全部订单等    订单参数 -->
-            <router-link :to="fun.getUrl('MyDonation', {}, { age: 2 })">
-              <!-- <div  class="badge">2</div> -->
-              <img  src="https://kl.minpinyouxuan.com/plugins/decorate/assets/myOrder_a.png" alt="" class="order_img" />
-              <span >待发货</span>
-            </router-link>
-          </div>
-          <div  class="order_pub">
-            <!--  全部订单等    订单参数 -->
-            <router-link :to="fun.getUrl('MyDonation', {}, { age: 0 })">
-              <!-- <div  class="badge">1</div> -->
-              <img  src="https://kl.minpinyouxuan.com/plugins/decorate/assets/myOrder_a.png" alt="" class="order_img" />
-              <span >售后列表</span>
-            </router-link>
-          </div>
-          <div  class="order_pub"></div>
-          <div  class="order_pub"></div>
-        </div>
-      </div>
+      <!-- 新增捐物订单 -->
     </div>
   </div>
 </template>
@@ -207,12 +181,58 @@ const css = function () {
   `;
   }
 };
+// //
+//       <!-- 新增捐物订单 -->
+//       <div id="new_orderlist">
+//         <router-link :to="fun.getUrl('MyDonation', {}, { age: 0 })">
+//           <div class="ordertltie">
+//             <div class="spare"></div>
+//             <div class="ordername">我的捐物</div>
+//             <div>
+//               <i class="iconfont icon-member_right"></i>
+//             </div>
+//           </div>
+//         </router-link>
 
+//         <div class="order_all">
+//           <div class="order_pub">
+
+//             <router-link :to="fun.getUrl('ListOfMyDonations', {}, { uid: uid })">
+//               <img src="./img/MyDonation.png" alt="" class="order_img" />
+//               <span>我的捐赠</span>
+//             </router-link>
+//           </div>
+
+//           <div class="order_pub">
+//             <!--  全部订单等    订单参数 -->
+//             <router-link :to="fun.getUrl('MyDonation', {}, { age: 0 })">
+//               <img src="https://kl.minpinyouxuan.com/plugins/decorate/assets/myOrder_a.png" alt="" class="order_img" />
+//               <span>已捐赠</span>
+//             </router-link>
+//           </div>
+//           <div class="order_pub">
+//             <!--  全部订单等    订单参数 -->
+//             <router-link :to="fun.getUrl('MyDonation', {}, { age: 2 })">
+//               <img src="https://kl.minpinyouxuan.com/plugins/decorate/assets/myOrder_a.png" alt="" class="order_img" />
+//               <span>待发货</span>
+//             </router-link>
+//           </div>
+//           <div class="order_pub">
+//             <!--  全部订单等    订单参数 -->
+//             <router-link :to="fun.getUrl('MyDonation', {}, { age: 0 })">
+//               <img src="https://kl.minpinyouxuan.com/plugins/decorate/assets/myOrder_a.png" alt="" class="order_img" />
+//               <span>售后列表</span>
+//             </router-link>
+//           </div>
+//           <div class="order_pub"></div>
+//         </div>
+//       </div>
 export default {
   props: ["id", "datas", "member_order", "Order"],
   data() {
     return {
       emptyImage,
+      uid: "",
       active: "",
       U_memberorder: [
         { label: "waitPay", value: 0 },
@@ -245,6 +265,11 @@ export default {
         { label: "waitrRefund", value: 0 }
       ]
     };
+  },
+
+  created() {
+    this.uid = window.localStorage.getItem("uid");
+    console.log('sf_statesf_statesf_statesf_state',this.sf_state);
   },
   computed: {
     css() {
@@ -423,6 +448,35 @@ export default {
 
 .html-box {
   min-height: 30px;
+  // 捐赠中心
+  #DonationCenter {
+    margin-top: 17px;
+    width: 140px;
+    height: 34px;
+    background: linear-gradient(270deg, #ff8068 0%, #ff5665 100%);
+    border-radius: 15px;
+    display: inline-block;
+    margin-bottom: 8px;
+    img {
+      // height: 1.31rem;
+      // width: 1.5rem;
+      height: 21px;
+      width: 24px;
+      vertical-align: -webkit-baseline-middle;
+      margin-right: 12px;
+    }
+    span {
+      font-size: 15px;
+      font-family: Helvetica;
+      color: #ffffff;
+      line-height: 17px;
+      margin-right: 11px;
+      vertical-align: bottom;
+    }
+    i {
+      vertical-align: bottom;
+    }
+  }
 }
 
 .badge {

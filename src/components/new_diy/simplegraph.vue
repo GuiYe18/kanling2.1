@@ -1,5 +1,5 @@
 <template>
-  <div class="component-wrapper" :style="wrapper_style">
+  <div class="component-wrapper w" :style="wrapper_style">
     <template v-if="list && list.length > 0">
       <div style="position: relative;" v-for="(item, index) in list" :key="index">
         <img :src="item.image || emptyImage" :style="img_style" @click="toUrl(item)">

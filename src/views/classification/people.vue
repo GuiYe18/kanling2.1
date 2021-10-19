@@ -4,11 +4,7 @@
       <li>
         <ul>
           <li v-for="(oneItem, oneIndex) in oneList" :key="oneItem.id">
-            <div
-              @click="checkoutOneList(oneItem.id, oneIndex, oneItem)"
-              class="twoName"
-              :class="{ cur: overalOneIndex === oneItem.id }"
-            >
+            <div @click="checkoutOneList(oneItem.id, oneIndex, oneItem)" class="twoName" :class="{ cur: overalOneIndex === oneItem.id }">
               <span>{{ oneItem.name }}</span>
             </div>
           </li>
@@ -22,11 +18,7 @@
         </div>
         <ul class="rightFourList">
           <li class="fourList" v-for="threeItem in item.children" :key="threeItem.id">
-            <div
-              @click="checkoutFourList(item, threeItem)"
-              class="fourTitle"
-              :class="{ fourCur: overalTowIndex === item.id && overalThreeIndex === threeItem.id }"
-            >
+            <div @click="checkoutFourList(item, threeItem)" class="fourTitle" :class="{ fourCur: overalTowIndex === item.id && overalThreeIndex === threeItem.id }">
               {{ threeItem.name }}
             </div>
           </li>
@@ -38,8 +30,9 @@
 
 <script>
 //企业分类
+import { EventBus } from "../A_version_1.1/event-bus.js";
 export default {
-  name: 'people',
+  name: "people",
   data() {
     return {
       url: process.env,
@@ -49,58 +42,61 @@ export default {
       overalThreeIndex: 31,
       rightList: [],
       oneLeave: {}
-    }
+    };
   },
   activated() {
-    window.scrollTo(0,0);
-    this.getCateList()
+    window.scrollTo(0, 0);
+    this.getCateList();
   },
   methods: {
-    checkoutOneList(oneId, oneIndex,oneItem) {
+    checkoutOneList(oneId, oneIndex, oneItem) {
       // this.towIndex = towId
-      this.overalOneIndex = oneId
-      this.rightList = this.oneList[oneIndex].children
-      this.oneLeave = oneItem
+      this.overalOneIndex = oneId;
+      this.rightList = this.oneList[oneIndex].children;
+      this.oneLeave = oneItem;
     },
     checkoutFourList(twoLevel, threeLevel) {
-      this.overalTowIndex = twoLevel.id
-      this.overalThreeIndex = threeLevel.id
-      console.log(this.$route.query)
-      if (this.$route.query.tag === 'strongManInfo') {
-        this.$router.push(this.fun.getUrl('strongManInfo', { category: threeLevel }))
-      } else if (this.$route.query.tag === 'listPeople') {
-        let result = []
-        result = result
-          .concat({ name: this.oneLeave.name, id: this.oneLeave.id })
-          .concat({ name: twoLevel.name, id: twoLevel.id })
-          .concat({ name: threeLevel.name, id: threeLevel.id })
-          console.log(result)
-        this.$router.push(this.fun.getUrl('listPeople', '', { from: 'classificationentPeople' }))
-        window.localStorage.setItem('classificationentPeople', JSON.stringify(result))
-      } else if (this.$route.query.tag === 'strongManInfoNew') {
-        this.$router.push(this.fun.getUrl('strongManInfoNew', { category: threeLevel }))
+      // return;
+      this.overalTowIndex = twoLevel.id;
+      this.overalThreeIndex = threeLevel.id;
+      console.log(this.$route.query);
+      if (this.$route.query.tag === "strongManInfo") {
+        this.$router.push(this.fun.getUrl("strongManInfo", { category: threeLevel }));
+      } else if (this.$route.query.tag === "listPeople") {
+        let result = [];
+        result = result.concat({ name: this.oneLeave.name, id: this.oneLeave.id }).concat({ name: twoLevel.name, id: twoLevel.id }).concat({ name: threeLevel.name, id: threeLevel.id });
+        this.$router.push(this.fun.getUrl("listPeople", "", { from: "classificationentPeople" }));
+        window.localStorage.setItem("classificationentPeople", JSON.stringify(result));
+      } else if (this.$route.query.tag === "strongManInfoNew") {
+        // this.$router.push(this.fun.getUrl("strongManInfoNew", { category: threeLevel }, { attestation: this.$route.query.attestation }));
+        EventBus.$emit("niuClassify", {
+            category: threeLevel,
+        });
+        this.$router.go(-1);
       }
     },
-    // 获取分类数据
+
+    // 获取分类数据1
     getCateList() {
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/admin/catelists'
+      const url = "https://tpkl.minpinyouxuan.com/index.php/admin/catelists";
       const formData = {
         type: 3
-      }
+      };
       axios({
-        method: 'POST',
+        method: "POST",
         url: url,
         data: formData
       }).then(res => {
+        console.log("getCateList", res.data.data);
         // 设置所有分类数据
-        this.oneList = res.data.data
+        this.oneList = res.data.data;
         // 初始化右侧数据
-        this.rightList = this.oneList[0].children
-        this.oneLeave = this.oneList[0]
-      })
+        this.rightList = this.oneList[0].children;
+        this.oneLeave = this.oneList[0];
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -119,7 +115,7 @@ export default {
   width: 6.625rem;
   background-color: #f8f8f8;
   // height: 100%;
-   height: 100%;
+  height: 100%;
   overflow-y: auto;
   min-height: 100%;
 }
@@ -163,7 +159,7 @@ export default {
   padding: 0.8125rem 0.9rem 0 1rem;
   width: 14.5rem;
   box-sizing: content-box;
-   height: 100%;
+  height: 100%;
   overflow-y: auto;
   min-height: 100%;
 }

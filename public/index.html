@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   <meta name="viewport"
     content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,viewport-fit=cover" />
-
+  <!-- <meta name="referrer" content="no-referrer"/> -->
   <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> -->
   <!-- <meta name="referrer" content="no-referrer" />  不启用有图片源的问题   启用了有百度统计的问题-->
   <link rel="stylesheet" href="//at.alicdn.com/t/font_432132_hb7ljz5xa79.css" />
@@ -93,6 +93,7 @@
         <script src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
         <% } %>
           <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+          <!-- <script src="https://cdn.bootcdn.net/ajax/libs/exif-js/2.3.0/exif.js"></script> -->
           <!-- built files will be auto injected -->
           <!--<script type="text/javascript" src="./static/app/TcPlayer-2.3.2.js" charset="utf-8"></script>-->
           <!--<script src="https://player.polyv.net/livesdk/polyv-live.min.js"></script>-->
@@ -210,22 +211,37 @@
           <!--<script src="static/app/md5.js"></script>-->
           <style>
             .van-popover--light .van-popover__arrow {
-              color: #4B4C4D !important;
-                   right: 11px !important;
+              color: #fff !important;
+              right: 11px !important;
             }
 
             .van-popover--light .van-popover__content {
-              background: #4B4C4D !important;
-              color: #fff !important;
+              background: #fff !important;
+              color: #4B4C4D !important;
             }
+
             .van-popover--light .van-popover__content .van-popover__action {
               height: 38px !important;
+              width: 100%;
             }
+
+
+            /* .van-popover__arrow .van-popover__content{
+              background-color: #fff;
+            }
+            .van-popover {
+              background-color: #fff;
+            }
+
+            .van-popover__arrow {
+              color: #FFF;
+            } */
           </style>
 </head>
 
 <body>
   <div id="app"></div>
 </body>
+
 
 </html>

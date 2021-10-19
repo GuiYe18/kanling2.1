@@ -2,14 +2,14 @@
   <div :class="className">
     <div v-html="css"></div>
 
-    <div v-if="isChoose !== '/category' && isChoose !== '/cart' && isChoose !== '/member/extension'" :style="{ height: fun.isIphoneX() ? 84 + 'px' : 50 + 'px' }"></div>
+    <!-- <div v-if="isChoose !== '/category' && isChoose !== '/cart' && isChoose !== '/member/extension'" :style="{ height: fun.isIphoneX() ? 84 + 'px' : 50 + 'px' }"></div> -->
 
-    <div v-if="show" class="advertising-preview" :style="{ width: clientWidth + 'px' }" :class="[fun.isIphoneX() ? 'iphoneXStyle' : '']">
+    <div v-if="navigationShow" class="advertising-preview w" :style="{ width: clientWidth + 'px' }" :class="[fun.isIphoneX() ? 'iphoneXStyle' : '']">
       <ul class="weixin-menu" id="weixin-menu" :style="{ width: clientWidth + 'px' }">
         <li
           :key="i"
           v-for="(btn, i) in menu_button"
-          class="menu-item"
+          class="menu-item 12121"
           :style="{ maxWidth: 100 / menu_button.length + '%' }"
           :class="{ current: isChoose == urlParse(btn.link) || page_id == urlParse(btn.link) }"
           @click="selectedMenu(i, btn)"
@@ -18,20 +18,31 @@
             class="menu-item-title s"
             :style="{ lineHeight: tab_style.icon_set.icon_position == 'top' && tab_style.text_set.text_show ? '25px' : '50px', paddingTop: tab_style.icon_set.icon_position == 'top' ? '2px' : '' }"
           >
-            <!-- <van-icon badge="9" /> -->
-
-            <i class="menu-icon iconfont" v-if="btn.isIcon == '1' && tab_style.icon_set.icon_show" :class="[btn.isIcon == '1' ? btn.icon || 'icon-fenlei4' : '']">
+            <!-- <i class="menu-icon iconfont" v-if="btn.isIcon == '1' && tab_style.icon_set.icon_show" :class="[btn.isIcon == '1' ? btn.icon || 'icon-fenlei4' : '']">
               <template v-if="btn.text == '消息'">
                 <van-badge v-if="news == 0" />
-                <van-badge v-else :content="news" />
+                <van-badge v-else :content="news" max="99" style="padding: 1px 5px; z-index: 10" />
               </template>
-              <!-- <template v-if="btn.text == '消息'"> -->
+            </i> -->
+            <div class="iconDiv">
+              <template>
+                <img :src="btn.iconimging" alt="" class="imgicon" v-if="isChoose == urlParse(btn.link)" />
+                <img :src="btn.iconimg" alt="" class="imgicon" v-else />
+              </template>
+              <template v-if="btn.text == '消息'">
+                <van-badge v-if="news == 0" />
+                <van-badge v-else :content="news" max="99" style="padding: 1px 5px; z-index: 10" />
+              </template>
+            </div>
 
-              <!-- </template> -->
-            </i>
-
-            <img class="icon-img" v-if="btn.isIcon == '2' && tab_style.icon_set.icon_show" :src="btn.image || emptyImage" alt="" />
-            <div class="hide-box" v-if="tab_style.icon_set.icon_position == 'top'" style="height: 10px"></div>
+            <span
+              class="menu-text"
+              v-if="tab_style.text_set.text_show"
+              :style="{ display: tab_style.icon_set.icon_position == 'top' ? 'block' : '', marginLeft: tab_style.icon_set.icon_position == 'top' ? '' : '2px' }"
+              >{{ btn.text }}
+            </span>
+            <!-- <img class="icon-img" v-if="btn.isIcon == '2' && tab_style.icon_set.icon_show" :src="btn.image || emptyImage" alt="" /> -->
+            <!-- <div class="hide-box" v-if="tab_style.icon_set.icon_position == 'top'" style="height: 10px"></div> -->
             <!-- /**
              * @Author: 飞
              * @Date: 2021-05-25 16:18:40
@@ -50,20 +61,14 @@
               :style="{ display: tab_style.icon_set.icon_position == 'top' ? 'block' : '', marginLeft: tab_style.icon_set.icon_position == 'top' ? '' : '2px' }"
               >{{ btn.text == "捐物" ? "捐领" : btn.text }}</span
             > -->
-            <span
-              class="menu-text"
-              v-if="tab_style.text_set.text_show"
-              :style="{ display: tab_style.icon_set.icon_position == 'top' ? 'block' : '', marginLeft: tab_style.icon_set.icon_position == 'top' ? '' : '2px' }"
-              >{{ btn.text }}
-            </span>
           </div>
 
-          <div class="minLink" v-if="btn.isMinApp == 2 && btn.sub_button && btn.sub_button.length <= 0" @click.stop v-html="btn.html"></div>
-          <ul class="weixin-sub-menu" v-show="selectedMenuIndex === i && btn.sub_button && btn.sub_button.length > 0">
+          <!-- <div class="minLink" v-if="btn.isMinApp == 2 && btn.sub_button && btn.sub_button.length <= 0" @click.stop v-html="btn.html"></div> -->
+          <!-- <ul class="weixin-sub-menu" v-show="selectedMenuIndex === i && btn.sub_button && btn.sub_button.length > 0">
             <li
               :key="i2"
               v-for="(sub, i2) in btn.sub_button"
-              class="menu-sub-item"
+              class="menu-sub-item 2111"
               :class="{ current: isChoose == urlParse(sub.link) || page_id == urlParse(sub.link) }"
               @click.stop="selectedSubMenu(i2, sub)"
             >
@@ -85,7 +90,7 @@
               </div>
               <div class="minLink" v-if="sub.isMinApp == 2" @click.stop v-html="sub.html"></div>
             </li>
-          </ul>
+          </ul> -->
         </li>
       </ul>
     </div>
@@ -94,17 +99,18 @@
 
 <script>
 import emptyImage from "../../assets/images/new_diy/image.png";
-
 const css = function () {
   if (this.datas) {
     const { tab_style } = this.datas;
+    // background-color: ${tab_style.value.bg_set.bg_color || "#ffffff00"};
+
     return `
 	      .component-${this.id} .menu-item .menu-item-title span{
-	          color: ${tab_style.value.text_set.text_color || "#333333"};
+	          color: ${tab_style.value.text_set.text_color || "#6C6C73"};
 	      }
 
 	      .component-${this.id} .menu-item.current .menu-item-title span{
-	          color: ${tab_style.value.text_set.text_choose_color || "#333333"};
+	          color: ${tab_style.value.text_set.text_choose_color || "#6C6C73"};
 	      }
 
 	      .component-${this.id} .menu-item .menu-item-title .iconfont{
@@ -130,7 +136,7 @@ const css = function () {
 	      }
 
 	      .component-${this.id} .advertising-preview .menu-item {
-	          background-color: ${tab_style.value.bg_set.bg_color || "#ffffff"};
+	          background-color: ${"#ffffff"};
 	          border: ${tab_style.value.border_set.border_show ? "1" : "0"}px solid ${tab_style.value.border_set.border_color || "#333333"};
 	      }
 
@@ -155,12 +161,12 @@ const css = function () {
 
 	      .component-${this.id} .advertising-preview .weixin-sub-menu .menu-sub-item .menu-item-title span,
 	      .component-${this.id} .advertising-preview .weixin-sub-menu .menu-sub-item .menu-item-title i{
-	        color: ${tab_style.value.children_set.children_color || "#333333"};
+	        color: ${tab_style.value.children_set.children_color || "#6C6C73"};
 	      }
 
 	      .component-${this.id} .advertising-preview .weixin-sub-menu .menu-sub-item.current .menu-item-title span,
 	      .component-${this.id} .advertising-preview .weixin-sub-menu .menu-sub-item.current .menu-item-title i{
-	        color: ${tab_style.value.children_set.children_choose_color || "#333333"};
+	        color: ${tab_style.value.children_set.children_choose_color || "#6C6C73"};
 	      }
     `;
   }
@@ -174,39 +180,13 @@ const defaultData = {
       type: "bottomItem",
       choose: "2",
       menu_button: [
-        // {
-        //   id: 0,
-        //   text: "首页",
-        //   image: "",
-        //   icon: "icon-fontclass-shouye",
-        //   isIcon: "1",
-        //   link: "/addons/yun_shop/?#/home?i=",
-        //   isMinApp: "1",
-        //   gh_id: "",
-        //   minApp_link: "",
-        //   sub_button: [],
-        //   isDefault: true,
-        //   url: "home"
-        // },
-        //  {
-        //   id: 0,
-        //   text: "首页",
-        //   image: "",
-        //   icon: "icon-fontclass-shouye",
-        //   isIcon: "1",
-        //   link: "/addons/yun_shop/?#/index?i=",
-        //   isMinApp: "1",
-        //   gh_id: "",
-        //   minApp_link: "",
-        //   sub_button: [],
-        //   isDefault: true,
-        //   url: "index"
-        // },
         {
           id: 0,
-          text: "看领",
+          text: "首页",
           image: "",
           icon: "icon-fontclass-shouye",
+          iconimg: require("./img/frontPage.png"),
+          iconimging: require("./img/frontPageIng.png"),
           isIcon: "1",
           link: "/addons/yun_shop/?#/index?i=",
           isMinApp: "1",
@@ -221,6 +201,9 @@ const defaultData = {
           text: "发现",
           image: "",
           icon: "icon-ht_basis_chatw",
+          iconimg: require("./img/discover.png"),
+          iconimging: require("./img/discovering.png"),
+
           isIcon: "1",
           link: "/addons/yun_shop/?#/find?i=",
           isMinApp: "1",
@@ -230,25 +213,15 @@ const defaultData = {
           isDefault: true,
           url: "find"
         },
-        // {
-        //   id: 1,
-        //   text: "推广",
-        //   image: "",
-        //   icon: "icon-fontclass-tuiguang1",
-        //   isIcon: "1",
-        //   link: "/addons/yun_shop/?#/member/extension?i=",
-        //   isMinApp: "1",
-        //   gh_id: "",
-        //   minApp_link: "",
-        //   sub_button: [],
-        //   isDefault: true,
-        //   url: "extension"
-        // },
+
         {
           id: 2,
           text: "消息",
           image: "",
           icon: "icon-weixinliaotian",
+          iconimg: require("./img/information.png"),
+          iconimging: require("./img/informationing.png"),
+
           isIcon: "1",
           link: "/addons/yun_shop/?#/news?i=",
           isMinApp: "1",
@@ -258,25 +231,14 @@ const defaultData = {
           isDefault: true,
           url: "news"
         },
-        //  {
-        //   id: 2,
-        //   text: "购物车",
-        //   image: "",
-        //   icon: "icon-fontclass-gouwuche1",
-        //   isIcon: "1",
-        //   link: "/addons/yun_shop/?#/cart?i=",
-        //   isMinApp: "1",
-        //   gh_id: "",
-        //   minApp_link: "",
-        //   sub_button: [],
-        //   isDefault: true,
-        //   url: "cart"
-        // },
         {
           id: 3,
-          text: "捐领",
+          text: "商城",
           image: "",
           icon: "icon-icon-test",
+          iconimg: require("./img/Room.png"),
+          iconimging: require("./img/Rooming.png"),
+
           isIcon: "1",
           link: "/addons/yun_shop/?#/home?i=",
           isMinApp: "1",
@@ -291,6 +253,9 @@ const defaultData = {
           text: "会员中心",
           image: "",
           icon: "icon-fontclass-huiyuanzhongxin",
+          iconimg: require("./img/personal.png"),
+          iconimging: require("./img/personaling.png"),
+
           isIcon: "1",
           link: "/addons/yun_shop/?#/member?i=",
           isMinApp: "1",
@@ -310,28 +275,40 @@ const defaultData = {
         text_set: { text_show: true, text_color: "#333333", text_choose_color: "#2367FE" },
         icon_set: { icon_show: true, icon_position: "top", icon_color: "#333333", icon_choose_color: "#2367FE" },
         border_set: { border_show: false, border_color: "#e7e7eb", border_choose_color: "#29ba9c" },
+        /**
+         * @Author: 飞
+         * @Date: 2021-07-06 16:57:18
+         * @Describe: 底部背景颜色改成透明
+         */
         bg_set: { bg_color: "#ffffff", bg_choose_color: "#ffffff" },
+        // bg_set: { bg_color: "#ffffff00", bg_choose_color: "#ffffff" },
         children_set: { children_color: "#333333", children_choose_color: "#29ba9c", children_bg_color: "#ffffff" }
       }
     }
   }
 };
-
+import EventBus from "../../views/A_version_1.1/event-bus";
 export default {
-  props: ["id", "diydatas"],
+  props: ["id", "diydatas", "ppp"],
   data() {
     return {
       seletedId: "", //当前选中菜单id
       selectedMenuIndex: "", //当前选中菜单索引
       selectedSubMenuIndex: "", //当前选中子菜单索引
       clientWidth: "375",
-      show: true,
-      emptyImage,
-      defaultData,
+      navigationShow: true, //导航的显示隐藏
+      emptyImage, //图片
+      defaultData, //导航数据
       news: 0 //消息数
     };
   },
   watch: {
+    $route: function (newValue, oldValue) {
+      console.log("newValuenewValuenewValuenewValue", newValue, oldValue);
+      if (newValue.name == "detailPeople") {
+        this.navigationShow = false;
+      }
+    },
     /**
      * @Author: 飞
      * @Date: 2021-06-11 13:48:50
@@ -359,9 +336,9 @@ export default {
       this.xin();
     },
     // 监控群聊实时消息
-    getGroupChat(){
+    getGroupChat() {
       this.xin();
-    },
+    }
     // 第二种方法
     // "$store.state.Unread"() {
     //   alert("改变");
@@ -372,7 +349,7 @@ export default {
     getStoreItem() {
       return this.$store.state.NewArray;
     },
-    getGroupChat(){
+    getGroupChat() {
       return this.$store.state.Group_Chat;
     },
 
@@ -383,12 +360,15 @@ export default {
     page_id() {
       return this.fun.getKey("page_id");
     },
-    datas() {
-      // JSON.parse(this.$store.state.temp.item.foot.page_info)  首页的导航
-      // JSON.parse(this.$store.state.temp.item.menus.page_info)  列表默认的导航
-      // defaultData  系统默认导航  写死的
 
-      this.show = true;
+    datas() {
+      // JSON.parse(this.$store.state.temp.item.foot.page_info)  //首页的导航
+      // JSON.parse(this.$store.state.temp.item.menus.page_info) // 列表默认的导航
+      // defaultData; // 系统默认导航  写死的
+
+      this.navigationShow = true;
+
+      console.log("this.diydatas", this.diydatas);
 
       if (this.diydatas) {
         if (this.diydatas.defaultData) {
@@ -401,7 +381,7 @@ export default {
           // 首页有三种情况
           if (this.$store.state.temp.item.foot_type == -1) {
             // 不显示
-            this.show = false;
+            this.navigationShow = false;
             return [];
           } else if (this.$store.state.temp.item.foot_type == 1) {
             // 显示默认
@@ -415,7 +395,7 @@ export default {
           } else if (this.$store.state.temp.item.foot_type == 2) {
             // 显示自定义的底部导航
             if (this.$store.state.temp.item.foot instanceof Array) {
-              this.show = false;
+              this.navigationShow = false;
               return [];
             } else {
               return JSON.parse(this.$store.state.temp.item.foot.page_info);
@@ -442,6 +422,7 @@ export default {
         }
       }
     },
+
     menu_button() {
       if (this.datas) {
         return this.datas.button_item.menu_button || {};
@@ -470,6 +451,7 @@ export default {
     } else {
       this.clientWidth = document.body.clientWidth;
     }
+    console.log("ssssssssssssssssssssdadasdsad");
   },
   mounted() {
     if (this.fun.getPhoneEnv() == 3) {
@@ -489,23 +471,38 @@ export default {
   },
   // // 2021年6月10日11:33:34
   created() {
-    // setTimeout(() => {
-    console.log("-----------------------------------消息未读数------created-----------------------------");
     // 总消息未读数
     window.xin = this.xin;
+    // 新信息
+    window.newInformation = this.newInformation;
     this.xin();
-
-    // }, 3000);
+    setTimeout(() => {
+      console.log("-----------------------------------消息未读数------created-----------------------------", this.id);
+    }, 5000);
   },
   methods: {
+    /**
+     * @Author: 飞
+     * @Date: 2021-08-27 10:43:21
+     * @Describe: 获取最新信息
+     */
+    newInformation() {
+      console.log("localStorage.setItem", localStorage.getItem("uid"));
+      return;
+      if (this.$route.query.uid != undefined) {
+        console.log("少时诵诗书所所所所所所所所");
+        window.localStorage.setItem("tuid", this.$route.query.uid);
+      }
+    },
 
+    // 信息数量
     xin() {
       var wwwww = 0;
       var pppp = this.$store.state.msg_idArry; //消息数
       // this.news = 0; //消息数
       Object.keys(pppp).forEach(function (key) {
         wwwww = pppp[key] + wwwww;
-        console.log("77777777777777777777777", pppp[key],pppp);
+        // console.log("77777777777777777777777", pppp[key], pppp);
       });
       this.news = wwwww;
     },
@@ -528,7 +525,7 @@ export default {
      */
     // 初始化菜单按钮
     initMenuButton() {
-      this.show = false;
+      this.navigationShow = false;
 
       for (let i = 0; i < this.menu_button.length; i++) {
         let script = document.createElement("script");
@@ -546,7 +543,7 @@ export default {
         }
       }
       this.menu_button.reverse().reverse(); //改变原始数组从而更新数组
-      this.show = true;
+      this.navigationShow = true;
     },
     /**
      * 处理数据
@@ -561,6 +558,7 @@ export default {
     },
     //选中主菜单
     selectedMenu(i, item) {
+      console.log("i, item", i, item);
       this.selectedSubMenuIndex = "";
 
       if (this.selectedMenuIndex === i) {
@@ -570,6 +568,7 @@ export default {
 
       this.selectedMenuIndex = i;
       let selectedMenu = this.menu_button[this.selectedMenuIndex];
+
       if (selectedMenu) {
         this.seletedId = selectedMenu.id;
       }
@@ -646,6 +645,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.iconDiv {
+  display: inline-block;
+  display: flex;
+  position: relative;
+  .imgicon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .van-badge {
+    padding: 1px 5px;
+    z-index: 10;
+    position: absolute;
+    right: 0.5rem;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -671,9 +686,9 @@ li {
   width: 100%;
 }
 
-.advertising-preview.iphoneXStyle {
-  padding-bottom: 34px;
-}
+// .advertising-preview.iphoneXStyle {
+//   padding-bottom: 34px;
+// }
 
 .advertising-preview .weixin-menu {
   /* border-top: 1px solid #e7e7e7; */
@@ -807,14 +822,16 @@ li {
   vertical-align: middle;
   margin-top: -2px;
 }
-
-.menu-icon {
-  font-size: 20px;
-  vertical-align: sub;
-  .van-badge {
-    position: absolute;
-  }
+.icon-weixinliaotian {
+  font-weight: 600;
 }
+// .menu-icon {
+//   font-size: 20px;
+//   vertical-align: sub;
+//   .van-badge {
+//     position: absolute;
+//   }
+// }
 
 .minLink {
   width: 100%;

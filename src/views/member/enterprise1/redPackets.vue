@@ -2,12 +2,20 @@
   <div id="income">
     <div class="supplier">
       <c-title :hide="false" text="红包推广"></c-title>
+      <!-- <van-nav-bar title="红包推广" name="arrow-left" left-arrow @click-left="onClickLeft" /> -->
       <div style="height: 40px"></div>
 
       <div class="main">
+        <div class="PromotionAmount">
+          推广余额剩余
+          <p>{{ redmoney_fa }}</p>
+        </div>
+
         <div class="field-item">
           <label>投放总金额</label>
+
           <input type="text" v-model="formData.redmoney" placeholder="0.00" />
+
           <span>元</span>
         </div>
         <div class="field-item">
@@ -41,12 +49,18 @@
 
         <p class="text">¥ {{ money }}</p>
         <button :disabled="btnDisabled" class="btn" :class="{ normal: !btnDisabled }" @click="submitOrder">立即推广</button>
+        <!-- <button :disabled="btnDisabled" class="btn" :class="{ normal: !btnDisabled }" v-show="PayPromote_show" @click="BalancePayment">立即推广1</button> -->
       </div>
     </div>
     <van-popup v-model="show" round position="bottom" :style="{ height: '30%' }">
       <van-radio-group v-model="formData.type">
         <van-cell-group>
-          <van-cell title="余额支付" clickable @click="formData.type = '2'">
+          <van-cell title="推广余额支付" clickable @click="formData.type = '3'">
+            <template #right-icon>
+              <van-radio name="3" />
+            </template>
+          </van-cell>
+          <van-cell title="余额支付" clickable @click="formData.type = '2'" v-show="BmikeceShow">
             <template #right-icon>
               <van-radio name="2" />
             </template>
@@ -70,6 +84,8 @@ export default {
   components: { cTitle },
   data() {
     return {
+      PayPromote: "", //余额
+      PromotionAmount: 300,
       show: false,
       openid: "",
       formData: {
@@ -86,6 +102,7 @@ export default {
         trade_type: "",
         openid: ""
       },
+      redmoney_fa: "", //投放总金额
       limitMoney: 299,
       regionList: [
         { title: "附近五公里", launch: 1 },
@@ -106,7 +123,8 @@ export default {
       queryResultsUrl: "",
       timer: "",
       url: "",
-      showLoaction: false
+      showLoaction: false,
+      BmikeceShow: false //可用余额支付嘛
     };
   },
   created() {
@@ -119,6 +137,10 @@ export default {
       return navigator.userAgent.toLowerCase().indexOf("micromessenger") !== -1;
     })();
     this.formData.trade_type = this.isWechat ? "JSAPI" : "MWEB";
+  },
+  activated() {
+    this.formData.redmoneynum = "";
+    this.GetState(); //获取状态
   },
   watch: {
     "formData.redmoney": {
@@ -145,6 +167,25 @@ export default {
     }
   },
   methods: {
+    // 获取状态
+    GetState() {
+      axios({
+        method: "POST",
+        url: "https://tpkl.minpinyouxuan.com/api/v1/extension_money",
+        data: { uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid }
+      }).then(async res => {
+        console.log("extension_money", res.data);
+        // 审核通过
+        if (res.data.result === 1) {
+          this.redmoney_fa = res.data.data;
+        }
+      });
+    },
+    // 跳转到门店申请
+    Store() {
+      this.$router.push(this.fun.getUrl("storeApply"));
+    },
+
     urlencode(str) {
       str = (str + "").toString();
 
@@ -201,8 +242,14 @@ export default {
     selectTarget(data) {
       this.formData.launch_sex = data.launch_sex;
     },
+
+    // 推广余额支付
+    BalancePayment() {},
+
     // 提交订单
     submitOrder() {
+      this.show = !this.show;
+      // return;
       // 判断那些人可看
       const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/get_yue";
       axios({
@@ -211,29 +258,51 @@ export default {
         data: { uid: this.formData.uid }
       }).then(async res => {
         console.log(res.data.data);
-        // that.$router.push(that.fun.getUrl("promotionRecord"));
         if (res.data.result === 1) {
-          this.show = !this.show;
-        }
-        if (res.data.result === 0) {
-          this.formData.type = 1;
-          this.pay();
+          this.BmikeceShow = true; //可用余额支付
         }
       });
     },
+
     pay() {
       var that = this;
       const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/getsave";
-      if (this.formData.type == "2") {
+      if (this.formData.type == "3") {
+        if (this.redmoney_fa < this.formData.redmoney) {
+          that.$dialog({ message: "推广余额不足" });
+          return;
+        }
         axios({
           method: "POST",
           url,
           data: this.formData
-        }).then(async res => {
-          console.log(res.data.data);
-          that.$router.push(that.fun.getUrl("promotionRecord"));
+        }).then(res => {
+          if (res.data.result == 1) {
+            that.$dialog({ message: "推广余额支付成功" });
+            that.$router.push(that.fun.getUrl("member"));
+            that.formData.redmoney = "";
+            that.formData.redmoneynum = "";
+            that.show = false
+          }
+          if (res.data.result == 0) {
+            that.$dialog({ message: res.data.msg });
+          }
         });
-      } else {
+      }else if (this.formData.type == "2") {
+        axios({
+          method: "POST",
+          url,
+          data: this.formData
+        }).then(res => {
+          if (res.data.result == 1) {
+            this.$dialog({ message: "支付成功" });
+            that.$router.push(that.fun.getUrl("member"));
+          }
+          if (res.data.result == 0) {
+            this.$dialog({ message: res.msg });
+          }
+        });
+      } else if (this.formData.type == "1") {
         axios({
           method: "POST",
           url,
@@ -248,8 +317,18 @@ export default {
               // console.log('res',res);
               // window.location.href = payURL
             } else {
-              console.log(123, res.data.data);
+              // console.log(123, res.data.data);
               const payURL = res.data.data.mweb_url + "&redirect_url=" + encodeURIComponent(this.url + "&out_trade_no=" + res.data.data.out_trade_no);
+              // console.log('encodeURIComponent(this.url + "&out_trade_no=" + res.data.data.out_trade_no);', this.url + "&out_trade_no=" + res.data.data.out_trade_no);
+              // console.log('encodeURIComponent(this.url + "&out_trade_no=" + res.data.data.out_trade_no);', encodeURIComponent(this.url + "&out_trade_no=" + res.data.data.out_trade_no));
+              // // https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?prepay_id=wx1515283522528277ba7e4b6fc784a70000&package=1178878458&redirect_url=https%3A%2F%2Flocalhost%3A8082%2Faddons%2Fyun_shop%2F%3Fmenu%23%2Fmember%2FqueryResults%3Fi%3D2%26type%3D5%26mid%3D0%26shop_id%26out_trade_no%3D202107151528344037
+              // // https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?prepay_id=wx15153024110504688704e6f0ac45710000&package=58441518&redirect_url=https%3A%2F%2Flocalhost%3A8082%2Faddons%2Fyun_shop%2F%3Fmenu%23%2Fmember%2FqueryResults%3Fi%3D2%26type%3D5%26mid%3D0%26shop_id%26out_trade_no%3D202107151530235692
+              // return
+
+              // location.replace(payURL);
+
+              //  https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?prepay_id=wx1515283522528277ba7e4b6fc784a70000&package=1178878458
+
               window.location.href = payURL;
             }
           } else {
@@ -258,6 +337,7 @@ export default {
         });
       }
     },
+
     // // 向后台请求微信支付signature
     // async getSignature() {
     //   const url = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/newpay'
@@ -274,6 +354,7 @@ export default {
     //     data: formData
     //   })
     // },
+
     // 微信支付
     wexinPay(data, cb, errorCb) {
       const that = this;
@@ -325,10 +406,13 @@ export default {
         console.log(res);
       });
     },
+
     // 请求登录数据
     getOpenId() {
       $http.post("member.member.member-data", { v: 2 }, " ").then(res => {
         this.formData.openid = res.data.member.yz_member.yz_openid;
+        this.formData.uid = res.data.member.uid;
+
         this.formData.uid = res.data.member.uid;
       });
     }
@@ -352,6 +436,21 @@ export default {
   padding-top: 1.25rem;
   height: calc(100% - 2.5rem);
   background: #ffffff;
+  .PromotionAmount {
+    font-size: 15px;
+    font-family: PingFang-SC-Medium, PingFang-SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 20px;
+    p {
+      font-size: 26px;
+      font-family: PingFang-SC-Bold, PingFang-SC;
+      font-weight: bold;
+      color: #333333;
+      line-height: 37px;
+      height: 37px;
+    }
+  }
   .field-item {
     display: flex;
     align-items: center;

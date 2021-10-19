@@ -5,14 +5,31 @@
       <div style="height: 40px"></div>
 
       <div class="main">
-        <!--申请   -->
+        <!--已申请 企业   -->
         <div class="welcome">
           <h2 class="strong-title">认证信息</h2>
           <van-cell-group>
             <van-cell required title="企业名称" :value="form.name" />
             <van-cell required title="营业执照" value="已认证" is-link @click="imagePreview" />
-            <van-cell required title="企业地址" :value="form.sqnadress" is-link @click="tolocation" />
-            <van-cel required title="企业类型" :value="form.shopcate" />
+            <!-- <van-cell required title="企业地址" :value="form.sqnadress" is-link @click="tolocation" /> -->
+            <van-cell required title="经营场所" :value="form.sqnadress" />
+            <van-cell required title="地址" :value="Address" placeholder="请选择地址" is-link @click="show = true" />
+            <van-popup v-model="show" round position="bottom">
+              <van-cascader v-model="cascaderValue" title="请选择所在区域" :options="options" @close="show = false" @finish="onFinish" :field-names="fieldNames" />
+            </van-popup>
+            <!-- /**
+             * @Author: 飞
+             * @Date: 2021-10-17 00:06:30
+             * @Describe: 企业类型没起作用   先注释
+             */             -->
+            <!-- <van-cel required title="企业类型" :value="form.shopcate" /> -->
+            <!--   /**
+               * @Author: 飞
+               * @Date: 2021-10-17 01:14:34
+               * @Describe: 选择行业
+               */
+              -->
+            <van-field v-model="BankName" label="选择行业" is-link readonly required placeholder="请选择自己的行业" @click="ONBankName" />
           </van-cell-group>
 
           <h2 class="strong-title">基本信息</h2>
@@ -24,12 +41,28 @@
           <van-cell required value="企业介绍标题" :border="false" />
           <van-field v-model="form.qsntitle" type="textarea" rows="2" maxlength="28" show-word-limit placeholder="请输入企业介绍标题…" />
 
-          <van-cell value="头部轮播图（最多3张）" :border="false" />
+          <van-cell required value="头部轮播图（最多3张）" :border="false" />
           <div class="upload-container">
             <div class="upload-item">
               <van-uploader v-model="rotationFileList" multiple :max-count="3" :after-read="afterReadRotation" @delete="handleDeleteRotation" />
             </div>
           </div>
+          <el-dialog :visible.sync="RoundBroadcastCut" width="96%" class="Shear" :close-on-click-modal="false" @close="closeDialog">
+            <div class="home" style="webkit-overflow-scrolling: touch; overflow-y: scroll">
+              <vueCropper
+                style="height: 300px"
+                ref="cropper"
+                :img="option.img"
+                :autoCrop="option.autoCrop"
+                :centerBox="option.centerBox"
+                :fixedNumber="option.fixedNumber"
+                :infoTrue="option.infoTrue"
+                :fixed="option.fixed"
+              ></vueCropper>
+              <van-icon name="replay" size="24" @click="rotateLeft" class="Rotate" style="font-size: 24px; display: inline-block; line-height: 45px" />
+              <van-button type="default" class="ConfirmShear" @click="save" style="vertical-align: bottom; margin-left: 34px; margin-top: 11px">确认剪切</van-button>
+            </div>
+          </el-dialog>
 
           <!-- <van-cell required value="头部轮播图（最多3张）" :border="false" />
           <div class="upload-container">
@@ -63,26 +96,78 @@
           <van-cell required value="详情图片（最少3张,最多10张）" :border="false" />
           <div class="upload-container">
             <div class="upload-item">
-              <van-uploader v-model="detailFileList" multiple :max-count="10" :after-read="afterReadDetail" @delete="handleDeleteDetail" />
+              <van-uploader v-model="detailFileList" multiple :after-read="afterReadDetail" @delete="handleDeleteDetail" />
             </div>
             <div class="upload-item"></div>
             <div class="upload-item"></div>
           </div>
 
-          <van-button :disabled="isupLoad" type="info" block class="btn" @click="handleSubmit">提交</van-button>
+          <van-button type="info" block class="btn" @click="handleSubmit">提交</van-button>
         </div>
       </div>
     </div>
+    <!-- 选择行业显示 -->
+    <van-popup v-model="BankNameShow" position="bottom" :style="{ height: '60%' }">
+      <!-- 选择行业       -->
+      <van-field v-model="entering" label="选择行业" required placeholder="请简要输入行业的名称" />
+      <van-list finished-text="没有更多了" error-text="本区域未获取到支行 请联系客服 客服电话:01053382256" :error.sync="error">
+        <van-cell v-for="(item, i) in OpeningList" :key="i" :title="item.industry_name" @click="OpenBankDisplay(item)" :class="item.type == true ? 'CanTChoose' : ''" />
+      </van-list>
+    </van-popup>
   </div>
 </template>
 <script>
 import cTitle from "components/title";
 import ImgCropper from "components/ImgCropper";
 import { Toast, ImagePreview } from "vant";
+import { VueCropper } from "vue-cropper";
+import { regionData } from "element-china-area-data";
 export default {
-  components: { cTitle, ImgCropper },
+  components: { cTitle, ImgCropper, VueCropper },
   data() {
     return {
+      show: false, //展示隐藏
+      cascaderValue: "", //展示
+      options: regionData, //地址库
+      fieldNames: {
+        //属性名 重置
+        text: "label",
+        value: "value",
+        children: "children"
+      },
+      BankNameShow: false, //行业弹窗开关
+      entering: "", //行业搜索用
+      OpeningList: [],
+      OpeningListCS: [], //搜索用
+      BankName: "", //行业名称
+
+      ShearAction: false, //是否有剪切的动作
+      Blob: [],
+      RoundBroadcastCut: false, //轮播剪切
+      option: {
+        img: "", //裁剪图片的地址
+        outputSize: 0.5, //裁剪生成图片的质量(可选0.1 - 1)
+        outputType: "jpeg", //裁剪生成图片的格式（jpeg || png || webp）
+        info: true, //图片大小信息
+        canScale: true, //图片是否允许滚轮缩放
+        autoCrop: true, //是否默认生成截图框
+        autoCropWidth: 230, //默认生成截图框宽度
+        autoCropHeight: 150, //默认生成截图框高度
+        fixed: true, //是否开启截图框宽高固定比例
+        fixedNumber: [2, 1], //截图框的宽高比例
+        full: false, //false按原比例裁切图片，不失真
+        fixedBox: true, //固定截图框大小，不允许改变
+        canMove: false, //上传图片是否可以移动
+        canMoveBox: true, //截图框能否拖动
+        original: false, //上传图片按照原始比例渲染
+        centerBox: true, //截图框是否被限制在图片里面
+        height: true, //是否按照设备的dpr 输出等比例图片
+        infoTrue: false, //true为展示真实输出图片宽高，false展示看到的截图框宽高
+        maxImgSize: 3000, //限制图片最大宽度和高度
+        enlarge: 1, //图片根据截图框输出比例倍数
+        mode: "230px 150px" //图片默认渲染方式
+      },
+
       fixedNumber: [375, 146],
       isupLoad: false,
       rotationFileList: [],
@@ -103,9 +188,19 @@ export default {
         qsntext: "", // 介绍内容
         qsnvideo: "", // 视频
         texturl: "", // 详情图片
+        uid: "",
         qsnurl: "", // 营业执照
-        typea: "" //类型
-      }
+        typea: "", //类型
+        adcode: "", //地址区编码
+        /**
+         * @Author: 飞
+         * @Date: 2021-10-17 01:04:14
+         * @Describe: 2参数
+         */
+        adress_city: "", //行业市编码
+        industry_cate: "" //行业id
+      },
+      Address: "" //地址
     };
   },
   watch: {
@@ -122,10 +217,23 @@ export default {
           this.form.catename = params.category.name;
         }
       }
+    },
+    /**
+     * @Author: 飞
+     * @Date: 2021-10-17 01:03:36
+     * @Describe: 搜索
+     */
+    entering: function (newV, oldV) {
+      if (this.entering.length > 0) {
+        this.component();
+      } else {
+        this.OpeningList = this.OpeningListCS;
+      }
     }
   },
   activated() {
     this.form.typea = Number(window.localStorage.getItem("typea"));
+    this.form.uid = JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid;
   },
   beforeRouteEnter(to, from, next) {
     console.log("from", from);
@@ -136,15 +244,160 @@ export default {
     });
   },
   methods: {
+    /**
+     * @Author: 飞
+     * @Date: 2021-10-17 01:03:27
+     * @Describe: 搜索计算
+     */
+    component() {
+      var applist = [];
+      this.OpeningListCS.forEach(item => {
+        if (item.industry_name.indexOf(this.entering) != -1) {
+          applist.push(item);
+        }
+      });
+      this.OpeningList = applist;
+    },
+    /**
+     * @Author: 飞
+     * @Date: 2021-10-17 01:04:48
+     * @Describe: 行业选中
+     */
+    OpenBankDisplay(item) {
+      if (item.type) {
+        return;
+      }
+      this.BankName = item.industry_name; //行业名称
+      this.form.industry_cate = item.id; //行业ID
+      // 支行列表隐藏起来
+      this.BankNameShow = false;
+      this.entering = ""; //行业搜索成功之后关闭行业选择清空搜索值
+    },
+    /**
+     * @Author: 飞
+     * @Date: 2021-10-17 01:04:57
+     * @Describe: 点击选择行业
+     */
+    ONBankName() {
+      if (this.Address == "") {
+        Toast("请先选择企业地址");
+        return;
+      }
+      // 获取行业列表
+      this.getHylbCom();
+      // 弹出框
+      this.BankNameShow = true;
+    },
+    /**
+     * @Author: 飞
+     * @Date: 2021-10-17 01:05:15
+     * @Describe: 获取行业列表
+     */
+    getHylbCom() {
+      var that = this;
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/v3/industrycates";
+      axios({
+        method: "POST",
+        url,
+        data: {
+          uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid,
+          adress_city: this.form.adress_city
+        }
+      }).then(async res => {
+        if (res.data.result === 1) {
+          that.OpeningList = res.data.data;
+          that.OpeningListCS = res.data.data;
+        } else {
+          Toast("获取行业失败 请刷新页面");
+        }
+      });
+    },
+
+    // 全部选项选择完毕后，会触发 finish 事件
+    onFinish({ selectedOptions }) {
+      this.show = false;
+      this.Address = selectedOptions.map(option => option.label).join("/");
+      this.form.adcode = selectedOptions[2].value; //编码
+      /**
+       * @Author: 飞
+       * @Date: 2021-10-17 00:47:12
+       * @Describe:行业 市编码  同牛人 添加
+       */
+      if (selectedOptions[0].value == "110000" || selectedOptions[0].value == "310000") {
+        this.form.adress_city = selectedOptions[2].value;
+        return;
+      } else {
+        this.form.adress_city = selectedOptions[1].value;
+      }
+    },
+    // 关闭剪切板
+    closeDialog() {
+      // 判断是否有剪切的动作  进行下一步
+      if (!this.ShearAction) {
+        console.log("关闭剪切");
+        this.rotationFileList.pop();
+      }
+      this.ShearAction = false;
+    },
+    //  图片左旋转
+    rotateLeft() {
+      this.$refs.cropper.rotateLeft();
+    },
+    save() {
+      // 用于上传后展示
+      this.$refs.cropper.getCropData(base64Data => {
+        this.rotationFileList[this.rotationFileList.lastIndex].content = base64Data;
+      });
+      //用于 新上传的 等待上传
+      this.$refs.cropper.getCropBlob(getCropBlob => {
+        // 存起来Blob
+        getCropBlob["name"] = this.rotationFileList[this.rotationFileList.lastIndex].file.name;
+        this.Blob.push(getCropBlob);
+
+        const formData = new FormData();
+        formData.append("type", 1);
+
+        setTimeout(() => {
+          formData.append("image[]", getCropBlob, Date.now() + ".jpg");
+          this.isupLoad = true;
+          axios({
+            method: "POST",
+            url: "https://tpkl.minpinyouxuan.com/index.php/api/image",
+            data: formData,
+            headers: { "Content-Type": "multipart/form-data" }
+          })
+            .then(res => {
+              if (res.data.result === 1) {
+                this.isupLoad = false;
+                this.RoundBroadcastCut = false; //轮播剪切板关闭
+                this.ShearAction = true; //是否有剪切的动作
+
+                if (this.form.topurl == "") {
+                  this.form.topurl = res.data.data.img_path;
+                } else {
+                  this.form.topurl = this.form.topurl.concat("," + res.data.data.img_path);
+                }
+              } else {
+                Toast(res.data.msg);
+              }
+            })
+            .catch(reason => {
+              console.log(reason);
+            });
+        }, 1000);
+      });
+    },
+
     // 图片预览
     imagePreview() {
       ImagePreview(this.form.qsnurl);
     },
-    // 跳转到地图页面,路由o2oLocation_loc
-    tolocation() {
-      this.$router.push(this.fun.getUrl("o2oLocation", "", { tag: "enterpriseInfo" }));
-    },
-    // 跳转分类
+    // 地址
+    // // // 跳转到地图页面,路由o2oLocation_loc
+    // // tolocation() {
+    // //   this.$router.push(this.fun.getUrl("o2oLocation", "", { tag: "enterpriseInfo" }));
+    // // },
+    // // 跳转分类
     toCategory() {
       console.log(this.fun.getUrl("enterprise", "", { tag: "enterpriseInfo" }));
       this.$router.push(this.fun.getUrl("enterprise", "", { tag: "enterpriseInfo" }));
@@ -152,6 +405,14 @@ export default {
 
     // 轮播上传
     async afterReadRotation(file) {
+      /**
+       * @Author: 飞
+       * @Date: 2021-07-02 15:56:30
+       * @Describe: 打开轮播截切
+       */
+      this.RoundBroadcastCut = true;
+      this.option.img = file.content;
+      return;
       // this.rotationFileList = fileList;
       const type = 1; // 图片类型
       const urlArr = [];
@@ -168,7 +429,7 @@ export default {
     },
 
     // 轮播删除
-    async handleDeleteRotation() {
+    async handleDeleteRotation(fileList) {
       // this.rotationFileList = fileList;
       const type = 1; // 图片类型
       const urlArr = [];
@@ -177,12 +438,23 @@ export default {
         if (item.url) {
           urlArr.push(item.url);
         } else {
+          // 新增Blob删除
+          for (let index = 0; index < this.Blob.length; index++) {
+            if (this.Blob[index].name == fileList.file.name) {
+              this.Blob.splice(index, 1);
+            }
+          }
+
           fileArr.push(item);
         }
       });
-      console.log(fileList);
       if (fileArr.length) {
-        const formData = this.generatorFormData(fileArr, type);
+        const formData = new FormData();
+        formData.append("type", 1);
+        for (let index = 0; index < this.Blob.length; index++) {
+          formData.append("image[]", this.Blob[index], Date.now() + ".jpg");
+        }
+
         this.form.topurl = urlArr.concat(await this.upload(formData)).join(",");
       } else {
         this.form.topurl = urlArr.join(",");
@@ -191,6 +463,12 @@ export default {
 
     // 头像上传
     async afterReadAvatar(file) {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       const type = 1; // 图片类型
       const urlArr = [];
       const fileArr = [];
@@ -203,6 +481,7 @@ export default {
       });
       const formData = this.generatorFormData(fileArr, type);
       this.form.logourl = urlArr.concat(await this.upload(formData)).join(",");
+      loading.close();
     },
     // 头像删除
     async handleDeleteAvatar(file) {
@@ -235,6 +514,12 @@ export default {
 
     // 详情图片上传
     async afterReadDetail(file) {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       const type = 1; // 图片类型
       const urlArr = [];
       const fileArr = [];
@@ -247,6 +532,15 @@ export default {
       });
       const formData = this.generatorFormData(fileArr, type);
       this.form.texturl = urlArr.concat(await this.upload(formData)).join(",");
+      var p_url = [];
+      if (this.form.texturl.indexOf(",") == -1) {
+        p_url.push(this.form.texturl);
+      } else {
+        p_url = this.form.texturl.split(",");
+      }
+      this.detailFileList = this.imgReview(p_url);
+
+      loading.close();
     },
     // 详情图片删除
     async handleDeleteDetail(file) {
@@ -278,6 +572,49 @@ export default {
 
     // 提交
     handleSubmit() {
+      if (this.form.name == "") {
+        this.$dialog({
+          message: "请填写牛人姓名"
+        });
+        return;
+      }
+      if (this.form.sqnadress == "") {
+        this.$dialog({
+          message: "请填写牛人地址"
+        });
+        return;
+      }
+      if (this.form.qsnphone == "") {
+        this.$dialog({
+          message: "请填写牛人电话"
+        });
+        return;
+      }
+      if (this.form.catename == "请选择分类" || this.form.catename == "") {
+        this.$dialog({
+          message: "请选择分类"
+        });
+        return;
+      }
+      if (this.form.adress_city == "") {
+        this.$dialog({
+          message: "请选择行业"
+        });
+        return;
+      }
+      if (this.form.topurl == "") {
+        this.$dialog({
+          message: "请上传头部轮播图"
+        });
+        return;
+      }
+      if (this.form.qsntext == "") {
+        this.$dialog({
+          message: "请填写牛人信息"
+        });
+        return;
+      }
+
       const length = this.form.texturl.split(",").length;
       if (length < 3) {
         this.$dialog({
@@ -376,6 +713,7 @@ export default {
           console.log(reason);
         });
     },
+
     // 提交接口
     requestToSave(formData) {
       const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/save";
@@ -388,8 +726,11 @@ export default {
           if (res.data.result === 1) {
             this.$router.push(this.fun.getUrl("enterpriseInfoSubmitSuccess"));
             return res.data;
-          } else {
-            Toast(res.data.msg);
+          }
+          if (res.data.result === 0) {
+            if ((res.data.msg = "地址code不能为空")) {
+              Toast("请选择地址再提交");
+            }
           }
         })
         .catch(reason => {
@@ -438,6 +779,28 @@ export default {
 }
 
 #income {
+  /**
+   * @Author: 飞
+   * @Date: 2021-10-17 01:20:38
+   * @Describe: 
+   */
+  /deep/.van-popup {
+    .van-cell--required {
+      .van-cell__value {
+        .van-field__control {
+          text-align: left;
+        }
+      }
+    }
+    .van-list {
+      .van-cell {
+        display: block;
+        .van-cell__title {
+          text-align: center;
+        }
+      }
+    }
+  }
   h3 {
     background: #f5f5f5;
     margin: 0;
@@ -523,6 +886,9 @@ input {
 }
 
 .welcome {
+  .CanTChoose {
+    color: #979797;
+  }
   padding: 0.625rem;
   background: #ffffff;
   .text {
@@ -700,8 +1066,6 @@ input {
 .upload-container {
   display: flex;
   padding-left: 0.875rem;
-  .upload-item {
-  }
 }
 
 video {

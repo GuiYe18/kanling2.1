@@ -1,7 +1,7 @@
 <template>
   <div id="detailed">
     <!-- <c-title :hide="false" :text="integral ? integral + '列表' : '积分' + '明细'"></c-title> -->
-    <c-title :hide="false" :text="integral ? '通兑' + '列表' : '通兑' + '明细'"></c-title>
+    <c-title :hide="false" :text="integral=='积分' ? '通兑' + '明细' : '通兑' + '明细'"></c-title>
 
     <div style="height: 40px"></div>
     <van-tabs v-model="selected" @click="swichTabTItem">
@@ -23,13 +23,13 @@
               <li>{{ item.mode_name }}</li>
               <!-- <li>{{ integral ? integral : "积分" }}：{{ item.after_point }}</li> -->
               <li>{{ integral ? '通兑' : "通兑" }}：{{ item.after_point }}</li>
-              <li class="item1">{{ item.updated_at }}</li>
+              <li class="item1 A">{{ item.updated_at }}</li>
             </ul>
             <div class="item3" v-if="item.point < 0">
               <span class="add">{{ item.point }}</span>
             </div>
             <div class="item3" v-if="item.point > 0">
-              <span class="reduce">+{{ item.point }}</span>
+              <span class="reduce 3">+{{ item.point }}</span>
             </div>
           </div>
           <div v-if="item.checked && item.transfer_info" class="hide-item">
@@ -48,7 +48,7 @@
               <!-- <li>{{ integral ? integral : "积分" }}：{{ item.after_point }}</li> -->
               <li>{{ integral ? '通兑' : "通兑" }}：{{ item.after_point }}</li>
 
-              <li class="item1">{{ item.updated_at }}</li>
+              <li class="item1 A">{{ item.updated_at }}</li>
             </ul>
             <div class="item3" v-if="item.point < 0">
               <span class="add">{{ item.point }}</span>
@@ -73,7 +73,7 @@
               <!-- <li>{{ integral ? integral : "积分" }}：{{ item.after_point }}</li> -->
               <li>{{ integral ? '通兑' : "通兑" }}：{{ item.after_point }}</li>
 
-              <li class="item1">{{ item.updated_at }}</li>
+              <li class="item1 A">{{ item.updated_at }}</li>
             </ul>
             <div class="item3" v-if="item.point < 0">
               <span class="add">{{ item.point }}</span>

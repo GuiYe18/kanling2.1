@@ -13,18 +13,18 @@ export default {
       insuclShow: false,
       income_name_text: "",
       bannerStatus: 1,
-      bannerList:[]
+      bannerList: []
     };
   },
 
   activated() {
     this.init();
     this.getSupplierInfo();
-    this.mid = this.$route.params.uid;
+    this.mid = JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid;
     this.isShowdetail();
     this.customizeIncome();
   },
-  mounted() {},
+  mounted() { },
 
   methods: {
     init() {
@@ -37,8 +37,9 @@ export default {
 
     goToInfo(res) {
       if (res === "1") {
+
         this.$router.push(
-          this.fun.getUrl("SupInfoManage", { member_id: this.mid })
+          this.fun.getUrl("SupInfoManage", { member_id:  this.mid })
         );
       } else if (res === "2") {
         this.$router.push(
@@ -88,7 +89,7 @@ export default {
       var that = this;
       var json = { member_id: this.mid };
       $http.post("plugin.supplier.frontend.index.index", json).then(
-        function(response) {
+        function (response) {
           if (response.result == 1) {
             that.supplier_id = response.data.data.supplier_id;
             that.cost_money = response.data.data.cost_money;
@@ -97,13 +98,13 @@ export default {
             that.order_count = response.data.data.order_count;
             that.mainInfo = response.data.data.member_model;
             that.bannerStatus = response.data.data.set.banner_status;
-            if(!that.fun.isTextEmpty(response.data.data.set.banner_1)){
+            if (!that.fun.isTextEmpty(response.data.data.set.banner_1)) {
               that.bannerList.push(response.data.data.set.banner_1);
             }
-            if(!that.fun.isTextEmpty(response.data.data.set.banner_2)){
+            if (!that.fun.isTextEmpty(response.data.data.set.banner_2)) {
               that.bannerList.push(response.data.data.set.banner_2);
             }
-            if(!that.fun.isTextEmpty(response.data.data.set.banner_3)){
+            if (!that.fun.isTextEmpty(response.data.data.set.banner_3)) {
               that.bannerList.push(response.data.data.set.banner_3);
             }
           } else {
@@ -113,13 +114,13 @@ export default {
             }
           }
         },
-        function(response) {
+        function (response) {
           console.log(response);
         }
       );
     },
     //自定义提现收入语言
-    customizeIncome(){
+    customizeIncome() {
       let mailLanguage = this.fun.initMailLanguage();
       //自定义收入字段
       this.income_name_text = mailLanguage.income.income_name;

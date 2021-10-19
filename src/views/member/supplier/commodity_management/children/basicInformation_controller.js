@@ -616,6 +616,7 @@ export default {
       console.log("change--u", file, fileList);
       this.upNumMaxOther = fileList.length;
     },
+    
     imgPreview(file, callback) {
       console.log('剪辑');
       let self = this;
@@ -669,7 +670,7 @@ export default {
             // canvas转为blob并上传
             canvas.toBlob(function(blob) {
               // 图片ajax上传
-              console.log(blob);
+              console.log('blob,',blob);
               if (callback === 1) {
                 self.onRead(blob, true);
               } else if (callback === 2) {
@@ -684,12 +685,15 @@ export default {
     },
     /*vant图片上传*/
     onRead(e, flag) {
+      console.log('flagflagflag',e, flag);
+
       if (flag !== true) {
         if (e.file.size > this.photosize) {
           this.imgPreview(e.file, 1);
           return false;
         }
       }
+
       let fd = new FormData();
       if (flag === true) {
         fd.append("file", e);
@@ -710,7 +714,7 @@ export default {
               That.imageUrl = URL.createObjectURL(e.file);
             }
             That.cargon_data.thumb = responseData.data.img;
-            console.log("url-fabu", That.imageUrl);
+            console.log("url-fabu", That.imageUrl,That.cargon_data.thumb);
           } else {
             Toast(responseData.msg);
           }

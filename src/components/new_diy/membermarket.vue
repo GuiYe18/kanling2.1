@@ -3,8 +3,8 @@
     <!-- style -->
     <div v-html="css"></div>
     <!-- 营销互动 -->
-
-    <div class="html-box" v-if="(datas.show_list && datas.show_list.length > 0) || datas.list.length > 0">
+    <!-- <div class="html-box" v-if="(datas.show_list && datas.show_list.length > 0) || datas.list.length > 0"> -->
+    <div class="html-box">
       <div id="membermarket">
         <div class="title" @click="changeShow">
           <div style="display: flex">
@@ -14,29 +14,81 @@
           <i v-show="datas.list_style == '2' && !show" style="flex: 1; text-align: right; font-size: 20px" class="iconfont icon-member-top"></i>
         </div>
 
-        <ul class="tool-box" v-if="datas.list_style == '1'">
-          <!-- <li>
-            <router-link :to="fun.getUrl('extensionHome')">
-              <i class="iconfont"></i>
-              <div>推广</div>
-              <div class="Badge"></div>
+        <ul class="tool-box 1" v-if="datas.list_style == '1'">
+          <!-- 支付码申请 -->
+          <li>
+            <router-link :to="fun.getUrl('PaymentArea')" v-show="CashCodeStatus == 0">
+              <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
+              <div style="">支付码申请</div>
             </router-link>
-          </li>  -->
+            <router-link :to="fun.getUrl('PaymentCodeUnderReview', {}, { payStype: payStype })" v-show="CashCodeStatus == 1">
+              <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
+              <div style="">支付码审核中</div>
+            </router-link>
 
+            <router-link :to="fun.getUrl('ViewPaymentCode', {}, { payStype: payStype })" v-show="CashCodeStatus == 2">
+              <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
+              <div style="">查看支付码</div>
+            </router-link>
+            <router-link :to="fun.getUrl('PaymentCodeAuthenticationFailed', {}, { payStype: payStype })" v-show="CashCodeStatus == 3">
+              <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
+              <div style="">支付码申请未通过</div>
+            </router-link>
+          </li>
+          <!-- 推广二维码 -->
+          <li>
+            <router-link :to="fun.getUrl('extensionHome')">
+              <img src="./img/codeHome.png" alt="" class="diy-img" />
+              <div style="">推广二维码</div>
+            </router-link>
+          </li>
           <li v-for="icon in datas.show_list" :key="icon.url" @click="pluginGoto(icon)">
             <template v-if="notShow.indexOf(icon.url) < 0">
               <i class="iconfont" :class="icon.class"></i>
-              <div>{{ icon.title }}</div>
-              <div class="Badge" v-show="icon.total > 0">{{ icon.total > 99 ? "99+" : icon.total }}</div>
+              <div>{{ icon.title }}2</div>
+              <div class="Badge 1" v-show="icon.total > 0">{{ icon.total > 99 ? "99+" : icon.total }}</div>
             </template>
           </li>
 
           <li v-for="(item, index) in datas.list" :key="index" @click="gotoUrl(item)">
             <img class="diy-img" :src="item.image || emptyImage" alt="" />
-            <div style="margin-top: 9px">{{ item.text }}</div>
+            <div style="margin-top: 9px">{{ item.text }}1</div>
           </li>
 
-
+          <li v-if="member_item.uid == '685' || member_item.uid == '443' || member_item.uid == '1'">
+            <router-link :to="fun.getUrl('RecommendedMerchantList')">
+              <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
+              <div style="">推荐的商户列表</div>
+            </router-link>
+          </li>
+          <li>
+            <router-link :to="fun.getUrl('Industrydetails')" v-if="hangye">
+              <img src="../../assets/images/kick/invoice.png" alt="" class="diy-img sifu" />
+              <div style="">行业代表</div>
+            </router-link>
+            <router-link :to="fun.getUrl('Industry')" v-else>
+              <img src="../../assets/images/kick/invoice.png" alt="" class="diy-img sifu" />
+              <div style="">行业代表</div>
+            </router-link>
+          </li>
+          <li>
+            <router-link :to="fun.getUrl('Sifu')" v-show="s_state == 0">
+              <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
+              <div style="">四扶申请</div>
+            </router-link>
+            <router-link :to="fun.getUrl('SifuUnderReview')" v-show="s_state == 3">
+              <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
+              <div style="">四扶审核中</div>
+            </router-link>
+            <router-link :to="fun.getUrl('SifuAuthenticationFailed')" v-show="s_state == 2">
+              <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
+              <div style="">四扶未通过</div>
+            </router-link>
+            <router-link :to="fun.getUrl('FourSupportDetails')" v-show="s_state == 1">
+              <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
+              <div style="">四扶详情</div>
+            </router-link>
+          </li>
         </ul>
 
         <ul class="tool-boxlis" v-if="datas.list_style == '2'" v-show="show">
@@ -69,82 +121,23 @@
         </ul>
       </div>
 
-      <div id="membermarket">
+      <div>
         <div class="title">
           <div style="display: flex">
             <div class="spare"></div>
-            <h3>更多</h3>
+            <!-- <h3>更多</h3> -->
           </div>
           <i class="iconfont icon-member-top" style="flex: 1 1 0%; text-align: right; font-size: 20px; display: none"></i>
         </div>
         <ul class="tool-box">
           <!-- <li>
-            <router-link :to="fun.getUrl('DonationCertificate')">
-              <img src="../../assets/images/kick/证书.png" alt="" class="diy-img sifu" />
-              <div style="">捐赠证书</div>
-            </router-link>
+              <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
+              <div style="">支付码维护</div>
           </li> -->
           <!-- <li>
-            <router-link :to="fun.getUrl('DonationInvoice')">
-              <img src="../../assets/images/kick/发票.png" alt="" class="diy-img sifu" />
-              <div style="">捐赠发票</div>
-            </router-link>
-          </li> -->
-
-          <!-- <li>
-            <router-link :to="fun.getUrl('Sifu', {}, { uid: member_item.uid })" v-show="member_item.s_state == 0">
-              <img src="../../assets/images/kick/四扶.png" alt="" class="diy-img sifu" />
-              <div style="">四扶申请</div>
-            </router-link>
-            <router-link :to="fun.getUrl('SifuUnderReview')" v-show="member_item.s_state == 3">
-              <img src="../../assets/images/kick/四扶.png" alt="" class="diy-img sifu" />
-              <div style="">四扶审核中</div>
-            </router-link>
-            <router-link :to="fun.getUrl('SifuAuthenticationFailed', {}, { uid: member_item.uid })" v-show="member_item.s_state == 2">
-              <img src="../../assets/images/kick/四扶.png" alt="" class="diy-img sifu" />
-              <div style="">四扶未通过</div>
-            </router-link>
-            <router-link :to="fun.getUrl('FourSupportDetails', {}, { uid: member_item.uid })" v-show="member_item.s_state == 1">
-              <img src="../../assets/images/kick/四扶.png" alt="" class="diy-img sifu" />
-              <div style="">四扶详情</div>
-            </router-link>
-          </li> -->
-          <li>
-              <img src="../../assets/images/kick/四扶.png" alt="" class="diy-img sifu" />
-              <div style="">四扶正在维护</div>
-          </li>
-
-          <li>
-            <router-link :to="fun.getUrl('IncomeAndExpenditureDetails')">
-              <img src="../../assets/images/kick/发票.png" alt="" class="diy-img sifu" />
-              <div style="">收支明细</div>
-            </router-link>
-          </li>
-
-          <li>
-            <router-link :to="fun.getUrl('MerchantSettled')" v-show="CashCodeStatus == 0">
-              <img src="../../assets/images/kick/证书.png" alt="" class="diy-img sifu" />
-              <div style="">支付码申请</div>
-            </router-link>
-            <router-link :to="fun.getUrl('PaymentCodeUnderReview')"  v-show="CashCodeStatus == 1">
-              <img src="../../assets/images/kick/证书.png" alt="" class="diy-img sifu" />
-              <div style="">支付码审核中</div>
-            </router-link>
-
-            <router-link :to="fun.getUrl('ViewPaymentCode')"  v-show="CashCodeStatus == 2">
-              <img src="../../assets/images/kick/证书.png" alt="" class="diy-img sifu" />
-              <div style="">查看支付码</div>
-            </router-link>
-            <router-link :to="fun.getUrl('PaymentCodeAuthenticationFailed')"  v-show="CashCodeStatus == 3">
-              <img src="../../assets/images/kick/证书.png" alt="" class="diy-img sifu" />
-              <div style="">支付码申请未通过</div>
-            </router-link>
-          </li>
-          <!-- <li>
-              <img src="../../assets/images/kick/证书.png" alt="" class="diy-img sifu" />
+              <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
               <div style="">支付码申请 <br/> 正在升级中</div>
           </li> -->
-          
         </ul>
         <!---->
       </div>
@@ -202,12 +195,30 @@ const css = function () {
 };
 
 export default {
-  props: ["id", "datas", "member_item", "notShow","CashCodeStatus"],
+  props: ["id", "datas", "member_item", "notShow", "CashCodeStatus", "hangye", "payStype"],
   data() {
     return {
       emptyImage,
       show: true,
+      s_state: ""
     };
+  },
+
+
+
+  mounted() {
+    var that = this
+    $http
+      .post("member.member.member-data", { v: 3 }, " ")
+      .then(response => {
+        if (response.result === 1) {
+          that.s_state = response.data.member.s_state;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        require("@/assets/css/member/02.scss");
+      });
   },
   computed: {
     css() {
@@ -221,7 +232,6 @@ export default {
   },
 
   methods: {
-
     changeShow() {
       this.show = !this.show;
     },
@@ -231,28 +241,34 @@ export default {
       }
     },
     pluginGoto(item) {
-      alert("itempluginGoto", item.name);
+      // alert("itempluginGoto", item.name);
 
-      // if (item.name == "article") {
-      //   this.$router.push(
-      //     this.fun.getUrl(item.url, {
-      //       id: "0"
-      //     })
-      //   );
-      // } else if (item.name == "courier") {
-      //   window.localStorage.setItem("couriername", item.title);
-      //   this.$router.push(this.fun.getUrl(item.url));
-      // } else if (item.name == "supplier") {
-      //   this.$router.push(
-      //     this.fun.getUrl(item.url, {
-      //       uid: this.member_item.uid
-      //     })
-      //   );
-      // } else if (item.name == "m-erweima") {
-      //   this.openQrCode("block");
-      // } else {
-      //   this.$router.push(this.fun.getUrl(item.url, { selected: "1" }));
-      // }
+      /**
+       * @Author: 飞
+       * @Date: 2021-07-22 14:22:43
+       * @Describe: 营销互动 后台功能
+       * @param {*} item
+       */
+      if (item.name == "article") {
+        this.$router.push(
+          this.fun.getUrl(item.url, {
+            id: "0"
+          })
+        );
+      } else if (item.name == "courier") {
+        window.localStorage.setItem("couriername", item.title);
+        this.$router.push(this.fun.getUrl(item.url));
+      } else if (item.name == "supplier") {
+        this.$router.push(
+          this.fun.getUrl(item.url, {
+            uid: this.member_item.uid
+          })
+        );
+      } else if (item.name == "m-erweima") {
+        this.openQrCode("block");
+      } else {
+        this.$router.push(this.fun.getUrl(item.url, { selected: "1" }));
+      }
     },
     openQrCode(e) {
       this.$emit("openQrCode", e);
@@ -429,7 +445,7 @@ export default {
     .sifu {
       width: 42px;
       height: 42px;
-      margin: 6px auto;
+      margin: 1px auto;
       margin-bottom: 0;
     }
 

@@ -1,14 +1,14 @@
 <!--
  * @Author: 飞
  * @Date: 2021-05-24 14:29:51
- * @LastEditTime: 2021-05-24 20:27:18
+ * @LastEditTime: 2021-07-14 16:38:36
  * @FilePath: \you-shop1\src\views\IncomeAndExpenditureDetails\RequestARefund.vue
  * @Describe: 
 -->
 <template>
   <div class="content">
     <div class="img">
-      <img src="./img/退款.png" alt="" />
+      <img src="./img/Refund.png" alt="" />
     </div>
     <p>退款金额将原路退回至付款账户</p>
     <span>请确保余额充足</span>

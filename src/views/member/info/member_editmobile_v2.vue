@@ -1,8 +1,15 @@
+<!--
+ * @Author: 飞
+ * @Date: 2021-04-20 11:08:52
+ * @LastEditTime: 2021-09-26 19:03:49
+ * @FilePath: \you-shop1\src\views\member\info\member_editmobile_v2.vue
+ * @Describe: 
+-->
 <template>
   <div id="register">
     <c-title :hide="false" text="绑定手机"></c-title>
     <!-- <div style="height:40px;"></div> -->
-    <div class="topImg" :style="{ backgroundImage: 'url(' + (!fun.isTextEmpty(requimg) ? requimg : images_n) + ')' }">
+    <div class="topImg 1" :style="{ backgroundImage: 'url(' + (!fun.isTextEmpty(requimg) ? requimg : images_n) + ')' }">
       <!-- <div class="topTxt">
         <span>{{title1}}</span>
         <span>{{title2}}</span>
@@ -48,6 +55,7 @@
             <van-field v-model.trim="form.invite_code" :border="false" placeholder="请输入邀请码" center clearable />
             <span style="color: #ff2c29; white-space: nowrap" v-if="!fun.isTextEmpty(default_invite)" @click="fillInCode">默认邀请码</span>
           </li>
+
           <li v-if="is_password == '1'" class="commont-style">
             <div class="must">*</div>
             <van-field v-model.trim="form.password" :type="setpassword" :border="false" placeholder="设置密码" center clearable>
@@ -322,11 +330,12 @@
         </van-cell-group>
 
         <div class="agreement" v-if="agreementStatus">
-          <van-checkbox v-model="agreementCB" checked-color="#f15353">&nbsp;</van-checkbox>
-          <!--<el-checkbox v-model="agreementCB">&nbsp;</el-checkbox>-->
-          <span style="font-size: 0.75rem; color: #999; margin-left: 10px">我已阅读、理解并接受</span>
-          <span slot="right" style="font-size: 0.75rem; color: #ff2c29" @click="goAgreement"> 《会员注册协议》 </span>
+          <el-checkbox v-model="agreementCB">
+            <span style="font-size: 0.75rem; color: #999; margin-left: 10px">我已阅读、理解并接受</span>
+            <span style="color: red" @click="tongyi"> 《会员注册协议》 </span></el-checkbox
+          >
         </div>
+
         <!-- <div class="btn">
           <button type="button" @click="register">绑定</button>
         </div>-->
@@ -337,11 +346,21 @@
      * @Date: 2021-06-18 15:09:03
      * @Describe: 我已同意用户协议
      */     -->
-    <div class="protocol">
+    <!-- /**
+     * @Author: 飞
+     * @Date: 2021-09-26 18:59:11
+     * @Describe: 关闭我已同意用户协议
+     */      -->
+    <!-- <div class="protocol">
       <li @click="NoAgree">
-        <van-checkbox v-model="checked" checked-color="#ee0a24" disabled icon-size="17px">我已阅读并同意<span>{{protocoltext}}</span></van-checkbox>
+        <van-checkbox v-show="!checked" v-model="checked" icon-size="17px"
+          >我已阅读并同意<span>{{ protocoltext }}</span></van-checkbox
+        >
+        <van-checkbox v-show="checked" v-model="checked" checked-color="#E60416" icon-size="17px"
+          >我已阅读并同意<span>{{ protocoltext }}</span></van-checkbox
+        >
       </li>
-    </div>
+    </div> -->
     <!--  
     /**
      * @Author: 飞
@@ -349,13 +368,12 @@
      * @Describe: 协议内容
      */      
     -->
-    <van-overlay v-show="protocolshow" :lock-scroll="false">
+    <van-overlay v-show="protocolshow" :lock-scroll="false" @click="protocolshow = false">
       <!-- <RegistrationAgreement /> -->
       <div class="wrapper">
         <div class="block">
           <RegistrationAgreement />
-
-          <div class="agree">
+          <div class="agree" v-show="1 != 1">
             <template>
               <div class="agreeLeft" @click="cancel" :class="AgreementAllowClick == false ? 'hide' : ''">不同意</div>
             </template>
@@ -501,7 +519,7 @@ export default member_editmobile_v2_controller;
   .protocol {
     background-color: #fff;
     padding: 12px 20px;
-    span{
+    span {
       color: red;
     }
   }

@@ -11,17 +11,10 @@
           <van-cell-group>
             <van-field v-model="form.name" label="商铺名称" placeholder="请输入商铺名称" />
           </van-cell-group>
-          <van-cell title="扫描营业执照" value="请扫描营业执照上的二维码" :border="false" />
+          <van-cell title="上传营业执照" value="请上传完整营业执照" :border="false" />
           <div class="upload-container">
             <div class="upload-item">
-              <van-uploader
-                v-model="fileList"
-                preview-size="186px"
-                :max-count="1"
-                image-fit="contain"
-                :after-read="afterRead"
-                @delete="handleDelete"
-              />
+              <van-uploader v-model="fileList" preview-size="186px" :max-count="1" image-fit="contain" :after-read="afterRead" @delete="handleDelete" />
             </div>
           </div>
           <van-button type="info" block @click="handleSubmit">提交</van-button>
@@ -31,94 +24,100 @@
   </div>
 </template>
 <script>
-import cTitle from 'components/title'
+import cTitle from "components/title";
 export default {
   components: { cTitle },
   data() {
     return {
       fileList: [],
       form: {
-        uid: '',
-        name: '',
+        uid: "",
+        name: "",
         type: 2, // 商铺
-        imageurl: ''
+        imageurl: ""
       }
-    }
+    };
   },
   mounted() {
-    this.form.uid = JSON.parse(localStorage.getItem('tempIndex')).memberinfo.uid
+    this.form.uid = JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid;
   },
   methods: {
     // 上传营业执照
     async afterRead(file) {
-      const type = 1 // 图片类型
-      const formData = this.generatorFormData(this.fileList, type)
-      this.form.imageurl = await this.upload(formData)
+      const type = 1; // 图片类型
+      const formData = this.generatorFormData(this.fileList, type);
+      this.form.imageurl = await this.upload(formData);
     },
     // 删除营业执照
     async handleDelete(img) {
-      const type = 1 // 图片类型
-      const formData = this.generatorFormData(this.fileList, type)
-      this.form.imageurl = await this.upload(formData)
+      const type = 1; // 图片类型
+      const formData = this.generatorFormData(this.fileList, type);
+      this.form.imageurl = await this.upload(formData);
     },
     // 生成FormData
     generatorFormData(array, type) {
-      const len = array.length
-      if (!len) return
-      const formData = new FormData()
-      formData.append('type', type)
-      for(let i = 0; i < len; i++) {
-        formData.append('image[]', array[i].file)
+      const len = array.length;
+      if (!len) return;
+      const formData = new FormData();
+      formData.append("type", type);
+      for (let i = 0; i < len; i++) {
+        formData.append("image[]", array[i].file);
       }
-      return formData
+      return formData;
     },
     // 提交
     async handleSubmit() {
-      await this.valid(this.form)
+      await this.valid(this.form);
     },
     // 上传图片方法
     upload(formData) {
-      const url = 'https://tpkl.minpinyouxuan.com/index.php/api/image'
+      const url = "https://tpkl.minpinyouxuan.com/index.php/api/image";
       let headers = {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      }
+        headers: { "Content-Type": "multipart/form-data" }
+      };
       return axios({
-        method: 'POST',
+        method: "POST",
         url: url,
         data: formData
       })
         .then(res => {
-          return res.data.data ? res.data.data.img_path : ''
+          return res.data.data ? res.data.data.img_path : "";
         })
         .catch(reason => {
-          console.log(reason)
-        })
+          console.log(reason);
+        });
     },
     // 身份证验证
     valid(formData) {
-      const validUrl = 'https://tpkl.minpinyouxuan.com/index.php/api/v1/demojiek'
+      console.log("formData", formData);
+      const validUrl = "https://tpkl.minpinyouxuan.com/index.php/api/v1/demojiek";
       axios({
-        method: 'post',
+        method: "post",
         url: validUrl,
         data: formData
       })
         .then(res => {
-          console.log(res)
+          console.log(res);
           if (res.data.result === 1) {
             // 认证成功跳转
-            localStorage.setItem('shops', JSON.stringify(res.data.data))
-            this.$router.push(this.fun.getUrl('validSuccess',  {tag: 'shops'}))
-          } else {
+            localStorage.setItem("shops", JSON.stringify(res.data.data));
+            this.$router.push(this.fun.getUrl("validSuccess", { tag: "shops" }));
+          }
+
+          if (res.data.result === 0) {
+            console.log("res.data.result", res.data.msg);
             // 认证失败跳转
-            this.$router.push(this.fun.getUrl('validFaild',  {tag: 'shops'}))
+            this.$router.push(this.fun.getUrl("validFaild", { tag: "shops" }, { msg: res.data.msg }));
           }
         })
         .catch(reason => {
-          console.log(reason)
-        })
+          this.$dialog({
+            message: "请上传完整的营业执照!"
+          });
+        });
     }
   }
-}
+};
 </script>
 <style lang="scss" rel="stylesheet/scss" scoped>
 #income,
@@ -231,7 +230,7 @@ input {
         position: absolute;
         top: 0.1rem;
         right: 0.1rem;
-        background: url('../../../assets/images/close_iocn.png');
+        background: url("../../../assets/images/close_iocn.png");
         background-size: 100%;
       }
     }

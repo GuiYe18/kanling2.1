@@ -53,7 +53,7 @@ export default {
       clientWidth: "375",
       page_name: "",
       isInHome: 0,
-      id: "M" + new Date().getTime(),
+      id: "M-" + new Date().getTime(),
       fullShow: false,
       popShow: false,
       advertising: {},
@@ -70,8 +70,8 @@ export default {
       current_page: 1,
       total_page: 0,
       isLoadMore: true,
-      lastIndex: ""
-
+      lastIndex: "",
+      wwwwwwwww:'9999999999999'
       // "gh_id": "gh_cdb1a2dfcd17",
       // "minApp_link": "/pages/index/index.html",
     };
@@ -79,12 +79,18 @@ export default {
   mounted() {
     window.diyHomeScrollTop = 0;
     this.isInHome = 1;
+    console.log('getTemp',getTemp);
     this.getTemp();
 
     // mounted 肯定是第一次进来
     this.isMounted = true;
   },
+  created() {
+    console.log('HUIDAOYUANWEI');
+    
+  },
   activated() {
+
     if (this.fun.getPhoneEnv() == 3) {
       this.clientWidth = 375;
     } else {
@@ -158,6 +164,7 @@ export default {
     },
     //获取装修信息
     getTemp() {
+      // console.log('获取装修信息');
       this.showPage = false;
       $http
         .get("home-page.index", { page_id: this.fun.getKey("page_id") }, "loading")
@@ -226,7 +233,7 @@ export default {
                   this.bottom_info = JSON.parse(response.data.item.foot.page_info);
                 }
               }
-
+              console.log('bottom_infobottom_infobottom_info',this.bottom_info);
               if (this.full_screen && this.full_screen.id && this.full_screen.show_rule === 1) {
                 if (!window.page_idFull_screens.includes(this.page_id)) {
                   window.page_idFull_screens.push(this.page_id);

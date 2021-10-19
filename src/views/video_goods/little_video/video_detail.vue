@@ -24,6 +24,7 @@
       <swiper :options="swiperOption" v-if="popularVideo.length > 0">
         <swiper-slide v-for="(item, index) in popularVideo" :key="index">
           <div>
+            <!-- 播放的开关 -->
             <div class="works_wrap" v-show="!item.show" @click="clickSwiper(index)">
               <div class="poster">
                 <img class="pic" ref="pic" :src="item.cover" />
@@ -31,28 +32,22 @@
               <div class="playWorks"></div>
               <img class="play" src="../../../assets/images/find_play@2x.png" alt="" />
             </div>
-
+            <!-- 点赞分享 -->
             <div class="side-bar">
               <div class="avatar">
-                <img
-                  :src="item.member.avatar"
-                  alt=""
-                  width="40"
-                  height="40"
-                  @click.stop="chooseUser(item)"
-                  v-if="item.member"
-                />
+                <img :src="item.member.avatar" alt="" width="40" height="40" @click.stop="chooseUser(item)" v-if="item.member" />
               </div>
               <div class="like" @click.stop="toggleLike(item)">
                 <img v-if="item.member_like == 0" src="../../../assets/images/find_heart_r@2x.png" alt="" />
                 <img v-if="item.member_like != 0" src="../../../assets/images/find_heart_w@2x.png" alt="" />
                 <span class="likenum">{{ item.like_num }}</span>
               </div>
-              <div class="share" style="font-size: 30px;" @click="shareVideo">
+              <div class="share" style="font-size: 30px" @click="shareVideo">
                 <img src="../../../assets/images/find_share@2x.png" alt="" />
                 <span class="sharenum" v-if="item.share_num">{{ item.share_num }}</span>
               </div>
             </div>
+            <!-- 录制记录 -->
             <div class="other_menu">
               <router-link :to="fun.getUrl('videoAgreement')">
                 <div class="video_record"><i class="iconfont icon-video_recording"></i><em>录制</em></div>
@@ -61,7 +56,9 @@
                 <div class="video_myvideorecord"><i class="iconfont icon-video_myvideorecord"></i><em>记录</em></div>
               </router-link>
             </div>
-            <div class="good-box" @click.stop="toGood(item)" v-if="item.goods">
+            <!-- 商铺 -->
+            <!-- <div class="good-box" @click.stop="toGood(item)" v-if="item.goods">
+              
               <div class="good-img">
                 <img :src="item.goods.thumb" alt="" />
               </div>
@@ -75,11 +72,12 @@
               <div class="cart">
                 <img src="../../../assets/images/find_cart@2x.png" alt="" />
               </div>
-            </div>
-            <div class="play-video" v-if="item.show" @click="clickSwiper(index)"></div>
-            <div class="play-video" v-if="showShare" style="z-index: 13;" @click="close">
+            </div> -->
+            <!-- 分享 -->
+            <!-- <div class="play-video" v-if="item.show" @click="clickSwiper(index)"></div>
+            <div class="play-video" v-if="showShare" style="z-index: 13" @click="close">
               <img src="../../../assets/images/share_bg.png" alt="" />
-            </div>
+            </div> -->
           </div>
         </swiper-slide>
       </swiper>
@@ -95,12 +93,7 @@
       <div
         class="Redpack-box"
         :style="{
-          backgroundImage:
-            'url(' +
-            (redpack_info.redpack_pic
-              ? redpack_info.redpack_pic
-              : 'https://dev4.yunzmall.com/attachment/image/7ad7f27c83eac4db1f8e0473798de644.png') +
-            ')'
+          backgroundImage: 'url(' + (redpack_info.redpack_pic ? redpack_info.redpack_pic : 'https://dev4.yunzmall.com/attachment/image/7ad7f27c83eac4db1f8e0473798de644.png') + ')'
         }"
       >
         <transition name="slide-fade">
@@ -123,7 +116,7 @@
               <img class="avator" :src="redpack_info.logo_pic" alt="" />
             </div>
             <div class="Redpack-text open-text">{{ redpack_info.redpack_text }}</div>
-            <div class="open-total">{{ redpack_info.amount }}<em style="font-size: 0.75rem;">元</em></div>
+            <div class="open-total">{{ redpack_info.amount }}<em style="font-size: 0.75rem">元</em></div>
             <div class="Redpack-text open-text color-text">红包已通过微信发放成功，请注意查收！</div>
             <div class="Redpack_bg_box open-redpack_bg_box">
               <div class="Redpack_bg"></div>
@@ -144,15 +137,11 @@
         <div class="inputBox" v-if="imgcode">
           <em class="name">验证码</em>
           <input type="text" placeholder="请输入图形验证码" id="code" v-model="form.captcha" />
-          <img class="getcodeImg" style="width: 100%; height: 2.5rem; z-index: 999;" :src="imgcode" @click="getimgdata" />
+          <img class="getcodeImg" style="width: 100%; height: 2.5rem; z-index: 999" :src="imgcode" @click="getimgdata" />
         </div>
         <div class="inputBox">
           <em class="name">验证码</em>
-          <input type="number" placeholder="请输入验证码" id="code" v-model="form.code" /><span
-            class="getcodeClass"
-            @click="VerificationCode"
-            v-show="!cationCode"
-            >获取验证码</span
+          <input type="number" placeholder="请输入验证码" id="code" v-model="form.code" /><span class="getcodeClass" @click="VerificationCode" v-show="!cationCode">获取验证码</span
           ><span class="getcodeClass" v-show="cationCode">{{ count }}秒后重新获取</span>
         </div>
         <div class="bottomBox">
@@ -175,7 +164,7 @@
         </div>
       </div>
     </van-popup>
-    <van-popup v-model="successShow" style="background: transparent;" :close-on-click-overlay="false">
+    <van-popup v-model="successShow" style="background: transparent" :close-on-click-overlay="false">
       <div class="successAlert">
         <div class="c1">答题成功</div>
         <div class="c2">恭喜你获得{{ integral_name }}</div>
@@ -186,7 +175,7 @@
       </div>
     </van-popup>
 
-    <van-popup v-model="errorShow" style="background: transparent;" :close-on-click-overlay="false">
+    <van-popup v-model="errorShow" style="background: transparent" :close-on-click-overlay="false">
       <div class="errorAlert">
         <div class="sigh"><img src="https://www.yunzmall.com/min_img/videoAnswerTan@3x.png" alt="" /></div>
         <div class="c1">答题失败</div>
@@ -202,7 +191,7 @@
 </template>
 
 <script>
-import video_detail_controller from './video_detail_controller';
+import video_detail_controller from "./video_detail_controller";
 
 export default video_detail_controller;
 </script>
@@ -317,7 +306,7 @@ export default video_detail_controller;
       left: 50%;
       margin-left: -2.375rem;
       margin-top: -1.5rem;
-      background-image: url('../../../assets/images/redEnvelope/open_btn.png');
+      background-image: url("../../../assets/images/redEnvelope/open_btn.png");
       background-size: 100% 100%;
     }
 
@@ -365,7 +354,7 @@ export default video_detail_controller;
       padding: 1.75rem 8rem;
       border-radius: 50%;
       box-shadow: 0 0 0 380px rgba(#f04333, 1);
-      content: '';
+      content: "";
     }
   }
 
@@ -447,7 +436,7 @@ export default video_detail_controller;
       border-radius: 50%;
       box-shadow: 0 0 0 380px rgba(#fff, 1);
       border: 2px solid #efca62;
-      content: '';
+      content: "";
     }
   }
 }
@@ -852,7 +841,7 @@ export default video_detail_controller;
   position: relative;
 
   &::before {
-    content: '';
+    content: "";
     display: block;
     width: 1rem;
     height: 1rem;
@@ -864,7 +853,7 @@ export default video_detail_controller;
   }
 
   &::after {
-    content: '';
+    content: "";
     display: block;
     width: 1rem;
     height: 1rem;

@@ -1,14 +1,12 @@
 <template>
   <div id="income">
     <div class="supplier">
-      <c-title :hide="false"
-               :text='is_hotel?`${hotelTitleType}申请`:"门店申请"'></c-title>
-      <div style="height: 40px;"></div>
+      <c-title :hide="false" :text="is_hotel ? `${hotelTitleType}申请` : '门店申请'"></c-title>
+      <div style="height: 40px"></div>
       <div class="banner">
-        <img :src="is_hotel?require('../../../assets/images/hotel.png'):bannerImg">
+        <img :src="is_hotel ? require('../../../assets/images/hotel.png') : bannerImg" />
       </div>
-      <div class="main"
-           v-if="o2o_status==1">
+      <div class="main" v-if="o2o_status == 1">
         <!-- <div class="main" v-if="o2o_status==1"> -->
         <!--申请   -->
         <!-- <div class="welcome">
@@ -36,290 +34,225 @@
 							</div> -->
         <!-- 填写申请信息 -->
 
-        <van-cell-group :border = false class="store_apply account-info" style="margin-bottom: 10px;">
+        <van-cell-group :border="false" class="store_apply account-info" style="margin-bottom: 10px">
+          <van-cell :border="false" class="otherTitle" center>
+            <span slot="title">区域代理信息</span>
+            <!-- <span slot="default" class="icon-list" v-if="!is_hotel && !fun.isTextEmpty(cservice)"
+              ><a @click="show1 = true"><i class="iconfont icon-service"></i></a
+            ></span> -->
+          </van-cell>
+
+          <van-cell :border="false" class="info-item" center>
+            <span slot="title">姓名 <em>*</em></span>
+            <input slot="default" type="text" placeholder="姓名" v-model="realname_RegionalAgent" />
+          </van-cell>
+
+          <van-cell :border="false" class="info-item" center>
+            <span slot="title">手机号 <em>*</em></span>
+            <input type="number" placeholder="手机号" v-model="mobile_RegionalAgent" />
+          </van-cell>
+          <van-cell is-link :border="false">
+            <span slot="title" class="info-item">所在区域<em>*</em></span>
+            <input slot="default" type="text" @click.stop="addressShow_RegionalAgent = true" v-model="addressName_RegionalAgent" readonly placeholder="请选择城市" />
+          </van-cell>
+        </van-cell-group>
+
+        <van-cell-group :border="false" class="store_apply account-info" style="margin-bottom: 10px">
           <van-cell :border="false" class="otherTitle" center>
             <span slot="title">账号信息</span>
-            <span slot="default" class="icon-list"
-                  v-if="!is_hotel&&!fun.isTextEmpty(cservice)"><a @click="show1=true"><i class="iconfont icon-service"></i></a></span>
+            <span slot="default" class="icon-list" v-if="!is_hotel && !fun.isTextEmpty(cservice)"
+              ><a @click="show1 = true"><i class="iconfont icon-service"></i></a
+            ></span>
           </van-cell>
           <van-cell :border="false" class="info-item" center>
             <span slot="title">登录账号 <em>*</em></span>
-            <input slot="default"
-                   type="text"
-                   placeholder="账号"
-                   v-model="applyModel.username" />
+            <input slot="default" type="text" placeholder="账号" v-model="applyModel.username" />
           </van-cell>
-            <van-cell :border="false" class="info-item" center>
+          <van-cell :border="false" class="info-item" center>
             <span slot="title">登录密码 <em>*</em></span>
-            <input slot="default"
-                   type="password"
-                   placeholder="密码"
-                   v-model="applyModel.password"  />
+            <input slot="default" type="password" placeholder="密码" v-model="applyModel.password" />
           </van-cell>
           <span id="tips" v-if="pass_safe == 1">密码至少8-16个字符，至少1个大写字母，1个小写字母和1个数字，其他可以是任意字符</span>
 
           <van-cell :border="false" class="info-item" center>
             <span slot="title">姓名 <em>*</em></span>
-            <input slot="default"
-                   type="text"
-                   placeholder="姓名"
-                  v-model="applyModel.realname" />
+            <input slot="default" type="text" placeholder="姓名" v-model="applyModel.realname" />
           </van-cell>
 
           <van-cell :border="false" class="info-item" center>
             <span slot="title">手机号 <em>*</em></span>
-            <input type="number"
-                   placeholder="手机号"
-                   v-model="applyModel.mobile"
-                  />
+            <input type="number" placeholder="手机号" v-model="applyModel.mobile" />
           </van-cell>
           <h3>注：账号/密码用于您登录PC端管理后台，请务必牢记！</h3>
         </van-cell-group>
 
-
-        <van-cell-group :border ="false" class="store_apply account-info" style="margin-bottom: 10px;">
+        <van-cell-group :border="false" class="store_apply account-info" style="margin-bottom: 10px">
           <van-cell :border="false" class="otherTitle" center>
-            <span slot="title">{{is_hotel?`${hotelTitleType}信息`:'门店信息'}}</span>
+            <span slot="title">{{ is_hotel ? `${hotelTitleType}信息` : "门店信息" }}</span>
           </van-cell>
           <van-cell :border="false">
-              <span slot="title" class="blod-text">{{is_hotel?`${hotelTitleType}名称`:'门店名称'}}<em>*</em></span>
-              <input slot="default"
-                   type="text"
-                   :placeholder="is_hotel?`${hotelTitleType}名称`:'门店名称'"
-                   v-model="applyModel.storeName"></input>
+            <span slot="title" class="blod-text">{{ is_hotel ? `${hotelTitleType}名称` : "门店名称" }}<em>*</em></span>
+            <input slot="default" type="text" :placeholder="is_hotel ? `${hotelTitleType}名称` : '门店名称'" v-model="applyModel.storeName" />
           </van-cell>
 
           <van-cell is-link :border="false">
-              <span slot="title" class="blod-text">所属类型<em>*</em></span>
-              <input slot="default"
-                      type="text"
-                    @click.stop="showCategory"
-                    v-model="categoryName"
-                    readonly
-                   placeholder="请选择类型"></input>
+            <span slot="title" class="blod-text">所属类型<em>*</em></span>
+            <input slot="default" type="text" @click.stop="showCategory" v-model="categoryName" readonly placeholder="请选择类型" />
           </van-cell>
 
           <van-cell is-link :border="false" v-if="is_hotel">
-              <span slot="title" class="blod-text">星级<em>*</em></span>
-              <input slot="default"
-                     type="text"
-                   @click.stop="levelShow = true"
-                   v-model="levelName"
-                   readonly
-                   placeholder="请选择星级"></input>
+            <span slot="title" class="blod-text">星级<em>*</em></span>
+            <input slot="default" type="text" @click.stop="levelShow = true" v-model="levelName" readonly placeholder="请选择星级" />
           </van-cell>
 
           <van-cell is-link :border="false">
-              <span slot="title" class="blod-text">所在城市<em>*</em></span>
-              <input slot="default"
-                      type="text"
-                   @click.stop="addressShow = true"
-                   v-model="addressName"
-                   readonly
-                   placeholder="请选择城市"></input>
+            <span slot="title" class="blod-text">所在城市<em>*</em></span>
+            <input slot="default" type="text" @click.stop="addressShow = true" v-model="addressName" readonly placeholder="请选择城市" />
           </van-cell>
 
           <van-cell is-link :border="false">
-              <span slot="title" class="blod-text">街道<em>*</em></span>
-              <input slot="default"
-                      type="text"
-                   @click.stop="streetShow = true"
-                   v-model="street"
-                   readonly
-                   placeholder="请选择街道"></input>
+            <span slot="title" class="blod-text">街道<em>*</em></span>
+            <input slot="default" type="text" @click.stop="streetShow = true" v-model="street" readonly placeholder="请选择街道" />
           </van-cell>
 
           <van-cell :border="false">
-              <span slot="title" class="blod-text">详细地址<em>*</em></span>
-              <input slot="default"
-                      type="text"
-                      v-model="applyModel.address"
-                      placeholder="街道楼排号等"></input>
+            <span slot="title" class="blod-text">详细地址<em>*</em></span>
+            <input slot="default" type="text" v-model="applyModel.address" placeholder="街道楼排号等" />
           </van-cell>
 
           <van-cell :border="false">
-              <span slot="title" class="blod-text">地理位置<em>*</em></span>
-              <span slot="default"
-                  style="display: flex; justify-content: flex-end; align-items: center;">
-              <div class="addressDiv"
-                   style="text-align: right;">{{addressInfo}}</div>
-              <i class="iconfont icon-dingwei"
-                 style="color: #f86e6e; padding-right: 0.25rem;"></i>
-              <div class=""
-                   style=""
-                   @click="toGeolocation">{{addressInfo?'切换':'自动定位'}}</div>
+            <span slot="title" class="blod-text">地理位置<em>*</em></span>
+            <span slot="default" style="display: flex; justify-content: flex-end; align-items: center">
+              <div class="addressDiv" style="text-align: right">{{ addressInfo }}</div>
+              <i class="iconfont icon-dingwei" style="color: #f86e6e; padding-right: 0.25rem"></i>
+              <div class="" style="" @click="toGeolocation">{{ addressInfo ? "切换" : "自动定位" }}</div>
               <!-- <div class="addressDiv">经度:{{applyModel.lng}}<br/> 纬度:{{applyModel.lat}}</div> -->
             </span>
           </van-cell>
 
-          <van-cell is-link :border="false" @click="startTimeTag=true">
-              <span slot="title" class="blod-text">{{is_hotel?'入住时间':'营业开始时间'}}<em>*</em></span>
-              <span slot="default">{{beginTime}}</span>
+          <van-cell is-link :border="false" @click="startTimeTag = true">
+            <span slot="title" class="blod-text">{{ is_hotel ? "入住时间" : "营业开始时间" }}<em>*</em></span>
+            <span slot="default">{{ beginTime }}</span>
           </van-cell>
 
-          <van-cell is-link :border="false" @click="endTimeTag=true">
-            <span slot="title" class="blod-text" >{{is_hotel?'离开时间':'营业结束时间'}} <em>*</em></span>
-              <span slot="default">{{endTime}}</span>
+          <van-cell is-link :border="false" @click="endTimeTag = true">
+            <span slot="title" class="blod-text">{{ is_hotel ? "离开时间" : "营业结束时间" }} <em>*</em></span>
+            <span slot="default">{{ endTime }}</span>
           </van-cell>
 
-           <div style="clear: both;"></div>
-          <div style="text-align: left; padding: 0.75rem; display: flex; justify-content: space-between;">
-            <span style="font-size: 14px; font-weight: bold;">{{is_hotel?`${hotelTitleType}Logo`:'门店Logo'}} <em style="color: #f86e6e;">*</em></span>
+          <div style="clear: both"></div>
+          <div style="text-align: left; padding: 0.75rem; display: flex; justify-content: space-between">
+            <span style="font-size: 14px; font-weight: bold">{{ is_hotel ? `${hotelTitleType}Logo` : "门店Logo" }} <em style="color: #f86e6e">*</em></span>
             <div @click="selectIndex(1)">
-              <van-uploader :after-read="onRead"
-                            :max-size="photosize"
-                            @oversize="onphotosize">
-                <div style="padding: 0.2rem; width: 4.25rem; height: 4.25rem; border: 1px dashed #c0ccda; margin: 0 auto; display: flex;">
-                  <img :src="imageUrl?imageUrl:require('../../../assets/images/up_icon.png')"
-                       :style="{width:(imageUrl?'100%':'50%'),height:(imageUrl?'100%':'50%')}"
-                       class="avatar">
+              <van-uploader :after-read="onRead" :max-size="photosize" @oversize="onphotosize">
+                <div style="padding: 0.2rem; width: 4.25rem; height: 4.25rem; border: 1px dashed #c0ccda; margin: 0 auto; display: flex">
+                  <img :src="imageUrl ? imageUrl : require('../../../assets/images/up_icon.png')" :style="{ width: imageUrl ? '100%' : '50%', height: imageUrl ? '100%' : '50%' }" class="avatar" />
                 </div>
               </van-uploader>
-              <p style="font-size: 12px; color: #999;">建议方形图片</p>
+              <p style="font-size: 12px; color: #999">建议方形图片</p>
             </div>
           </div>
-          <div style="text-align: left; padding: 0.75rem; display: flex; justify-content: space-between;"
-               v-if="!is_hotel">
-            <span style="font-size: 14px; font-weight: bold; width: 50%;">门店Banner</span>
-            <div style="display: flex; justify-content: flex-end; flex-wrap: wrap;"
-                 @click="selectIndex(2)">
-              <van-uploader :after-read="onRead"
-                            :max-size="photosize"
-                            @oversize="onphotosize">
-                <div style="padding: 0.2rem; width: 6.906rem; height: 3.5rem; border: 1px dashed #c0ccda; margin: 0 auto; display: flex;">
-                  <img :src="applyModel.bannerImg?applyModel.bannerImg:require('../../../assets/images/up_icon.png')"
-                       :style="{width:(applyModel.bannerImg?'100%':'30%'),height:(applyModel.bannerImg?'100%':'50%')}"
-                       class="avatar">
+          <div style="text-align: left; padding: 0.75rem; display: flex; justify-content: space-between" v-if="!is_hotel">
+            <span style="font-size: 14px; font-weight: bold; width: 50%">门店Banner</span>
+            <div style="display: flex; justify-content: flex-end; flex-wrap: wrap" @click="selectIndex(2)">
+              <van-uploader :after-read="onRead" :max-size="photosize" @oversize="onphotosize">
+                <div style="padding: 0.2rem; width: 6.906rem; height: 3.5rem; border: 1px dashed #c0ccda; margin: 0 auto; display: flex">
+                  <img
+                    :src="applyModel.bannerImg ? applyModel.bannerImg : require('../../../assets/images/up_icon.png')"
+                    :style="{ width: applyModel.bannerImg ? '100%' : '30%', height: applyModel.bannerImg ? '100%' : '50%' }"
+                    class="avatar"
+                  />
                 </div>
               </van-uploader>
-              <p style="font-size: 12px; color: #999;">建议尺寸: 414*150，或长形图片</p>
+              <p style="font-size: 12px; color: #999">建议尺寸: 414*150，或长形图片</p>
             </div>
           </div>
-
         </van-cell-group>
 
-
-        <van-cell-group :border = false class="store_apply account-info" v-if="!is_hotel" style="margin-bottom: 10px;">
+        <van-cell-group :border="false" class="store_apply account-info" v-if="!is_hotel" style="margin-bottom: 10px">
           <van-cell :border="false" class="otherTitle" center>
             <span slot="title">门店介绍</span>
           </van-cell>
           <van-cell :border="false" class="otherTitle" center>
-                <van-field
-                  v-model="applyModel.storeIntroduce"
-                  rows="3"
-                  autosize
-                  type="textarea"
-                  maxlength="100"
-                    placeholder="填写100字以上的门店简介（*必填）"
-                  show-word-limit
-                  style="background-color: #f8f8f8; border-radius: 0.469rem; padding: 10px;"
-                />
+            <van-field
+              v-model="applyModel.storeIntroduce"
+              rows="3"
+              autosize
+              type="textarea"
+              maxlength="100"
+              placeholder="填写100字以上的门店简介（*必填）"
+              show-word-limit
+              style="background-color: #f8f8f8; border-radius: 0.469rem; padding: 10px"
+            />
           </van-cell>
-           <div class="otherphoto"
-               style="text-align: left; padding: 0.75rem; display: flex; justify-content: space-between;">
-            <div style="display: flex; flex-wrap: wrap;"
-                 @click="selectIndex(3)">
+          <div class="otherphoto" style="text-align: left; padding: 0.75rem; display: flex; justify-content: space-between">
+            <div style="display: flex; flex-wrap: wrap" @click="selectIndex(3)">
               <div class="imgflex">
-                <div v-for="(val,index) in fileList1 "
-                     :key="index">
+                <div v-for="(val, index) in fileList1" :key="index">
                   <div class="photobox">
-                    <img :src="val.url"
-                         style="width: 100%;">
+                    <img :src="val.url" style="width: 100%" />
                     <i @click="removeImg_1(index)"></i>
                   </div>
                 </div>
-                <van-uploader :after-read="multipleMethod_1"
-                              :max-size="photosize"
-                              @oversize="onphotosize2"
-                              multiple>
-                  <div style="padding: 0.2rem; width: 5rem; height: 5rem; border: 1px dashed #c0ccda; margin: 0 auto; display: flex;">
-                    <img src="../../../assets/images/up_icon.png"
-                         style="width: 50%; height: 50%;"
-                         class="avatar">
+                <van-uploader :after-read="multipleMethod_1" :max-size="photosize" @oversize="onphotosize2" multiple>
+                  <div style="padding: 0.2rem; width: 5rem; height: 5rem; border: 1px dashed #c0ccda; margin: 0 auto; display: flex">
+                    <img src="../../../assets/images/up_icon.png" style="width: 50%; height: 50%" class="avatar" />
                   </div>
                 </van-uploader>
               </div>
-              <p style="font-size: 12px; color: #999; width: 100%;">非必填，支持上传多张，显示在门店详情中！</p>
+              <p style="font-size: 12px; color: #999; width: 100%">非必填，支持上传多张，显示在门店详情中！</p>
             </div>
           </div>
         </van-cell-group>
 
-        <van-cell-group :border = false class="store_apply account-info" v-if="!is_hotel" style="margin-bottom: 10px;">
+        <van-cell-group :border="false" class="store_apply account-info" v-if="!is_hotel" style="margin-bottom: 10px">
           <van-cell :border="false" class="otherTitle" center>
             <span slot="title">资质证件</span>
           </van-cell>
-           <div style="padding: 0 12px; text-align: left;">
-            <p style="font-weight: bold;">营业执照 <em v-if="is_business_license==1" style="color: #f86e6e;">*</em></p>
-            <div class="otherphoto"
-                 style="padding-bottom: 0.625rem;">
-              <div class="imgflex"
-                   @click="selectIndex(4)">
-                <van-uploader :after-read="onRead"
-                              :max-size="photosize"
-                              @oversize="onphotosize2"
-                              style="width: 100%;">
-                  <div style="padding: 0.25rem 1rem; width: 100%; height: 11rem;">
-                    <img :src="aptitudeImgurl?aptitudeImgurl:require('../../../assets/images/bg_business@2x.png')"
-                         style="width: 100%;"
-                         class="avatar">
+          <div style="padding: 0 12px; text-align: left">
+            <p style="font-weight: bold">营业执照 <em v-if="is_business_license == 1" style="color: #f86e6e">*</em></p>
+            <div class="otherphoto" style="padding-bottom: 0.625rem">
+              <div class="imgflex" @click="selectIndex(4)">
+                <van-uploader :after-read="onRead" :max-size="photosize" @oversize="onphotosize2" style="width: 100%">
+                  <div style="padding: 0.25rem 1rem; width: 100%; height: 11rem">
+                    <img :src="aptitudeImgurl ? aptitudeImgurl : require('../../../assets/images/bg_business@2x.png')" style="width: 100%" class="avatar" />
                   </div>
                 </van-uploader>
               </div>
             </div>
-            <p style="font-weight: bold;">法人身份证正面</p>
-            <div class="otherphoto"
-                 style="padding-bottom: 0.625rem;">
-              <div class="imgflex"
-                   @click="selectIndex(5)">
-                <van-uploader :after-read="onRead"
-                              :max-size="photosize"
-                              @oversize="onphotosize2"
-                              style="width: 100%;">
-                  <div style="padding: 0.25rem 1rem; width: 100%; height: 11rem;">
-                    <img :src="idCardImg_0?idCardImg_0:require('../../../assets/images/bg_idcard_down@2x.png')"
-                         style="width: 100%;"
-                         class="avatar">
+            <p style="font-weight: bold">法人身份证正面</p>
+            <div class="otherphoto" style="padding-bottom: 0.625rem">
+              <div class="imgflex" @click="selectIndex(5)">
+                <van-uploader :after-read="onRead" :max-size="photosize" @oversize="onphotosize2" style="width: 100%">
+                  <div style="padding: 0.25rem 1rem; width: 100%; height: 11rem">
+                    <img :src="idCardImg_0 ? idCardImg_0 : require('../../../assets/images/bg_idcard_down@2x.png')" style="width: 100%" class="avatar" />
                   </div>
                 </van-uploader>
               </div>
             </div>
-            <p style="font-weight: bold;">法人身份证反面</p>
-            <div class="otherphoto"
-                 style="padding-bottom: 0.625rem;">
-              <div class="imgflex"
-                   @click="selectIndex(6)">
-                <van-uploader :after-read="onRead"
-                              :max-size="photosize"
-                              @oversize="onphotosize2"
-                              style="width: 100%;">
-                  <div style="padding: 0.25rem 1rem; width: 100%; height: 11rem;">
-                    <img :src="idCardImg_1?idCardImg_1:require('../../../assets/images/bg_idcard_up@2x.png')"
-                         style="width: 100%;"
-                         class="avatar">
+            <p style="font-weight: bold">法人身份证反面</p>
+            <div class="otherphoto" style="padding-bottom: 0.625rem">
+              <div class="imgflex" @click="selectIndex(6)">
+                <van-uploader :after-read="onRead" :max-size="photosize" @oversize="onphotosize2" style="width: 100%">
+                  <div style="padding: 0.25rem 1rem; width: 100%; height: 11rem">
+                    <img :src="idCardImg_1 ? idCardImg_1 : require('../../../assets/images/bg_idcard_up@2x.png')" style="width: 100%" class="avatar" />
                   </div>
                 </van-uploader>
               </div>
             </div>
-            <p style="font-weight: bold;">其他图片</p>
-            <div class="otherphoto"
-                 style="padding: 0.625rem 0;">
+            <p style="font-weight: bold">其他图片</p>
+            <div class="otherphoto" style="padding: 0.625rem 0">
               <div class="imgflex">
-                <template v-for="(val,index) in fileList3 ">
+                <template v-for="(val, index) in fileList3">
                   <div class="photobox" :key="index">
-                    <img :src="val.url"
-                         style="width: 100%;">
+                    <img :src="val.url" style="width: 100%" />
                     <i @click="removeImg_2(index)"></i>
                   </div>
                 </template>
                 <div @click="selectIndex(7)">
-                  <van-uploader :after-read="multipleMethod_1"
-                                :max-size="photosize"
-                                @oversize="onphotosize2"
-                                multiple>
-                    <div style="padding: 0.2rem; width: 5rem; height: 5rem; border: 1px dashed #c0ccda; margin: 0 auto; display: flex;">
-                      <img src="../../../assets/images/up_icon.png"
-                           style="width: 50%; height: 50%;"
-                           class="avatar">
+                  <van-uploader :after-read="multipleMethod_1" :max-size="photosize" @oversize="onphotosize2" multiple>
+                    <div style="padding: 0.2rem; width: 5rem; height: 5rem; border: 1px dashed #c0ccda; margin: 0 auto; display: flex">
+                      <img src="../../../assets/images/up_icon.png" style="width: 50%; height: 50%" class="avatar" />
                     </div>
                   </van-uploader>
                 </div>
@@ -328,67 +261,55 @@
           </div>
         </van-cell-group>
 
-        <van-cell-group v-if="shop_commission" :border = false class="store_apply account-info store_apply_left" style="margin-bottom: 10px;">
+        <van-cell-group v-if="shop_commission" :border="false" class="store_apply account-info store_apply_left" style="margin-bottom: 10px">
           <van-cell :border="false" class="otherTitle" center>
             <span slot="title">平台提成(%)</span>
           </van-cell>
           <van-cell :border="false" class="otherTitle" center>
-                <van-field
-                  v-model="applyModel.shop_commission"
-                   placeholder="请输入平台提成"
-                  style="background-color: #f8f8f8; border-radius: 0.469rem; padding: 10px;"
-                />
+            <van-field v-model="applyModel.shop_commission" placeholder="请输入平台提成" style="background-color: #f8f8f8; border-radius: 0.469rem; padding: 10px" />
           </van-cell>
         </van-cell-group>
 
-        <van-cell-group :border = false class="store_apply account-info" style="margin-bottom: 10px;">
+        <!-- <van-cell-group :border="false" class="store_apply account-info" style="margin-bottom: 10px">
           <van-cell :border="false" class="otherTitle" center>
             <span slot="title">备注信息</span>
           </van-cell>
           <van-cell :border="false" class="otherTitle" center>
-                <van-field
-                  v-model="applyModel.remark"
-                  rows="3"
-                  autosize
-                  type="textarea"
-                  maxlength="100"
-                   placeholder="填写备注信息"
-                  show-word-limit
-                  style="background-color: #f8f8f8; border-radius: 0.469rem; padding: 10px;"
-                />
+            <van-field
+              v-model="applyModel.remark"
+              rows="3"
+              autosize
+              type="textarea"
+              maxlength="100"
+              placeholder="填写备注信息"
+              show-word-limit
+              style="background-color: #f8f8f8; border-radius: 0.469rem; padding: 10px"
+            />
           </van-cell>
-        </van-cell-group>
+        </van-cell-group> -->
 
         <!-- 申请信息结束 -->
         <!-- 入驻说明 -->
 
-        <van-cell-group :border = false class="store_apply account-info" v-if="!is_hotel" style="margin-bottom: 10px;">
+        <van-cell-group :border="false" class="store_apply account-info" v-if="!is_hotel" style="margin-bottom: 10px">
           <van-cell :border="false" class="otherTitle" center>
             <span slot="title">入驻说明</span>
           </van-cell>
-         <div style="padding: 0 12px 12px;">
-            <div id="t1"
-                 v-html='signature'></div>
+          <div style="padding: 0 12px 12px">
+            <div id="t1" v-html="signature"></div>
           </div>
         </van-cell-group>
 
         <!-- 是否同意协议 -->
-        <div style="display: flex; padding: 0 0.625rem;">
-          <van-checkbox v-model="agreementChoose"
-                        checked-color="#f15353"></van-checkbox>&nbsp;&nbsp;阅读并同意<i @click="showAgreement"
-             style="color: #ff5959;">《商家入驻协议》</i>
+        <div style="display: flex; padding: 0 0.625rem">
+          <van-checkbox v-model="agreementChoose" checked-color="#f15353"></van-checkbox>&nbsp;&nbsp;阅读并同意<i @click="showAgreement" style="color: #ff5959">《商家入驻协议》</i>
         </div>
         <!--文字说明；后台设置-->
-        <div style="clear: both; margin-top: 0.9375rem;"></div>
-        <input type="submit"
-               value="提交入驻申请"
-               class="btn"
-               @click="setApplyData">
-
+        <div style="clear: both; margin-top: 0.9375rem"></div>
+        <input type="submit" value="提交入驻申请" class="btn" @click="setApplyData" />
       </div>
       <!--申请后展示-->
-      <div class="success"
-           v-if="o2o_status==2">
+      <div class="success" v-if="o2o_status == 2">
         <div class="ico"><i class="fa fa-check"></i></div>
         <div class="text">您的申请已经提交，请等待审核！</div>
         <a @click="goToIndex()">
@@ -396,8 +317,7 @@
         </a>
       </div>
       <!--审核通过后展示，文字后台设置 -->
-      <div class="success"
-           v-if="o2o_status==3">
+      <div class="success" v-if="o2o_status == 3">
         <div class="ico"><i class="fa fa-check"></i></div>
         <div class="text">您已通过审核</div>
         <a @click="goToIndex()">
@@ -406,120 +326,102 @@
       </div>
     </div>
     <!-- 门店类别列表 -->
-    <van-popup v-model="categoryShow" position="right" :style="{ width: '100%',height:'100%',overflow:auto }">
+    <van-popup v-model="categoryShow" position="right" :style="{ width: '100%', height: '100%', overflow: auto }">
       <van-nav-bar title="选择类别">
         <template #left>
           <span>
-            <van-icon name="arrow-left" size="18" @click.native="categoryShow=false" color='#333' />
+            <van-icon name="arrow-left" size="18" @click.native="categoryShow = false" color="#333" />
           </span>
         </template>
       </van-nav-bar>
       <!-- <div style="clear:both;margin-top:2.5rem;"></div> -->
-      <van-cell :border="false" title-style="text-align:left" is-link  :key='i'  v-for="(item,i) in categoryList"   @click.native="chooseCategory(item)">
-          <span slot="title">{{item.name}}</span>
-          <span slot="default"></span>
+      <van-cell :border="false" title-style="text-align:left" is-link :key="i" v-for="(item, i) in categoryList" @click.native="chooseCategory(item)">
+        <span slot="title">{{ item.name }}</span>
+        <span slot="default"></span>
       </van-cell>
-
     </van-popup>
     <!-- 街道地址 -->
-    <yd-cityselect v-model="addressShow"
-                   :callback="addressCallback"
-                   :items="area"></yd-cityselect>
-    <van-popup v-model="streetShow" position="right" :style="{ width: '100%',height:'100%',overflow:auto  }">
+    <yd-cityselect v-model="addressShow_RegionalAgent" :callback="addressCallback_RegionalAgent" :items="area"></yd-cityselect>
+    
+    <yd-cityselect v-model="addressShow" :callback="addressCallback" :items="area"></yd-cityselect>
+    <van-popup v-model="streetShow" position="right" :style="{ width: '100%', height: '100%', overflow: auto }">
       <van-nav-bar title="选择街道">
-				<template #left>
-					<span>
-						<van-icon name="arrow-left" size="18" @click.native="streetShow=false" color='#333' />
-					</span>
-				</template>
-			</van-nav-bar>
-        <van-cell :border="false" title-style="text-align:left" is-link  :key='i'  v-for="(item,i) in districtVal"  @click.native="streetConfirm(item)">
-          <span slot="title">{{item.areaname}}</span>
-          <span slot="default"></span>
+        <template #left>
+          <span>
+            <van-icon name="arrow-left" size="18" @click.native="streetShow = false" color="#333" />
+          </span>
+        </template>
+      </van-nav-bar>
+      <van-cell :border="false" title-style="text-align:left" is-link :key="i" v-for="(item, i) in districtVal" @click.native="streetConfirm(item)">
+        <span slot="title">{{ item.areaname }}</span>
+        <span slot="default"></span>
       </van-cell>
-
     </van-popup>
     <!-- 申请协议 -->
-    <van-popup v-model="agreementShow" :style="{ width: '100%',height:'100%',overflow:auto  }" position="right">
+    <van-popup v-model="agreementShow" :style="{ width: '100%', height: '100%', overflow: auto }" position="right">
       <van-nav-bar title="申请协议">
-				<template #left>
-					<span>
-						<van-icon name="arrow-left" size="18" @click.native="hideAgreement" color='#333' />
-					</span>
-				</template>
-			</van-nav-bar>
-      <div v-html="o2o_info">
-      </div>
+        <template #left>
+          <span>
+            <van-icon name="arrow-left" size="18" @click.native="hideAgreement" color="#333" />
+          </span>
+        </template>
+      </van-nav-bar>
+      <div v-html="o2o_info"></div>
     </van-popup>
     <!-- 星级 -->
-    <van-popup v-model="levelShow" :style="{ width: '100%',height:'100%',overflow:auto  }" position="right">
+    <van-popup v-model="levelShow" :style="{ width: '100%', height: '100%', overflow: auto }" position="right">
       <van-nav-bar title="选择星级">
-				<template #left>
-					<span>
-						<van-icon name="arrow-left" size="18" @click.native="levelShow=false" color='#333' />
-					</span>
-				</template>
-			</van-nav-bar>
-      <van-cell :border="false" title-style="text-align:left" is-link  :key='i' v-for="(item,i) in star_arr" @click.native="chooseStarLevel(item)">
-          <span slot="title">{{item.name}}</span>
-          <span slot="default"></span>
+        <template #left>
+          <span>
+            <van-icon name="arrow-left" size="18" @click.native="levelShow = false" color="#333" />
+          </span>
+        </template>
+      </van-nav-bar>
+      <van-cell :border="false" title-style="text-align:left" is-link :key="i" v-for="(item, i) in star_arr" @click.native="chooseStarLevel(item)">
+        <span slot="title">{{ item.name }}</span>
+        <span slot="default"></span>
       </van-cell>
-
     </van-popup>
-    <van-popup v-model="show1" :style="{ width: '80%',height:'80%',overflow:auto  }" position="center">
-        <div class="pop-content">
-            <div class="pop-top">
-              <div class="left" v-if="!fun.isTextEmpty(cservice)">
-                <div class="wrap">
-                   <a :href="cservice">
-                      <div class="image"><img src="../../../assets/images/kf_online_contect@2x.png"></div>
-                   </a>
-                   <div>在线联系</div>
-                </div>
+    <van-popup v-model="show1" :style="{ width: '80%', height: '80%', overflow: auto }" position="center">
+      <div class="pop-content">
+        <div class="pop-top">
+          <div class="left" v-if="!fun.isTextEmpty(cservice)">
+            <div class="wrap">
+              <a :href="cservice">
+                <div class="image"><img src="../../../assets/images/kf_online_contect@2x.png" /></div>
+              </a>
+              <div>在线联系</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center" v-if="!fun.isTextEmpty(cservice) && !fun.isTextEmpty(service_mobile)">
+            <div class="line"></div>
+          </div>
+          <div class="right" v-if="!fun.isTextEmpty(service_mobile)">
+            <div class="wrap">
+              <div class="image">
+                <a :href="`tel:${service_mobile}`"><img src="../../../assets/images/kf_tel_contect@2x.png" /></a>
               </div>
-              <div style="display: flex; align-items: center;" v-if="!fun.isTextEmpty(cservice)&&!fun.isTextEmpty(service_mobile)">
-                  <div class="line" ></div>
-              </div>
-              <div class="right" v-if="!fun.isTextEmpty(service_mobile)">
-                  <div class="wrap">
-                     <div class="image"> <a :href="`tel:${service_mobile}`"><img src="../../../assets/images/kf_tel_contect@2x.png"></a></div>
 
-                      <div style="margin-top: 0.5rem;">{{service_mobile}}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="pop-bottom" v-if="!fun.isTextEmpty(service_QRcode)">
-                <div class="image">
-                    <img :src="service_QRcode" style="width: 100%; height: 100%;">
-                </div>
-              </div>
-              <i class="iconfont icon-close11" @click="show1=false"></i>
+              <div style="margin-top: 0.5rem">{{ service_mobile }}</div>
+            </div>
+          </div>
         </div>
+        <div class="pop-bottom" v-if="!fun.isTextEmpty(service_QRcode)">
+          <div class="image">
+            <img :src="service_QRcode" style="width: 100%; height: 100%" />
+          </div>
+        </div>
+        <i class="iconfont icon-close11" @click="show1 = false"></i>
+      </div>
     </van-popup>
-<!--</yd-popup>-->
-      <van-popup v-model="startTimeTag" position="bottom" :style="{ height: '40%' }"  style="overflow: hidden;">
-            <van-datetime-picker
-              v-model="applyModel.beginTime"
-              type="time"
-              :min-date="minDate"
-              :max-date="maxDate"
-              @confirm="sureStartTime"
-              @cancel="startTimeTag = false"
+    <!--</yd-popup>-->
+    <van-popup v-model="startTimeTag" position="bottom" :style="{ height: '40%' }" style="overflow: hidden">
+      <van-datetime-picker v-model="applyModel.beginTime" type="time" :min-date="minDate" :max-date="maxDate" @confirm="sureStartTime" @cancel="startTimeTag = false" />
+    </van-popup>
 
-            />
-      </van-popup>
-
-      <van-popup v-model="endTimeTag" position="bottom" :style="{ height: '40%' }"  style="overflow: hidden;">
-            <van-datetime-picker
-               v-model="applyModel.endTime"
-              type="time"
-              :min-date="minDate"
-              :max-date="maxDate"
-              @confirm="sureEndtTime"
-              @cancel="endTimeTag = false"
-            />
-      </van-popup>
-
+    <van-popup v-model="endTimeTag" position="bottom" :style="{ height: '40%' }" style="overflow: hidden">
+      <van-datetime-picker v-model="applyModel.endTime" type="time" :min-date="minDate" :max-date="maxDate" @confirm="sureEndtTime" @cancel="endTimeTag = false" />
+    </van-popup>
   </div>
 </template>
 <script>

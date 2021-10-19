@@ -35,7 +35,7 @@
           </div>
         </div>
         <p class="info">
-          总金额大于299元可自定义范围，低于299默认本市 3
+          总金额大于299元可自定义范围，低于299默认本市
           <van-button icon="location" type="primary" size="mini" v-if="showLoaction" @click="getLocation" />
         </p>
 
