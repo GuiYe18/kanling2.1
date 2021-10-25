@@ -24,7 +24,7 @@
                 <van-badge v-else :content="news" max="99" style="padding: 1px 5px; z-index: 10" />
               </template>
             </i> -->
-            <div class="iconDiv">
+            <div class="iconDiv 2" v-if="$route.query.i == 2">
               <template>
                 <img :src="btn.iconimging" alt="" class="imgicon" v-if="isChoose == urlParse(btn.link)" />
                 <img :src="btn.iconimg" alt="" class="imgicon" v-else />
@@ -32,6 +32,12 @@
               <template v-if="btn.text == '消息'">
                 <van-badge v-if="news == 0" />
                 <van-badge v-else :content="news" max="99" style="padding: 1px 5px; z-index: 10" />
+              </template>
+            </div>
+            <div class="iconDiv 9" v-if="$route.query.i == 9">
+              <template>
+                <img :src="btn.image" alt="" class="imgicon -" v-if="isChoose == urlParse(btn.link)" />
+                <img :src="btn.image" alt="" class="imgicon" v-else />
               </template>
             </div>
 
@@ -283,7 +289,7 @@ const defaultData = {
         bg_set: { bg_color: "#ffffff", bg_choose_color: "#ffffff" },
         // bg_set: { bg_color: "#ffffff00", bg_choose_color: "#ffffff" },
         children_set: { children_color: "#333333", children_choose_color: "#29ba9c", children_bg_color: "#ffffff" }
-      }
+      },
     }
   }
 };

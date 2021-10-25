@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-07-20 11:02:02
- * @LastEditTime: 2021-10-12 13:02:37
+ * @LastEditTime: 2021-10-19 15:45:15
  * @FilePath: \you-shop1\src\views\DonationCenter\DonationCenter.vue
  * @Describe: 
 -->
@@ -68,7 +68,7 @@
               </router-link> -->
             <!-- 四扶申请 -->
             <!-- <li> -->
-            <!-- <van-col span="6">
+            <van-col span="6">
               <router-link :to="fun.getUrl('Sifu')" v-show="s_state == 0">
                 <img src="./img/FourHelpApplication.png" alt="" class="diy-img sifu" />
                 <div style="">四扶申请</div>
@@ -85,7 +85,7 @@
                 <img src="./img/FourHelpApplication.png" alt="" class="diy-img sifu" />
                 <div style="">四扶详情</div>
               </router-link>
-            </van-col> -->
+            </van-col>
             <!-- </li> -->
             <!-- </van-col> -->
           </van-row>

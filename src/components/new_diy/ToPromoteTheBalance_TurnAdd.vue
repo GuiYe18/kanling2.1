@@ -5,22 +5,25 @@
     <!-- 优化 -->
     <div class="content">
       <ul class="transfer_info">
-        <li class="info_a">
+        <!-- <li class="info_a">
           <span>当前推广余额</span>
-          <span>{{ credit1 }}</span>
-        </li>
-        
+          <span>{{ credit1cpu }}</span>
+        </li> -->
+
         <!-- <li class="info_b">
           <span>转让人UID：</span>
           <input type="text" v-model.lazy="transfer_id" placeholder="请输入转让人UID" />
         </li> -->
 
-        <li class="info_b">
+        <!-- <li class="info_b">
           <span>被转让人手机号：</span>
           <input type="text" v-model.lazy="mobile" placeholder="请输入被转让人手机号" />
-        </li>
-
+        </li> -->
       </ul>
+      <van-cell-group>
+        <van-field class="tit" v-model="credit1cpu" label="当前剩余推广余额:" disabled />
+        <van-field class="tit" v-model="mobile" label="被转让人手机号：" placeholder="请输入被转让人手机号" />
+      </van-cell-group>
       <div class="transfer_sum">
         <span>转赠金额</span>
         <div class="sum">
@@ -40,7 +43,7 @@
       <button type="button" class="btn custom_color" @click="confirm">确认转账</button>
       <p class="notes">
         注：转赠推广余额不能小于0, 且为整数。<br />
-          推广余额不可变成现金
+        推广余额不可变成现金
         <!-- 转让手续费比率为{{ rate * 100 }}%，<br />
         您实际转账到数为：{{ info_form.transfer_point - info_form.transfer_point * rate }} -->
       </p>
@@ -70,6 +73,11 @@ export default {
         realname: ""
       }
     };
+  },
+  computed: {
+    credit1cpu: function () {
+      return this.credit1 == null ? "0.00" : this.credit1;
+    }
   },
   watch: {
     transfer_id: function (N, O) {
@@ -131,10 +139,10 @@ export default {
         that.$dialog.alert({ message: "转让积分不可大于您的积分" });
         return;
       }
-    //   if (this.transfer_id == undefined || this.transfer_id <= 0 || this.transfer_id.length == 0) {
-    //     that.$dialog.alert({ message: "转让UID不可为空" });
-    //     return;
-    //   }
+      //   if (this.transfer_id == undefined || this.transfer_id <= 0 || this.transfer_id.length == 0) {
+      //     that.$dialog.alert({ message: "转让UID不可为空" });
+      //     return;
+      //   }
       if (this.info_form.transfer_point == undefined || this.info_form.transfer_point <= 0 || this.info_form.length == 0) {
         that.$dialog.alert({ message: "转赠金额可低于0元" });
         return;
@@ -325,5 +333,16 @@ export default {
   #wrapper {
     margin-top: 0.625rem;
   }
+}
+::v-deep .tit {
+  .van-cell__title {
+    color: #000;
+  }
+  .van-field__control:disabled {
+    -webkit-text-fill-color: #000;
+  }
+}
+::v-deep .van-cell__title {
+  width: 8rem;
 }
 </style>

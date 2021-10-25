@@ -4,8 +4,10 @@
     <div v-html="css"></div>
     <div class="html-box">
       <div v-if="datas.list <= 0" style="font-weight: bold; font-size: 18px; line-height: 50px; text-align: center">请添加订单列表</div>
-      <div id="new_orderlist">
+
+      <div id="new_orderlist 1">
         <!--只有一个订单的样式 -->
+        <!-- <template v-if="datas.list.length == 1 && datas.show_tab"> -->
         <template v-if="datas.list.length == 1 && datas.show_tab">
           <router-link v-if="datas.list[0].uikey === 'U_memberorder'" :to="fun.getUrl('orderlist', { status: '0' })">
             <div class="ordertltie">
@@ -122,7 +124,7 @@
        * @Date: 2021-07-30 21:25:05
        * @Describe: 
        */       -->
-      <template>
+      <template v-if="$route.query.i==2"> 
         <router-link :to="fun.getUrl('DonationCenter', {}, {sf_state:sf_state})">
           <div id="DonationCenter">
             <img src="./img/DonationCenter.png" alt="" />

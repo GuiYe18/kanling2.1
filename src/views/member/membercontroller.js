@@ -284,7 +284,7 @@ export default {
             // 爱心积分
             love_integral: '',
             CashCodeStatus: 0,//收款码状态  //收款码状态   审核状态(1 审核中 2 审核通过 3审核未通过),默认是全部传""或者0
-            hangye:false
+            hangye: false
         };
     },
     activated() {
@@ -362,20 +362,20 @@ export default {
             var that = this;
             const url = "https://tpkl.minpinyouxuan.com/index.php/api/v3/industrys";
             axios({
-              method: "POST",
-              url,
-              data: {
-                uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid //uid
-              }
+                method: "POST",
+                url,
+                data: {
+                    uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid //uid
+                }
             }).then(res => {
-              console.log("resresresresresresresresres", res.data.data);
-              if (res.data.result === 1) {
-                that.hangye = true
-              } else {
-                that.hangye = false
-              }
+                console.log("resresresresresresresresres", res.data.data);
+                if (res.data.result === 1) {
+                    that.hangye = true
+                } else {
+                    that.hangye = false
+                }
             });
-          },
+        },
         // 收款码状态   请求
         getLocation() {
             var that = this
@@ -526,7 +526,6 @@ export default {
                     }
                 });
             }
-            console.log('this.components',this.components);
             if (data.page_info) {
                 //会员中心只有弹窗广告
                 this.advertising = data.page_info.advertising_id;
@@ -561,6 +560,8 @@ export default {
             } else {
                 console.log("加载完了");
             }
+            console.log('this.components', this.components);
+
         },
         // 图片加载完回调
         getImg(url, callback) {

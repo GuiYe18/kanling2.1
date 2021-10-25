@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-10-15 17:28:18
- * @LastEditTime: 2021-10-18 17:51:08
+ * @LastEditTime: 2021-10-20 13:48:00
  * @FilePath: \you-shop1\src\views\A_version_1.1\industry\AddBrand.vue
  * @Describe: 
 -->
@@ -345,7 +345,7 @@ export default {
         cxt.drawImage(img, 0, 0, canvas.width, canvas.height);
         cxt.font = "34px Microsoft YaHei";
         cxt.fillStyle = "#000000";
-        cxt.fillText(this.IsBrandCode, 96, 780);
+        cxt.fillText(this.IsBrandCode, 146, 780);
         this.TypeAssignment(canvas.toDataURL("image/jpg")); //类型赋值
       };
     },
@@ -401,7 +401,7 @@ export default {
         cxt.drawImage(img, 0, 0, canvas.width, canvas.height);
         cxt.font = " 32px Microsoft YaHei";
         cxt.fillStyle = "#000000";
-        cxt.fillText(this.numText(year) + "年" + this.numText(month) + "月", 900, 810);
+        cxt.fillText(this.numText(year) + "年" + this.numText(month) + "月", 900, 790);
         this.base64 = canvas.toDataURL("image/jpg");
         // 牌子正片照
         this.employeeSZhao = canvas.toDataURL("image/jpg");

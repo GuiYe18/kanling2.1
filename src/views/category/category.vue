@@ -198,7 +198,7 @@
         </div>
       </div>
     </div>
-    <div id="rootlists" ref="menu">
+    <div id="rootlists 1" ref="menu">
       <ul id="rootList" v-if="onelist">
         <li @click="bpfun" v-if="brandShow == '0'">
           <span>{{ $i18n.t('category.推荐品牌') }}</span>

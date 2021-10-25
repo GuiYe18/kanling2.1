@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-08-30 11:39:01
- * @LastEditTime: 2021-10-11 19:01:01
+ * @LastEditTime: 2021-10-20 17:13:53
  * @FilePath: \you-shop1\src\views\A_version_1.1\NewDonation\NewDonationCenter.vue
  * @Describe: 
 -->
@@ -210,6 +210,12 @@ export default {
       function onComplete(obj) {
         console.log("定位成功", obj);
         that.city = obj.addressComponent.province;
+        /**
+         * @Author: 飞
+         * @Date: 2021-10-20 17:12:49
+         * @Describe: 区域
+         */        
+        localStorage.setItem("Area", JSON.stringify(obj.addressComponent.district));
         that.position = obj.position;
         var citydata = {};
         citydata.city = obj.addressComponent.province;

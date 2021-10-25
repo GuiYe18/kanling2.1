@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-09-24 17:31:06
- * @LastEditTime: 2021-10-17 17:18:13
+ * @LastEditTime: 2021-10-25 10:33:04
  * @FilePath: \you-shop1\src\views\A_version_1.1\industry\Industrydetails.vue
  * @Describe: 
 -->
@@ -26,8 +26,8 @@
         <van-cell title="行业" :value="datas.industry_name" />
         <!-- <van-cell title="推荐人" :value="datas.tuid_phone" /> -->
         <van-cell title="推荐人手机号" :value="datas.tuid_phone" />
-        <van-cell title="总店铺数量" :value="datas.count_num + '家'" />
-        <van-cell title="已授权店铺数量" :value="datas.authorize_num + '家'" />
+        <van-cell title="行业总店铺数量" :value="datas.count_num + '家'" />
+        <van-cell title="行业已授权店铺数量" :value="datas.authorize_num + '家'" />
       </van-cell-group>
 
       <van-cell-group class="BasicInformation" v-show="true">
@@ -302,7 +302,6 @@ export default {
           let fd = new FormData();
           fd.append("image[]", this.dataURLtoFile(canvas.toDataURL("image/jpg"), "docpic.jpg")); //第一个参数字符串可以填任意命名，第二个根据对象属性来找到file
           fd.append("type", 3);
-          require;
           axios
             .post("https://tpkl.minpinyouxuan.com/index.php/api/image", fd, {
               headers: { "Content-Type": "multipart/form-data" }
@@ -392,7 +391,6 @@ export default {
           let fd = new FormData();
           fd.append("image[]", this.dataURLtoFile(canvas.toDataURL("image/jpg"), "docpic.jpg")); //第一个参数字符串可以填任意命名，第二个根据对象属性来找到file
           fd.append("type", 3);
-          require;
           axios
             .post("https://tpkl.minpinyouxuan.com/index.php/api/image", fd, {
               headers: { "Content-Type": "multipart/form-data" }

@@ -103,12 +103,17 @@ export default {
   },
   mounted() {
     this.ready();
-    this.NotOfficialAccount();
+    if (this.$route.query.i == 2) {
+      // 判断是否关注公众号
+      this.NotOfficialAccount();
+    }
   },
   activated() {
     this.ready();
-    // 判断是否关注公众号
-    this.NotOfficialAccount();
+    if (this.$route.query.i == 2) {
+      // 判断是否关注公众号
+      this.NotOfficialAccount();
+    }
   },
   methods: {
     // 判断是否关注公众号
@@ -122,9 +127,9 @@ export default {
         url: "https://tpkl.minpinyouxuan.com/api/v1/follow_wx"
       })
         .then(response => {
-            console.log('少时诵诗书所所所所所所所大所多撒',response);
-          if (response.data.result ==0) {
-            console.log('少时诵诗书所所所所所所所大所多撒');
+          console.log("少时诵诗书所所所所所所所大所多撒", response);
+          if (response.data.result == 0) {
+            console.log("少时诵诗书所所所所所所所大所多撒");
             that.showOfficialAccounts = true;
           }
         })

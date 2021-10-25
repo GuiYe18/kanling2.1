@@ -127,6 +127,7 @@
     </van-popup>
     <!-- 门店列表弹框 -->
     <van-popup v-model="StoreShow" round position="bottom" :style="{ height: '60%' }" @click="StorePitchOn" class="Store">
+      <div style="height: 100px; margin-bottom: 100px">当前定位</div>
       <van-address-list v-model="StoreAddressID" :list="stores" default-tag-text="默认" @select="onSelect" />
     </van-popup>
     <!-- 库房列表弹框 -->
@@ -273,18 +274,37 @@ export default {
       DonationMethod: "", //捐物方式123 上门取件/送至门店/邮寄库房
       // 门店
       stores: [
-        {
-          tel: "01065395245",
-          name: "孙老师",
-          address: "北京市丰台区窑窝村41号久敬庄接济服务中心院内",
-          id: "666"
-        },
-        {
-          tel: "",
-          name: "",
-          address: "各街道居委会  捐赠地点",
-          id: "888"
-        }
+        { tel: "13681565734", name: "关剑泉", address: "东城区东四十三条32号", id: "101" },
+        { tel: "18801292056", name: "张亚宁", address: "北京市朝阳区八里庄街道东恒三期15号楼101室八里庄慈善驿站", id: "102" },
+        { tel: "13683360620", name: "李磊", address: "海淀区科学院南路31号社区服务中心（限新品）", id: "103" },
+        { tel: "68741480", name: "李根森", address: "丰台区云岗北区西里4号街道办事处", id: "104" },
+        { tel: "83385485", name: "田跃华", address: "北京市丰台区长辛店镇太子峪村委会10号", id: "105" },
+        { tel: "18610941801", name: "王三保", address: "丰台区晓月苑小区三里晓月家政", id: "106" },
+        { tel: "18610941801", name: "王三保", address: "大红门西里15号慈善超市", id: "107" },
+        { tel: "68199656", name: "杨红", address: "万源南里33栋南侧", id: "108" },
+        { tel: "13311239198", name: "蔡福群", address: "北京市丰台区小屯西路96号院19号楼", id: "109" },
+        { tel: "69858630", name: "杨佳伟", address: "北京市门头沟区捐赠中心站点圈外大街73号", id: "110" },
+        { tel: "13261261625", name: "周茂荣", address: "北京市房山区阎村镇紫园路108号-2（房山区社会捐赠中心库房）", id: "111" },
+        { tel: "18611705916", name: "李巧荣", address: "北京市通州区通惠北路14号慈善超市", id: "112" },
+        { tel: "89445765", name: "赵斌", address: "北京市顺义区南法信镇物流园二街59号院内西侧5号库房", id: "113" },
+        { tel: "69799206", name: "薛凤民", address: "昌平区东小口镇都市芳园社区东小口镇锦湖园别墅4号", id: "114" },
+        { tel: "64824893", name: "刘淑芹", address: "昌平区天通苑南街道办事处", id: "115" },
+        { tel: "16619999193", name: "王楠", address: "昌平区昌盛园2区11号楼1层底商", id: "116" },
+        { tel: "18500709590", name: "王秀华", address: "大兴区天宫院街道物资局小区慈善超市", id: "117" },
+        { tel: "13436672058", name: "冯占东", address: "北京市怀柔区怀柔镇张各长村民政局储备库", id: "118" },
+        { tel: "89990092", name: "王建", address: "王辛庄镇政府红绿灯路口向北500米右转50米路北", id: "119" },
+        { tel: "69062554", name: "季续", address: "密云区鼓楼街道沿湖社区居委会活动中心", id: "120" },
+        { tel: "69186578 ", name: "武春霞", address: "妫水南街社区服务中心一层一楼（延庆区光荣院西门南侧）", id: "121" },
+        { tel: "69142371 ", name: "周旭", address: "延庆区东外大街59号民政局后院库房", id: "122" },
+        { tel: "67837709", name: "田晓辉", address: "北京经济技术开发区地盛北街北工大软件园8号楼", id: "123" },
+        { tel: "87227603", name: "苏海丽", address: "北京经济技术开发区紫君庭中央公馆5-111南门进", id: "124" },
+        { tel: "67891313", name: "赵瑞林", address: "北京经济技术开发区天华东路5号院博客雅居底商", id: "125" },
+        { tel: "67829837", name: "权思敏", address: "北京经济技术开发区天宝西路1号狮城商务酒店南侧50米", id: "126" },
+        { tel: "89028502", name: "刘强", address: "北京经济技术开发区博兴八路22号", id: "127" },
+        { tel: "87227961", name: "常菊", address: "北京经济技术开发区凉水河一街22号亦园小区1号楼6单元102", id: "128" },
+        { tel: "87927096", name: "倪梦雅", address: "北京经济技术开发区鹿海园四里9号楼201", id: "129" },
+        { tel: "80826815", name: "王宇", address: "北京经济技术开发区经海七路100号院10号楼三层", id: "130" },
+        { tel: "01065395245", name: "孙老师", address: "北京市丰台区窑窝村41号久敬庄接济服务中心院内", id: "131" }
       ], //门店列表
       page: 0, //页
 
@@ -304,7 +324,8 @@ export default {
       //
       donation_type: "", //捐物类型
       type_id: "", //选中门店的地址id
-      OpenTheTip: "" //协议是否开启
+      OpenTheTip: "", //协议是否开启
+      Area: "" //地区
     };
   },
 
@@ -418,6 +439,7 @@ export default {
     // 每次进来后置顶
     // window.scrollTo(0, 0);
     this.citydata = JSON.parse(localStorage.getItem("citydata"));
+    this.Area = JSON.parse(localStorage.getItem("Area"));
 
     //获取商品图片上传地址
     this.urlUp();

@@ -49,13 +49,17 @@
         </ul>
         <!-- 无身份 -->
         <ul class="tool-boxlis 0" v-if="member_item.typea === 0">
-          <li v-for="icon in applyList" :key="icon.url" @click="pluginGoto(icon, member_item)">
-            <div class="lis">
-              <i class="iconfont" :class="icon.icon" style="font-size: 25px"></i>
-              <div>{{ icon.title }}</div>
-            </div>
-            <i class="iconfont icon-member_right"></i>
-          </li>
+
+          <template v-if="$route.query.i ==2">
+            <li v-for="icon in applyList" :key="icon.url" @click="pluginGoto(icon, member_item)">
+              <div class="lis">
+                <i class="iconfont" :class="icon.icon" style="font-size: 25px"></i>
+                <div>{{ icon.title }}</div>
+              </div>
+              <i class="iconfont icon-member_right"></i>
+            </li>
+          </template>
+
         </ul>
         <!-- 无身份 -->
         <!-- <template v-if="member_item.typea === 0" class="tool-boxlis">

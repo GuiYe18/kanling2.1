@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-09-17 16:35:42
- * @LastEditTime: 2021-10-08 18:01:59
+ * @LastEditTime: 2021-10-19 18:09:39
  * @FilePath: \you-shop1\src\views\A_version_1.1\industry\Industry.vue
  * @Describe: 
 -->
@@ -604,6 +604,9 @@ export default {
         }
       }
     }
+  }
+  .CanTChoose {
+    color: #979797;
   }
   // 提交
   .submit {

@@ -101,7 +101,7 @@ export default {
 
     //监测路由变化
     $route(to, from) {
-      console.log("------------------------is_decorate--------------------", this.$router.options.routes);
+      // console.log("------------------------is_decorate--------------------", this.$router.options.routes);
       // console.log("------------------------menus--------------------", this.$store.state.temp.item.menus);
       // // console.log('------------------------page_info-------------------',this.$store.state.temp.item.menus.page_info);
       // console.log("------------------------foot--------------------", to);

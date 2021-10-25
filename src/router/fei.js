@@ -1,7 +1,7 @@
 /*
  * @Author: 飞
  * @Date: 2021-07-20 11:48:06
- * @LastEditTime: 2021-10-18 21:34:11
+ * @LastEditTime: 2021-10-22 17:04:45
  * @FilePath: \you-shop1\src\router\fei.js
  * @Describe: 
  */
@@ -113,6 +113,8 @@ const AddBrand = () => import(/* webpackChunkName:"AddBrand" */"../views/A_versi
  */
  const ToPromoteTheBalance = () => import(/* webpackChunkName:"ToPromoteTheBalance" */"../components/new_diy/ToPromoteTheBalance.vue")
  const ToPromoteTheBalance_TurnAdd = () => import(/* webpackChunkName:"ToPromoteTheBalance_TurnAdd" */"../components/new_diy/ToPromoteTheBalance_TurnAdd.vue")
+//  推广明细
+ const ToPromoteTheDetail = () => import(/* webpackChunkName:"ToPromoteTheDetail" */"../views/A_version_1.1/ToPromoteTheBalance/ToPromoteTheDetail.vue")
 
 // 个人中心----end 
 
@@ -128,11 +130,24 @@ const HuiYuanPay = r => require(['../views/A_version_1.1/HuiYuan/pay.vue'], r);
  */
 // 捐领平台
 const DonateLedPlatform = () => import(/* webpackChunkName:"DonateLedPlatform" */"../views/A_version_1.1/DonateLedPlatform/DonateLedPlatform.vue")
-
-
-
+/**
+ * @Author: 飞
+ * @Date: 2021-10-21 17:34:49
+ * @Describe: 运营中心
+ */
+ const OperationsCenter = () => import(/* webpackChunkName:"DonateLedPlatform" */"../views/A_version_1.1/OperationsCenter/OperationsCenter.vue")
+ const DetailEarnings = () => import(/* webpackChunkName:"DetailEarnings" */"../views/A_version_1.1/OperationsCenter/DetailEarnings.vue")
 
 export default [
+    // 推广明细
+    { path: "/OperationsCenter", component: OperationsCenter, name: "OperationsCenter", meta: { title: "运营中心", foot: true } },
+    // 推广明细
+    { path: "/DetailEarnings", component: DetailEarnings, name: "DetailEarnings", meta: { title: "运营中心", foot: true } },
+
+
+    // 推广明细
+    { path: "/member/ToPromoteTheDetail", component: ToPromoteTheDetail, name: "ToPromoteTheDetail", meta: { title: "推广明细", foot: true } },
+
     //推广余额
     { path: "/member/ToPromoteTheBalance", component: ToPromoteTheBalance, name: "ToPromoteTheBalance", meta: { title: "推广余额", foot: true } },
     //推广余额转赠

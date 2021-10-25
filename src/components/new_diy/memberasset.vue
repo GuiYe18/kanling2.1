@@ -34,7 +34,7 @@
             </li> -->
             <!-- 通兑  -->
             <li v-if="item.value === 'integral_v2' && member_item.integral" @click="goUrl('ToPromoteTheBalance')" :key="index">
-              <span>{{ member_item.tgmoney }}</span>
+              <span>{{ member_item.tgmoney == null ? "0.00" : member_item.tgmoney }}</span>
               <span>推广余额</span>
             </li>
             <li v-if="item.value === 'integral_v2' && member_item.integral" @click="goUrl(item.value)" :key="index">

@@ -44,15 +44,15 @@ export default {
   methods: {
     // 上传营业执照
     async afterRead(file) {
-      const type = 1; // 图片类型
+      const type = 3; // 图片类型
       const formData = this.generatorFormData(this.fileList, type);
-      this.form.imageurl = await this.upload(formData);
+      this.form.imageurl = "https://" + (await this.upload(formData));
     },
     // 删除营业执照
     async handleDelete(img) {
-      const type = 1; // 图片类型
+      const type = 3; // 图片类型
       const formData = this.generatorFormData(this.fileList, type);
-      this.form.imageurl = await this.upload(formData);
+      this.form.imageurl = "https://" + (await this.upload(formData));
     },
     // 生成FormData
     generatorFormData(array, type) {

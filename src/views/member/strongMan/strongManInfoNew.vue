@@ -33,7 +33,7 @@
           <van-cell required value="牛人介绍标题" :border="false" />
           <van-field v-model="form.qsntitle" type="textarea" rows="2" maxlength="28" show-word-limit placeholder="请输入牛人介绍标题…" />
 
-          <van-cell required value="头部轮播图（最多3张）" :border="false" />
+          <van-cell required value="三张主图" :border="false" />
           <div class="upload-container">
             <div class="upload-item">
               <van-uploader v-model="rotationFileList" :max-count="3" :after-read="afterReadRotation" @delete="handleDeleteRotation" />
@@ -91,10 +91,10 @@
             <div class="upload-item"></div>
           </div>
 
-          <van-cell required value="详情图片（最少3张,最多10张）" :border="false" />
+          <van-cell required value="详情图片（最少3张）" :border="false" />
           <div class="upload-container">
             <div class="upload-item">
-              <van-uploader v-model="detailFileList" multiple :max-count="10" :after-read="afterReadDetail" @delete="handleDeleteDetail" />
+              <van-uploader v-model="detailFileList" multiple  :after-read="afterReadDetail" @delete="handleDeleteDetail" />
             </div>
             <div class="upload-item"></div>
             <div class="upload-item"></div>
@@ -109,7 +109,8 @@
       <!-- 选择行业       -->
       <van-field v-model="entering" label="选择行业" required placeholder="请简要输入行业的名称" />
       <van-list finished-text="没有更多了" error-text="本区域未获取到支行 请联系客服 客服电话:01053382256" :error.sync="error">
-        <van-cell v-for="(item, i) in OpeningList" :key="i" :title="item.industry_name" @click="OpenBankDisplay(item)" :class="item.type == true ? 'CanTChoose' : ''" />
+        <!-- <van-cell v-for="(item, i) in OpeningList" :key="i" :title="item.industry_name" @click="OpenBankDisplay(item)" :class="item.type == true ? 'CanTChoose' : ''" /> -->
+        <van-cell v-for="(item, i) in OpeningList" :key="i" :title="item.industry_name" @click="OpenBankDisplay(item)"  />
       </van-list>
     </van-popup>
   </div>
@@ -315,9 +316,7 @@ export default {
      * @Describe: 行业选中
      */
     OpenBankDisplay(item) {
-      if (item.type) {
-        return;
-      }
+
       this.BankName = item.industry_name; //行业名称
       this.form.industry_cate = item.id; //行业ID
       // 支行列表隐藏起来
@@ -365,6 +364,7 @@ export default {
     },
     // 全部选项选择完毕后，会触发 finish 事件
     onFinish({ selectedOptions }) {
+      console.log('selectedOptions',selectedOptions);
       this.show = false;
       this.form.sqnadress = selectedOptions.map(option => option.label).join("/");
       this.form.adcode = selectedOptions[2].value; //地区区编码
@@ -379,6 +379,7 @@ export default {
       } else {
         this.form.adress_city = selectedOptions[1].value;
       }
+      console.log();
     },
 
     // 关闭剪切板
@@ -654,7 +655,7 @@ export default {
         });
         return;
       }
-      if (this.form.adress_city == "") {
+      if (this.BankName == "") {
         this.$dialog({
           message: "请选择行业"
         });
@@ -730,7 +731,7 @@ export default {
             : "";
           this.rotationFileList = res.data.data.topurl.length ? this.imgReview(res.data.data.topurl) : [];
 
-          console.log("++++++++++++++++++++++++++++++ ", this.rotationFileList, this.form.topurl);
+          // console.log("++++++++++++++++++++++++++++++ ", this.rotationFileList, this.form.topurl);
           // 头像
           this.form.logourl = res.data.data.logourl;
           this.avatarFileList = res.data.data.logourl.length ? [{ url: res.data.data.logourl, isImage: true }] : [];
@@ -785,7 +786,7 @@ export default {
             return res.data.data ? res.data.data.img_path : [];
           } else {
             this.isupLoad = false;
-            Toast(res.data.msg + "请重新上传视频");
+            Toast(res.data.msg );
           }
         })
         .catch(reason => {

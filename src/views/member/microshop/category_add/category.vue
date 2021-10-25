@@ -1,3 +1,10 @@
+<!--
+ * @Author: 飞
+ * @Date: 2021-04-20 11:08:54
+ * @LastEditTime: 2021-10-20 20:22:38
+ * @FilePath: \you-shop1\src\views\member\microshop\category_add\category.vue
+ * @Describe: 
+-->
 <template>
   <div id="category">
     <c-title :hide="false" text="商品分类"></c-title>

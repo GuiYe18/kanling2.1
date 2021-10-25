@@ -16,7 +16,7 @@
 
         <ul class="tool-box 1" v-if="datas.list_style == '1'">
           <!-- 支付码申请 -->
-          <li>
+          <li  v-if="$route.query.i==2">
             <router-link :to="fun.getUrl('PaymentArea')" v-show="CashCodeStatus == 0">
               <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
               <div style="">支付码申请</div>
@@ -36,7 +36,7 @@
             </router-link>
           </li>
           <!-- 推广二维码 -->
-          <li>
+          <li v-if="$route.query.i==2">
             <router-link :to="fun.getUrl('extensionHome')">
               <img src="./img/codeHome.png" alt="" class="diy-img" />
               <div style="">推广二维码</div>
@@ -61,7 +61,7 @@
               <div style="">推荐的商户列表</div>
             </router-link>
           </li>
-          <li>
+          <li v-if="$route.query.i==2">
             <router-link :to="fun.getUrl('Industrydetails')" v-if="hangye">
               <img src="../../assets/images/kick/invoice.png" alt="" class="diy-img sifu" />
               <div style="">行业代表</div>
@@ -71,7 +71,8 @@
               <div style="">行业代表</div>
             </router-link>
           </li>
-          <li>
+
+          <!-- <li>
             <router-link :to="fun.getUrl('Sifu')" v-show="s_state == 0">
               <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
               <div style="">四扶申请</div>
@@ -88,7 +89,8 @@
               <img src="../../assets/images/kick/certificate.png" alt="" class="diy-img sifu" />
               <div style="">四扶详情</div>
             </router-link>
-          </li>
+          </li> -->
+
         </ul>
 
         <ul class="tool-boxlis" v-if="datas.list_style == '2'" v-show="show">
@@ -109,7 +111,7 @@
             <i class="iconfont icon-member_right"></i>
           </li>
 
-          <router-link :to="fun.getUrl('extensionHome')">
+          <!-- <router-link :to="fun.getUrl('extensionHome')">
             <li>
               <div class="lis">
                 <img class="diy-img" alt="" />
@@ -117,7 +119,7 @@
               </div>
               <i class="iconfont icon-member_right"></i>
             </li>
-          </router-link>
+          </router-link> -->
         </ul>
       </div>
 
@@ -200,25 +202,25 @@ export default {
     return {
       emptyImage,
       show: true,
-      s_state: ""
+      // s_state: ""
     };
   },
 
 
 
   mounted() {
-    var that = this
-    $http
-      .post("member.member.member-data", { v: 3 }, " ")
-      .then(response => {
-        if (response.result === 1) {
-          that.s_state = response.data.member.s_state;
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        require("@/assets/css/member/02.scss");
-      });
+    // var that = this
+    // $http
+    //   .post("member.member.member-data", { v: 3 }, " ")
+    //   .then(response => {
+    //     if (response.result === 1) {
+    //       that.s_state = response.data.member.s_state;
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.error(err);
+    //     require("@/assets/css/member/02.scss");
+    //   });
   },
   computed: {
     css() {

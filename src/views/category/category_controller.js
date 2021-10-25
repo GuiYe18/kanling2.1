@@ -343,6 +343,8 @@ export default {
           //------------------------------------------------
         } else {
           this.err = true;
+          console.log('huoqu',that.onelist );
+
         }
       });
     },

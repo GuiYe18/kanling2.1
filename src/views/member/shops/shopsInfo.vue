@@ -102,7 +102,7 @@
       <!-- 选择行业       -->
       <van-field v-model="entering" label="选择行业" required placeholder="请简要输入行业的名称" />
       <van-list finished-text="没有更多了" error-text="本区域未获取到支行 请联系客服 客服电话:01053382256" :error.sync="error">
-        <van-cell v-for="(item, i) in OpeningList" :key="i" :title="item.industry_name" @click="OpenBankDisplay(item)" :class="item.type == true ? 'CanTChoose' : ''" />
+        <van-cell v-for="(item, i) in OpeningList" :key="i" :title="item.industry_name" @click="OpenBankDisplay(item)"  />
       </van-list>
     </van-popup>
   </div>
@@ -256,9 +256,7 @@ export default {
      * @Describe: 行业选中
      */
     OpenBankDisplay(item) {
-      if (item.type) {
-        return;
-      }
+
       this.BankName = item.industry_name; //行业名称
       this.form.industry_cate = item.id; //行业ID
       // 支行列表隐藏起来

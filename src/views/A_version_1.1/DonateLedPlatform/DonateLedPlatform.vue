@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-10-15 13:50:05
- * @LastEditTime: 2021-10-18 17:00:10
+ * @LastEditTime: 2021-10-20 13:50:34
  * @FilePath: \you-shop1\src\views\A_version_1.1\DonateLedPlatform\DonateLedPlatform.vue
  * @Describe: 
 -->
@@ -63,7 +63,6 @@
         </div>
       </div>
     </div>
-    荣誉证书
     <!-- brandgoods/5?i=2 捐领平台 -->
   </div>
 </template>

@@ -1,18 +1,30 @@
 <template>
   <!-- 牛人 -->
   <div class="content">
+    <!-- 红包转圈 -->
     <div v-if="isReceive" class="red">
+      <!-- <div class="red"> -->
       <div class="redDetail">
         <div v-if="!showRed">
           <van-circle stroke-width="60" color="#f63a39" class="progress" v-model="rate" :rate="val" size="4.75rem" layer-color="#ebedf0" />
         </div>
       </div>
     </div>
+    <!-- 红包 -->
     <div class="redSuccess" v-if="showRed">
+      <!-- <div class="redSuccess"> -->
       <img :src="redGif" alt="" />
-      <div @click="closeRed" class="closeIcon"><van-icon color="#fff" name="cross" size="1rem" /></div>
+      <div @click="closeRed" class="closeIcon">
+        <van-icon name="close" size="1.13rem" color="#fff" />
+      </div>
       <div class="money" v-show="delay">{{ money }}</div>
+      <div class="name">
+        <img class="imgss" src="./img/bj.png" alt="" />
+        <span>{{ qsn_name }}送你一个红包</span>
+      </div>
     </div>
+    <!-- 遮罩 -->
+    <div class="mask" v-if="showRed"></div>
     <!-- 头部轮播 -->
     <div class="swiper" style="position: relative">
       <van-swipe class="my-swipe" :autoplay="3000">
@@ -126,21 +138,22 @@
         </ul> -->
       <!-- </div> -->
     </div>
-
+    <!-- 点赞 -->
     <div class="operationBtn 11">
       <div @click="likeHandle">
         <img v-if="content.fabulousstatus === 0" src="./img/like.png" alt="" />
         <img v-else src="./img/like_ed.png" alt="" />
-
         <!-- <van-icon v-if="content.fabulousstatus === 0" size="2.2rem" name="like" color="#dbdbdb" />
         <van-icon v-else size="2.2rem" name="like" color="#f7173a" /> -->
         <span>{{ content.fabulous }}</span>
       </div>
+      <!-- 点击评论 -->
       <div @click="showCommentHandle">
         <!-- information -->
         <img src="./img/information.png" alt="" />
         <span>{{ content.comment }}</span>
       </div>
+      <!-- 关注 -->
       <div @click="followHandle">
         <img v-if="content.followstatus === 0" src="./img/Collect.png" alt="" />
         <img v-else src="./img/Collect_ed.png" alt="" />
@@ -191,6 +204,7 @@
             </van-cell>
           </van-list>
         </div>
+        <!-- 评论 -->
         <div class="submitComment">
           <van-cell-group>
             <van-field ref="commentValue" @click.stop="nothHandle" v-model="commentValue" :placeholder="commentPlaceholder"></van-field>
@@ -268,9 +282,11 @@ export default {
       uid: "",
       isReceive: false,
       money: "",
+      qsn_name: "",
       delay: false,
       timeStamp: new Date().getTime().toString(),
-      redGif: require("./img/red6.gif"),
+      // redGif: require("./img/red6.gif"),
+      redGif: require("./img/hbbj.gif"),
 
       playerOptions: {
         //播放速度
@@ -336,12 +352,12 @@ export default {
 
     this.commentList = [];
     this.dynamicList = [];
-    this.getInfo();
+    this.getInfo(); //获取个人基本信息
     this.commentPage = 1;
     this.dynamicPage = 1;
     this.getCommentList();
     this.getDynamicList();
-    this.canReceive();
+    this.canReceive(); //判断能否领取红包
     this.labelIndex = 0;
     // 浏览次数加1
     EventBus.$emit("Browse");
@@ -419,19 +435,23 @@ export default {
       }).then(res => {
         if (res.data.result === 1) {
           that.money = res.data.data.money;
+          that.qsn_name = res.data.data.qsn_name;
           that.showRed = true;
-          console.log("领取红包成功", that.money, res.data.data.money);
 
           /**
            * @Author: 飞
            * @Date: 2021-06-30 17:48:23
            * @Describe:领取红包成功   关注发信息
            */
-
-          that.timeoutOnoff = setTimeout(() => {
-            that.delay = true;
-            clearTimeout(that.timeoutOnoff);
-          }, 1500);
+          /**
+           * @Author: 飞
+           * @Date: 2021-10-20 17:36:26
+           * @Describe: 直接显示出金额
+           */
+          // that.timeoutOnoff = setTimeout(() => {
+          that.delay = true;
+          //   clearTimeout(that.timeoutOnoff);
+          // }, 1500);
           const hideRed = setTimeout(() => {
             that.closeRed();
             clearTimeout(hideRed);
@@ -811,6 +831,7 @@ export default {
 .progress {
   background-size: 3.7rem 3rem;
   background-image: url("../../assets/newImg/detail/redtop2.png");
+  // background-image: url("./img/hbbj.gif");
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -825,6 +846,16 @@ export default {
 /deep/.mt-progress-progress {
   background-color: #f63a39;
   border-radius: 5px;
+}
+
+// 遮罩
+.mask {
+  background-color: rgba(0, 0, 0, 0.2);
+  position: fixed;
+  height: 100%;
+  width: 100%;
+
+  z-index: 200000;
 }
 .redSuccess {
   position: fixed;
@@ -845,18 +876,43 @@ export default {
     left: 0;
   }
   .money {
+    font-size: x-large;
     position: relative;
     z-index: 200001;
     text-align: center;
-    line-height: 15.625rem;
-    color: #fff;
+    // line-height: 16.9rem;
+    margin-top: 7.2rem;
+    color: #f72419;
+  }
+
+  .name {
+    width: 100%;
+    position: absolute;
+    z-index: 200000;
+    top: 222px;
+    left: 0;
+    .imgss {
+      width: 14.81rem;
+      height: 3.06rem;
+      z-index: 200001;
+    }
+    span {
+      position: relative;
+      z-index: 200001;
+      color: #fff;
+      line-height: 3.06rem;
+      font-size: 1.13rem;
+      font-family: PingFangSC-Semibold, PingFang SC;
+      font-weight: 600;
+      color: #ffffff;
+    }
   }
   .closeIcon {
     width: 2rem;
     height: 2rem;
     position: absolute;
-    top: 2.5rem;
-    right: 4rem;
+    top: 0;
+    right: 0;
     z-index: 200002;
     // border:1px solid #000;
     overflow: hidden;
