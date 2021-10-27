@@ -612,6 +612,13 @@ export default {
     };
   },
   created() {},
+  updated() {
+    // !首次加载数据
+    if (this.recommendList.length == 0) {
+      this.getList();
+    }
+    console.log("少时诵诗书所所所所所所所所", this.recommendList.length);
+  },
   activated() {
     // 推广 记录uid
     if (this.$route.query.uid != undefined) {
@@ -630,7 +637,6 @@ export default {
 
     this.getMemberData();
     this.ready();
-    console.log("zaicixaunz");
 
     /**
      * @Author: 飞
@@ -652,12 +658,6 @@ export default {
     // this.labListHeight = this.$refs.labList.getBoundingClientRect().height;
 
     // document.documentElement.scrollTop = 289.5
-    // !首次加载数据
-    // this.getList();
-    if (this.recommendList.length == 0) {
-      this.getList('activated');
-    }
-    console.log('少时诵诗书所所所所所所所所',this.recommendList.length);
   },
   mounted() {
     // 全局事件总线(被动)  点赞
@@ -817,7 +817,7 @@ export default {
     },
     // 当组件滚动到底部时，会触发 load 事件并将 loading
     onLoad() {
-      console.log("daodil",this.recommendList);
+      console.log("daodil", this.recommendList);
       this.page++;
       /**
        * @Author: 飞
@@ -827,7 +827,7 @@ export default {
       // if (this.curIndex + 1 === 0) {
       if (this.curIndex === 0) {
         if (this.recommendList.length > 4) {
-          this.getList('onLoad');
+          this.getList();
         }
       } else {
         /**
@@ -839,8 +839,7 @@ export default {
         this.getTypeList(this.curIndex);
       }
     },
-    getList(cs) {
-      console.log('首页数据',cs);
+    getList(cd) {
       const data = {
         uid: JSON.parse(localStorage.getItem("tempIndex")).memberinfo.uid,
         // uid: localStorage.getItem("uid"),
@@ -848,7 +847,7 @@ export default {
         adcode: this.adcode
       };
       const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/orderlists";
-      return axios({
+      axios({
         method: "post",
         url: url,
         data
@@ -868,6 +867,7 @@ export default {
             }
             console.log(this.contentListTop);
           } else {
+            Toast("请先登录");
           }
         })
         .catch(error => {

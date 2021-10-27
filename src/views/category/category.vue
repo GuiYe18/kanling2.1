@@ -2,43 +2,26 @@
   <div id="category" :class="[fun.isIphoneX() ? 'iphoneXStyle' : '']">
     <!-- <c-title :hide="true" text=''></c-title> -->
     <div class="search-box">
-      <div class="search-content" style="height: 4.2vh;" @click="gotosearch">
+      <div class="search-content" style="height: 4.2vh" @click="gotosearch">
         <i class="iconfont icon-sousuo1"></i>
-        {{ $i18n.t('category.搜索商品') }}
+        {{ $i18n.t("category.搜索商品") }}
       </div>
     </div>
-    <div
-      id="category-content"
-      ref="menucontent"
-      v-if="!fun.isTextEmpty(list)"
-      :style="{ overflow: this.category_template == '01' || category_template == '04' ? 'hidden' : 'scroll' }"
-    >
-      <div id="err" v-if="err">{{ $i18n.t('category.未检测到子分类数据') }}!</div>
+    <div id="category-content" ref="menucontent" v-if="!fun.isTextEmpty(list)" :style="{ overflow: this.category_template == '01' || category_template == '04' ? 'hidden' : 'scroll' }">
+      <div id="err" v-if="err">{{ $i18n.t("category.未检测到子分类数据") }}!</div>
 
-      <div
-        class="goodsList"
-        ref="goodsWrapper"
-        style="overflow: hidden; height: 92vh;"
-        v-if="!err && (category_template == '02' || category_template == '03')"
-      >
+      <div class="goodsList" ref="goodsWrapper" style="overflow: hidden; height: 92vh" v-if="!err && (category_template == '02' || category_template == '03')">
         <div>
           <c-carcontent hide="true" :list="contentlist_one" v-if="category_template == '02'"> </c-carcontent>
-          <c-carcontent4
-            hide="true"
-            :list="contentlist_one"
-            :parentTitle="parentTitle"
-            @bindOneCategory="bindOneCategory"
-            v-if="category_template == '03'"
-          >
-          </c-carcontent4>
-          <span id="loadMore" style="display: inline-block; width: 100%; height: 5rem;"></span>
+          <c-carcontent4 hide="true" :list="contentlist_one" :parentTitle="parentTitle" @bindOneCategory="bindOneCategory" v-if="category_template == '03'"> </c-carcontent4>
+          <span id="loadMore" style="display: inline-block; width: 100%; height: 5rem"></span>
         </div>
       </div>
 
       <div id="carcontent2" v-if="!err && (category_template == '01' || category_template == '04')">
         <div class="branch" ref="imgBox" v-show="!fun.isTextEmpty(ADImg)">
           <a :href="ADUrl | href_filters">
-            <img style="width: 100%; max-height: 40vh;" :src="ADImg" />
+            <img style="width: 100%; max-height: 40vh" :src="ADImg" />
           </a>
         </div>
         <!-- 分类下拉框 -->
@@ -48,107 +31,66 @@
               <div slot="title" class="activetitle">
                 <!-- 自定义标题 -->
                 <dl v-show="!fun.isTextEmpty(showTitle)">
-                  <dt
-                    v-for="(o, index) in showTitle"
-                    :key="index"
-                    :class="o.id == secondaryId ? 'addClass' : 'removeClass'"
-                    @click.stop="clickActive(o)"
-                  >
+                  <dt v-for="(o, index) in showTitle" :key="index" :class="o.id == secondaryId ? 'addClass' : 'removeClass'" @click.stop="clickActive(o)">
                     {{ o.name }}
                   </dt>
                 </dl>
-                <span v-show="fun.isTextEmpty(showTitle)">{{ $i18n.t('category.选择分类') }}</span>
+                <span v-show="fun.isTextEmpty(showTitle)">{{ $i18n.t("category.选择分类") }}</span>
               </div>
-              <div style="overflow-y: scroll; max-height: 32vh;">
+              <div style="overflow-y: scroll; max-height: 32vh">
                 <dl>
-                  <dt
-                    v-for="(Secondary, index) in list.recommend"
-                    :key="index"
-                    :class="Secondary.id == secondaryId ? 'addClass1' : 'removeClass1'"
-                    @click.stop="chooseSecondary(Secondary)"
-                  >
+                  <dt v-for="(Secondary, index) in list.recommend" :key="index" :class="Secondary.id == secondaryId ? 'addClass1' : 'removeClass1'" @click.stop="chooseSecondary(Secondary)">
                     {{ Secondary.name }}
                   </dt>
-                  <dt v-show="isCategoryMore" @click.stop="getMoreData_1(0)" class="more-btn-class">
-                    查看更多<i class="iconfont icon-member-bottom"></i>
-                  </dt>
+                  <dt v-show="isCategoryMore" @click.stop="getMoreData_1(0)" class="more-btn-class">查看更多<i class="iconfont icon-member-bottom"></i></dt>
                 </dl>
                 <template v-if="list.set.cat_level == '3' && !fun.isTextEmpty(threeInfo)">
-                  <p class="threeTitle">{{ $i18n.t('category.三级分类') }}</p>
+                  <p class="threeTitle">{{ $i18n.t("category.三级分类") }}</p>
                   <dl>
-                    <dt
-                      v-for="(three, indexs) in threeInfo"
-                      :key="indexs"
-                      :class="three.id == threeId ? 'addClass1' : 'removeClass1'"
-                      @click="chooseThree(three.id)"
-                    >
+                    <dt v-for="(three, indexs) in threeInfo" :key="indexs" :class="three.id == threeId ? 'addClass1' : 'removeClass1'" @click="chooseThree(three.id)">
                       {{ three.name }}
                     </dt>
                   </dl>
                 </template>
               </div>
 
-              <p v-if="fun.isTextEmpty(list.recommend)">{{ $i18n.t('category.暂无其他分类') }}</p>
+              <p v-if="fun.isTextEmpty(list.recommend)">{{ $i18n.t("category.暂无其他分类") }}</p>
             </van-collapse-item>
           </van-collapse>
         </div>
 
-        <div class="goodsList" ref="goodsWrapper" style="overflow: hidden;">
+        <div class="goodsList" ref="goodsWrapper" style="overflow: hidden">
           <div class="coverLayer" v-if="this.activeName == '1'" @click="change"></div>
           <div>
-            <div
-              class="goodWrapper"
-              :style="{ backgroundColor: category_template == '01' ? '#fff' : '#f4f4f4' }"
-              v-if="!this.fun.isTextEmpty(foodInfo)"
-            >
-              <div
-                class="list"
-                :class="`category_template${category_template}`"
-                v-for="(good, indexs) in foodInfo"
-                :key="indexs"
-                @click="gotoGoods(good.goods_id)"
-              >
+            <div class="goodWrapper" :style="{ backgroundColor: category_template == '01' ? '#fff' : '#f4f4f4' }" v-if="!this.fun.isTextEmpty(foodInfo)">
+              <div class="list" :class="`category_template${category_template}`" v-for="(good, indexs) in foodInfo" :key="indexs" @click="gotoGoods(good.goods_id)">
                 <div class="img">
                   <img :src="good.thumb" />
                 </div>
                 <li class="goods-info">
                   <ul class="info-class">
-                    <li class="info_a" style="-webkit-box-orient: vertical;">
+                    <li class="info_a" style="-webkit-box-orient: vertical">
                       {{ good.title | escapeTitle }}
                     </li>
-                    <li class="info_b">
-                      {{ $i18n.t('category.已售') }}{{ good.show_sales + good.virtual_sales }}{{ good.sku }}
-                    </li>
+                    <li class="info_b">{{ $i18n.t("category.已售") }}{{ good.show_sales + good.virtual_sales }}{{ good.sku }}</li>
                     <li class="info_c">
                       <span class="price" v-show="!good.has_option"
-                        ><small>{{ $i18n.t('money') }}</small
-                        >{{
-                          good.vip_level_status && good.vip_level_status.status == 1
-                            ? good.vip_level_status.word
-                            : good.price
-                        }}</span
+                        ><small>{{ $i18n.t("money") }}</small
+                        >{{ good.vip_level_status && good.vip_level_status.status == 1 ? good.vip_level_status.word : good.price }}</span
                       >
-                      <span
-                        class="price"
-                        v-show="good.has_option && (!good.vip_level_status || good.vip_level_status.status == 0)"
-                        ><small>{{ $i18n.t('money') }}</small>
+                      <span class="price" v-show="good.has_option && (!good.vip_level_status || good.vip_level_status.status == 0)"
+                        ><small>{{ $i18n.t("money") }}</small>
                         <small v-if="good.max_price != good.min_price">{{ good.min_price }}-{{ good.max_price }}</small>
                         <small v-if="good.max_price == good.min_price">{{ good.max_price }}</small>
                       </span>
-                      <span
-                        class="price"
-                        v-if="good.has_option && good.vip_level_status && good.vip_level_status.status == 1"
-                        ><small>{{ $i18n.t('money') }}</small>
+                      <span class="price" v-if="good.has_option && good.vip_level_status && good.vip_level_status.status == 1"
+                        ><small>{{ $i18n.t("money") }}</small>
                         {{ good.vip_level_status.word }}
                       </span>
                       <template v-if="category_template != '04'">
                         <div class="select" v-if="good.has_option != 1 && good.plugin_id != 40">
                           <transition name="fade">
-                            <i
-                              v-if="goodsCarts[good.id]"
-                              class="iconfont icon-life-game-sign"
-                              @click.stop="numberLeft(good.id)"
-                            ></i>
+                            <i v-if="goodsCarts[good.id]" class="iconfont icon-life-game-sign" @click.stop="numberLeft(good.id)"></i>
                           </transition>
                           <input
                             type="tel"
@@ -159,21 +101,16 @@
                             @focus="clickCount(goodsCartsTotal[good.id].total)"
                             @blur="changeCount(goodsCarts[good.id].id, goodsCartsTotal[good.id].total, 0, good)"
                           />
-                          <span v-if="goodsCarts[good.id] && goodsCarts[good.id].option_str" @click.stop>{{
-                            goodsCartsTotal[good.id].total
-                          }}</span>
-                          <i
-                            @click.stop="numberRight(good.id, good.stock, good)"
-                            class="iconfont icon-life-game-plus"
-                          ></i>
+                          <span v-if="goodsCarts[good.id] && goodsCarts[good.id].option_str" @click.stop>{{ goodsCartsTotal[good.id].total }}</span>
+                          <i @click.stop="numberRight(good.id, good.stock, good)" class="iconfont icon-life-game-plus"></i>
                         </div>
                         <!-- 分类页返回了plugin_id:0||商城商品，plugin_id：40||租赁，plugin_id：92||供应商商品 -->
                         <div class="select optionClass leaseBox" v-if="good.has_option == 1 && good.plugin_id != 40">
-                          <p @click.stop="addGood(good)">{{ $i18n.t('category.选规格') }}</p>
+                          <p @click.stop="addGood(good)">{{ $i18n.t("category.选规格") }}</p>
                           <i v-if="!fun.isTextEmpty(goodsCartsTotal[good.id])">{{ goodsCartsTotal[good.id].total }}</i>
                         </div>
                         <span class="select leaseBox" v-if="good.plugin_id == 40">
-                          {{ $i18n.t('category.去租赁') }}
+                          {{ $i18n.t("category.去租赁") }}
                         </span>
                       </template>
                       <template v-if="category_template == '04'">
@@ -182,39 +119,32 @@
                         </div>
                       </template>
                     </li>
-                    <div class="price" v-show="good.is_open_micro == 1" style="font-size: 0.75rem;">
-                      会员价:{{ $i18n.t('money') }}{{ good.price_level == 1 ? good.vip_price : good.vip_next_price }}
-                    </div>
+                    <div class="price" v-show="good.is_open_micro == 1" style="font-size: 0.75rem">会员价:{{ $i18n.t("money") }}{{ good.price_level == 1 ? good.vip_price : good.vip_next_price }}</div>
                   </ul>
                 </li>
               </div>
               <div class="space">{{ LoadMoreTest }}</div>
             </div>
             <div v-if="this.fun.isTextEmpty(foodInfo)">
-              <img src="../../assets/images/no-more-product.png" alt="" style="width: 5rem; margin-top: 6rem;" />
+              <img src="../../assets/images/no-more-product.png" alt="" style="width: 5rem; margin-top: 6rem" />
             </div>
-            <span id="loadMore" style="display: inline-block; width: 100%; height: 5rem;"></span>
+            <span id="loadMore" style="display: inline-block; width: 100%; height: 5rem"></span>
           </div>
         </div>
       </div>
     </div>
-    <div id="rootlists 1" ref="menu">
+    <div id="rootlists" ref="menu">
       <ul id="rootList" v-if="onelist">
         <li @click="bpfun" v-if="brandShow == '0'">
-          <span>{{ $i18n.t('category.推荐品牌') }}</span>
+          <span>{{ $i18n.t("category.推荐品牌") }}</span>
         </li>
         <li @click="allList" v-if="categoryShow == '0'" :class="{ active: active2 }">
-          <span>{{ $i18n.t('category.推荐分类') }}</span>
+          <span>{{ $i18n.t("category.推荐分类") }}</span>
         </li>
-        <li
-          v-for="(item, index) in onelist"
-          :key="index"
-          :class="{ active: active == index }"
-          @click="tabsa(index, item)"
-        >
+        <li v-for="(item, index) in onelist" :key="index" :class="{ active: active == index }" @click="tabsa(index, item)">
           <span>{{ item.name }}</span>
         </li>
-        <div style="height: 3.125rem;"></div>
+        <div style="height: 3.125rem"></div>
       </ul>
     </div>
     <!--选规格-->
@@ -224,34 +154,27 @@
           {{ popTitle }}
           <i @click.stop="close" class="iconfont icon-close11"></i>
         </h3>
-        <div style="height: 2.5rem;"></div>
+        <div style="height: 2.5rem"></div>
         <div class="spec_a">
           <div v-for="(spec, i) in goodsInfo.has_many_specs" :key="i">
             <h5>{{ spec.title }}：</h5>
             <ul class="option">
-              <li
-                @click.stop="selectSpecs(item, item.id)"
-                v-for="(item, i) in spec.has_many_specs_item"
-                :key="i"
-                :class="specid.indexOf(item.id) >= 0 ? 'cur' : ''"
-              >
+              <li @click.stop="selectSpecs(item, item.id)" v-for="(item, i) in spec.has_many_specs_item" :key="i" :class="specid.indexOf(item.id) >= 0 ? 'cur' : ''">
                 {{ item.title }}
               </li>
             </ul>
           </div>
         </div>
-        <div style="height: 3.4375rem;"></div>
+        <div style="height: 3.4375rem"></div>
         <div class="add_car">
           <ul class="car_btn">
             <li class="left">
-              <span>{{ $i18n.t('money') }}</span
+              <span>{{ $i18n.t("money") }}</span
               >{{ popPrice }}
             </li>
             <li class="right">
-              <span v-show="!popNum && popStock >= 1" @click.stop="submitAction">{{
-                $i18n.t('category.加入购物车')
-              }}</span>
-              <span v-show="popStock <= 0" style="background: #999;">库存不足</span>
+              <span v-show="!popNum && popStock >= 1" @click.stop="submitAction">{{ $i18n.t("category.加入购物车") }}</span>
+              <span v-show="popStock <= 0" style="background: #999">库存不足</span>
             </li>
             <div class="Box" v-show="popNum >= 1">
               <i class="iconfont icon-store_reduceLine" @click.stop="changeCount(popCard.id, popNum - 1, -1)"></i>
@@ -262,16 +185,19 @@
         </div>
       </div>
     </van-popup>
-    <div style="height: 2.8125rem;"></div>
+    <div style="height: 2.8125rem"></div>
   </div>
 </template>
 
 <script>
-import category from './category_controller';
+import category from "./category_controller";
 export default category;
 </script>
 
 <style lang="scss" rel="stylesheet/scss">
+
+
+
 #category {
   .van-collapse::after {
     border: none;
@@ -293,7 +219,7 @@ export default category;
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" rel="stylesheet/scss" scoped>
-@import '../../assets/css/category.scss';
+@import "../../assets/css/category.scss";
 
 #category {
   #rootlists,
@@ -567,7 +493,7 @@ export default category;
       .goodWrapper::after {
         display: block;
         background: transparent;
-        content: ' ';
+        content: " ";
         width: 100%;
         height: 3.625rem;
       }

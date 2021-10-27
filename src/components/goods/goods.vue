@@ -414,7 +414,7 @@
                   <div id="goods_content ww" v-html="goodDetail.content" @click="handleHtml($event)"></div>
                   <!-- 商品详情最后一张图 -->
                   <!-- 重要提示 -->
-                  <div class="OrderDescription" style="padding-top: 12px">
+                  <div class="OrderDescription" style="padding-top: 12px" v-if="$route.query.i==2">
                     <span>重要提示</span>
                     <p>
                       虽然我们会尽力确保产品信息正确无误，但有时生产商会修改其产品的配料表，因此产品实际包装上标明的信息可能与网页上展示的信息不一致。请不要只依赖于网页上展示的信息，务必在使用产品前仔细阅读产品标签、警告和使用说明。欲知更多产品信息，请咨询客服。本页面展示信息仅供参考。
@@ -422,14 +422,14 @@
                     <p style="text-indent: 0; font-size: 18px; font-family: fantasy">客服电话：400-8978-288</p>
                     <p><br /></p>
                   </div>
-                  <div class="OrderDescription">
+                  <div class="OrderDescription" v-if="$route.query.i==2">
                     <span>说明</span>
                     <p>
                       自商品签收7个工作日内，如商品未使用及包装保持出售时原状且配件齐全，我们将提供退换货服务。退换货时，务必保持完好的品牌包装，及附件，如有赠品需同商品一起寄回。如商品包装破损或丢失，即使在退换货期内，也无法为您办理，质量问题除外。
                     </p>
                     <p><br /></p>
                   </div>
-                  <div class="OrderDescription" v-show="goodsInfo.brand_id == 5">
+                  <div class="OrderDescription" v-show="goodsInfo.brand_id == 5" v-if="$route.query.i==2">
                     <span>温馨提示</span>
                     <p>符合条件的被捐赠者，根据系统提示，提交相关资料，通过三方审核通过后，方可以下单领取，如有以虚假身份冒领捐赠物资这，承担物品价值的两倍赔偿，并承担所有法律责任。</p>
                     <p style="text-indent: 0; font-size: 18px; font-family: fantasy">客服电话：400-8978-288</p>
@@ -783,6 +783,7 @@
             <!-- <block > 立即兑s换 </block> -->
             <!-- aixintongdui -->
 
+            <block v-if="$route.query.i==9"> 立即购买 </block>
             <block v-if="isBuy && !isBegTime"> 立即购买 </block>
             <div class="time" style="line-height: 1rem" v-if="isBuy && isBegTime">
               <div class="text" style="padding-top: 0.5rem">距开始还剩</div>

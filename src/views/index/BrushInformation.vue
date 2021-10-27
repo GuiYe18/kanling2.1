@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-07-23 11:52:36
- * @LastEditTime: 2021-08-05 13:50:56
+ * @LastEditTime: 2021-10-25 18:53:11
  * @FilePath: \you-shop1\src\views\index\BrushInformation.vue
  * @Describe: 
 -->
@@ -64,6 +64,7 @@
 </template>
 
 <script>
+import { Toast } from 'vant';
 export default {
   data() {
     return {
@@ -105,7 +106,7 @@ export default {
     onLoad() {
       // 异步更新数据
       // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-
+      Toast('刷信息')
       this.page++;
       const url = "https://tpkl.minpinyouxuan.com/index.php/api/v1/orderlists";
       axios({

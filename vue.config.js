@@ -79,7 +79,6 @@ const cdn = {
             // "https://webapi.amap.com/maps?v=1.4.9&key=43de56d8e65fe042493541213d9ad7b0&plugin=AMap.Autocomplete,AMap.PlaceSearch,AMap.Geocoder",
             "https://webapi.amap.com/maps?v=1.4.9&key=fecbee2d0e60081c5778c70cd6deb98a&plugin=AMap.Autocomplete,AMap.PlaceSearch,AMap.Geocoder",
             // "https://webapi.amap.com/maps?v=2.0Beta&key=fecbee2d0e60081c5778c70cd6deb98a",
-
             "./static/app/YdbOnline.js",
             "./static/app/apps.js",
             "./static/app/fixifmheight.js",
@@ -114,7 +113,7 @@ module.exports = {
         proxy: {
             "/addons/yun_shop/api.php": {
                 // target: "https://dev8.yunzmall.com/", //目标接口域名
-                target: 'http://kl.minpinyouxuan.com/',    //正式
+                target: 'https://kl.minpinyouxuan.com/',    //正式
                 // target: 'https://klcs.minpinyouxuan.com/', // 测试
                 changeOrigin: true, //是否跨域
                 secure: false

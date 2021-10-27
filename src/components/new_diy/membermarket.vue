@@ -45,7 +45,7 @@
           <li v-for="icon in datas.show_list" :key="icon.url" @click="pluginGoto(icon)">
             <template v-if="notShow.indexOf(icon.url) < 0">
               <i class="iconfont" :class="icon.class"></i>
-              <div>{{ icon.title }}2</div>
+              <div>{{ icon.title }}</div>
               <div class="Badge 1" v-show="icon.total > 0">{{ icon.total > 99 ? "99+" : icon.total }}</div>
             </template>
           </li>
@@ -94,6 +94,7 @@
         </ul>
 
         <ul class="tool-boxlis" v-if="datas.list_style == '2'" v-show="show">
+          {{ datas.show_list}}
           <li v-for="icon in datas.show_list" :key="icon.url" @click="pluginGoto(icon)">
             <div class="lis" v-if="notShow.indexOf(icon.url) < 0">
               <i class="iconfont" :class="icon.class" style="font-size: 28px"></i>
@@ -102,6 +103,7 @@
             </div>
             <i class="iconfont icon-member_right"></i>
           </li>
+
 
           <li v-for="(item, index) in datas.list" :key="index" @click="gotoUrl(item)">
             <div class="lis">

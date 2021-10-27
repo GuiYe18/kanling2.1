@@ -125,14 +125,36 @@
     <van-popup v-model="show" round position="bottom" :style="{ height: '60%' }" @click="pitchOn">
       <van-address-list v-model="chosenAddressId" :list="list" default-tag-text="默认" @add="onAdd('/address')" @edit="onEdit" />
     </van-popup>
-    <!-- 门店列表弹框 -->
-    <van-popup v-model="StoreShow" round position="bottom" :style="{ height: '60%' }" @click="StorePitchOn" class="Store">
+    <!-- 门店列表弹框
+    <van-popup v-model="StoreShow" round position="bottom" :style="{ height: '60%' }" @click="StorePitchOn" class="Store 1">
       <div style="height: 100px; margin-bottom: 100px">当前定位</div>
       <van-address-list v-model="StoreAddressID" :list="stores" default-tag-text="默认" @select="onSelect" />
-    </van-popup>
+    </van-popup> -->
     <!-- 库房列表弹框 -->
     <van-popup v-model="StoreShow" round position="bottom" :style="{ height: '60%' }" @click="StorePitchOn" class="Store">
-      <van-address-list v-model="StoreAddressID" :list="stores" default-tag-text="默认" @select="onSelect" />
+      <!-- 地址选区 -->
+      <div class="AddressSelection">
+        <!-- <van-sticky offset-top="40vh"> -->
+        <div class="field-item">
+          <i class="icon-loc"></i>
+          <!-- <label>所在位置</label> -->
+          <div class="wrap">
+            <input class="text-left" type="text" v-model="sqnadress" readonly placeholder="当前位置获取中..." />
+          </div>
+        </div>
+        <!-- </van-sticky> -->
+        <div class="listAt">
+          <!-- <van-address-list v-model="StoreAddressID" :list="stores" default-tag-text="默认" @select="onSelect" /> -->
+          <!-- {{stores}} -->
+          <van-cell v-for="(item, i) in stores" :key="i">
+            <div>
+              {{ item.name }} <br>
+              {{ item.tel }}  <br>
+              {{ item.address }}  <br>
+            </div>
+          </van-cell>
+        </div>
+      </div>
     </van-popup>
 
     <!-- 分割 -->
@@ -325,7 +347,13 @@ export default {
       donation_type: "", //捐物类型
       type_id: "", //选中门店的地址id
       OpenTheTip: "", //协议是否开启
-      Area: "" //地区
+      Area: "", //地区
+      /**
+       * @Author: 飞
+       * @Date: 2021-10-27 15:20:22
+       * @Describe:
+       */
+      sqnadress: "" //定位得到的地址
     };
   },
 
@@ -456,8 +484,48 @@ export default {
       // 回显
       this.TheEcho();
     }
+    /**
+     * @Author: 飞
+     * @Date: 2021-10-27 15:21:45
+     * @Describe: 获取位置
+     */
+    this.getLocation();
   },
   methods: {
+    //获取当前的经纬度
+    getLocation() {
+      var that = this;
+      var mapObj = new AMap.Map("iCenter");
+      mapObj.plugin("AMap.Geolocation", function () {
+        var geolocation = new AMap.Geolocation({
+          enableHighAccuracy: true, // 是否使用高精度定位，默认:true
+          timeout: 10000, // 超过10秒后停止定位，默认：无穷大
+          maximumAge: 0, // 定位结果缓存0毫秒，默认：0
+          convert: true, // 自动偏移坐标，偏移后的坐标为高德坐标，默认：true
+          showButton: true, // 显示定位按钮，默认：true
+          buttonPosition: "LB", // 定位按钮停靠位置，默认：'LB'，左下角
+          buttonOffset: new AMap.Pixel(10, 20), // 定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+          showMarker: true, // 定位成功后在定位到的位置显示点标记，默认：true
+          showCircle: true, // 定位成功后用圆圈表示定位精度范围，默认：true
+          panToLocation: true, // 定位成功后将定位到的位置作为地图中心点，默认：true
+          zoomToAccuracy: true // 定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+        });
+        mapObj.addControl(geolocation);
+        geolocation.getCurrentPosition();
+        AMap.event.addListener(geolocation, "complete", onComplete); // 返回定位信息
+        AMap.event.addListener(geolocation, "error", onError); // 返回定位出错信息
+      });
+
+      function onComplete(obj) {
+        that.$toast("获取定位成功");
+        console.log(obj);
+        that.sqnadress = obj.formattedAddress;
+      }
+
+      function onError(obj) {
+        that.$toast("获取定位失败，请点击定位按钮");
+      }
+    },
     // 删除
     beforeDelete_1(name, index) {
       this.productPicture = "";
@@ -545,8 +613,9 @@ export default {
 
     // 门店选中
     StorePitchOn() {
-      this.StoreShow = false;
       console.log("StoreAddress", this.StoreAddressID);
+      // this.StoreShow = false;
+      return;
       this.type_id = this.StoreAddressID; //选中门店的地址id
       this.stores.forEach(item => {
         if (item.id == this.StoreAddressID) {
@@ -1572,6 +1641,51 @@ export default {
     }
     .van-address-item__edit {
       display: none;
+    }
+    // 地址选区
+    .AddressSelection {
+      padding: 1rem;
+      height: 100%;
+      .icon-loc {
+        display: inline-block;
+        flex: 0 0 1.5rem;
+        margin-right: 0.8125rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        background: url("./img/location.png") no-repeat center center;
+        background-size: 1.5rem 1.5rem !important;
+      }
+      .field-item {
+        display: flex;
+        align-items: center;
+        height: 3.125rem;
+        // padding: 0 1.25rem;
+        font-family: PingFang-SC-Medium, PingFang-SC;
+        // box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+        .wrap {
+          width: 100%;
+          height: 100%;
+          line-height: 50px;
+          border-bottom: 1px solid #eee;
+          display: flex;
+          align-items: center;
+          input {
+            flex: 1;
+            text-align: left;
+            border: 0;
+            width: 100%;
+            &::placeholder {
+              color: #999999;
+            }
+          }
+        }
+      }
+
+      // 地址
+      .listAt {
+        overflow: hidden;
+      }
     }
   }
 }

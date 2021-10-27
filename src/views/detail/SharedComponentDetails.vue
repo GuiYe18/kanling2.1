@@ -6,13 +6,15 @@
       <!-- <div class="red"> -->
       <div class="redDetail">
         <div v-if="!showRed">
-          <van-circle stroke-width="60" color="#f63a39" class="progress" v-model="rate" :rate="val" size="4.75rem" layer-color="#ebedf0" />
+          <!-- <van-circle stroke-width="60" color="#f63a39" class="progress" v-model="rate" :rate="val" size="4.75rem" layer-color="#ebedf0" /> -->
+          <img src="../../assets/newImg/detail/dan.gif" alt="" class="progress">
+          <!-- <div class="progress">{{showRed}}</div> -->
         </div>
       </div>
     </div>
     <!-- 红包 -->
-    <div class="redSuccess" v-if="showRed">
-      <!-- <div class="redSuccess"> -->
+    <!-- <div class="redSuccess" v-if="showRed"> -->
+    <div class="redSuccess" v-if="showRed" :class="bjcomt ? 'bj' : ''">
       <img :src="redGif" alt="" />
       <div @click="closeRed" class="closeIcon">
         <van-icon name="close" size="1.13rem" color="#fff" />
@@ -28,9 +30,11 @@
     <!-- 头部轮播 -->
     <div class="swiper" style="position: relative">
       <van-swipe class="my-swipe" :autoplay="3000">
-        <van-swipe-item v-for="(item, index) in content.topurl" :key="index">
-          <img :src="item" alt="" />
-        </van-swipe-item>
+        <div v-for="(item, i) in content.topurl" :key="i">
+          <van-swipe-item>
+            <img :src="item" alt="" />
+          </van-swipe-item>
+        </div>
       </van-swipe>
       <div id="back" @click="Retreat">
         <van-icon name="arrow-left" />
@@ -333,7 +337,19 @@ export default {
        * @Date: 2021-08-12 19:45:00
        * @Describe:
        */
-      qsntype: ""
+      qsntype: "",
+      /**
+       * @Author: 飞
+       * @Date: 2021-10-27 14:16:33
+       * @Describe: 红包背景定时
+       */
+      BackgroundFlashingRedRnvelopes: "",
+      /**
+       * @Author: 飞
+       * @Date: 2021-10-27 14:19:09
+       * @Describe: 红包背景真假
+       */
+      RedBackgroundOfTrueAndFalse: false
     };
   },
   activated() {
@@ -370,6 +386,19 @@ export default {
   computed: {
     commentTitle() {
       return `共${this.commentNum}条评论`;
+    },
+    bjcomt() {
+      this.BackgroundFlashingRedRnvelopes = setTimeout(() => {
+        this.RedBackgroundOfTrueAndFalse = !this.RedBackgroundOfTrueAndFalse;
+      }, 600);
+      return this.RedBackgroundOfTrueAndFalse;
+    }
+  },
+  watch: {
+    $route: function (N, O) {
+      if (N.name == "index" && O.name == "SharedComponentDetails") {
+        window.clearInterval(this.BackgroundFlashingRedRnvelopes);
+      }
     }
   },
   methods: {
@@ -802,6 +831,12 @@ export default {
   },
   components: {
     videoPlayer
+  },
+  beforeDestroy() {
+    console.log("beforeDestroy");
+  },
+  destroyed() {
+    console.log("destroyed");
   }
 };
 </script>
@@ -829,11 +864,7 @@ export default {
   border: 1px solid #d8d8d8;
 }
 .progress {
-  background-size: 3.7rem 3rem;
-  background-image: url("../../assets/newImg/detail/redtop2.png");
-  // background-image: url("./img/hbbj.gif");
-  background-repeat: no-repeat;
-  background-position: center;
+  height: 110px;
 }
 .mt-progress-content {
   border-radius: 5px;
@@ -856,6 +887,11 @@ export default {
   width: 100%;
 
   z-index: 200000;
+}
+.bj {
+  background-image: url("./img/1111.png");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .redSuccess {
   position: fixed;

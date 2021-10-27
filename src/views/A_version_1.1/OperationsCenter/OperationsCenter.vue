@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-10-21 17:34:31
- * @LastEditTime: 2021-10-22 17:22:15
+ * @LastEditTime: 2021-10-27 10:54:52
  * @FilePath: \you-shop1\src\views\A_version_1.1\OperationsCenter\OperationsCenter.vue
  * @Describe: 
 -->
@@ -123,8 +123,8 @@
             <div class="note">每项内容可自由分配，最底可分配为0%。</div>
             <div class="ABox">
               <div class="juan"><van-field v-model="ADValue" label="广告费收益" placeholder="0-30" />%</div>
-              <div class="juan"><van-field v-model="PayValue" label="支付收益" placeholder="0-30" />%</div>
-              <div class="juan"><van-field v-model="SalesValue" label="线上销售收益" placeholder="0-30" />%</div>
+              <div class="juan"><van-field v-model="PayValue" label="支付收益" placeholder="0-0.1" />%</div>
+              <div class="juan"><van-field v-model="SalesValue" label="线上销售收益" placeholder="0-0.5" />%</div>
             </div>
           </div>
           <div class="commit" @click="GoSubmit">提交</div>

@@ -81,7 +81,13 @@
       <p style="font-weight: bold; font-size: 16px; padding-bottom: 0.5rem">请用微信识别二维码支付</p>
     </van-popup>
     <van-popup v-model="showZFBQR" :style="{ width: '80%' }">
-      <template v-show="isZFBQR">
+      <!-- /**
+       * @Author: 飞
+       * @Date: 2021-10-25 16:57:03
+       * @Describe: 
+       */ -->
+      <!-- <template v-show="isZFBQR"> -->
+      <template v-if="isZFBQR">
         <canvas id="qrccode-canvas"></canvas>
         <p style="font-weight: bold; font-size: 16px; padding-bottom: 0.5rem">请用支付宝识别二维码支付</p>
       </template>
