@@ -131,7 +131,7 @@
       <van-address-list v-model="StoreAddressID" :list="stores" default-tag-text="默认" @select="onSelect" />
     </van-popup> -->
     <!-- 库房列表弹框 -->
-    <van-popup v-model="StoreShow" round position="bottom" :style="{ height: '60%' }" @click="StorePitchOn" class="Store">
+    <van-popup v-model="StoreShow" round position="bottom" :style="{ height: '60%' }"  class="Store">
       <!-- 地址选区 -->
       <div class="AddressSelection">
         <!-- <van-sticky offset-top="40vh"> -->
@@ -143,10 +143,11 @@
           </div>
         </div>
         <!-- </van-sticky> -->
+        <div class="NearbyAddress">附近收件人地址:↓</div>
         <div class="listAt">
           <!-- <van-address-list v-model="StoreAddressID" :list="stores" default-tag-text="默认" @select="onSelect" /> -->
           <!-- {{stores}} -->
-          <van-cell v-for="(item, i) in stores" :key="i">
+          <van-cell v-for="(item, i) in stores" :key="i" @click="StorePitchOn(item)">
             <div>
               {{ item.name }} <br>
               {{ item.tel }}  <br>
@@ -612,10 +613,11 @@ export default {
     },
 
     // 门店选中
-    StorePitchOn() {
-      console.log("StoreAddress", this.StoreAddressID);
-      // this.StoreShow = false;
-      return;
+    StorePitchOn(item) {
+      // console.log("StoreAddress", item);
+      this.StoreAddressID = item.id
+      this.StoreShow = false;
+      // return;
       this.type_id = this.StoreAddressID; //选中门店的地址id
       this.stores.forEach(item => {
         if (item.id == this.StoreAddressID) {
@@ -1681,7 +1683,10 @@ export default {
           }
         }
       }
-
+      // 附近地址
+      .NearbyAddress{
+        margin: 1rem;
+      }
       // 地址
       .listAt {
         overflow: hidden;
