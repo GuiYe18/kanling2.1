@@ -1,7 +1,7 @@
 <!--
  * @Author: 飞
  * @Date: 2021-10-15 17:28:18
- * @LastEditTime: 2021-10-20 13:48:00
+ * @LastEditTime: 2021-10-27 18:59:04
  * @FilePath: \you-shop1\src\views\A_version_1.1\industry\AddBrand.vue
  * @Describe: 
 -->
@@ -89,7 +89,7 @@ export default {
       },
       province_bank: "", //地区省编码
       province_text: "", //地区省名称
-      zhixiashi: ["110000", "310000"], //直辖市
+      zhixiashi: ["110000", "120000", "310000",'500000'], //直辖市
       listdata: [
         {
           name: "爱心企业",
@@ -259,7 +259,7 @@ export default {
           // this.$router.push(this.fun.getUrl("ArrangeTableList", {}, { industry_id: this.$route.query.industry_id }));
           that.$router.go(-1);
           Toast("授牌申请成功");
-          
+
           EventBus.$emit("decreased");
 
           that.formDta.username = "";
@@ -332,8 +332,9 @@ export default {
       console.log("this.province_text", this.TheMunicipal);
       // this.dart_name = VPinYin.chineseToPinYin(this.province_text);
       // this.city_name = VPinYin.chineseToPinYin(this.TheMunicipal);
-      this.IsBrandCode = this.SerialNumber_QName; //完整牌子编码
-
+      
+      this.IsBrandCode = this.number_name.split('市')[0].split('省')[0] +'.'+ this.SerialNumber_QName.split('市')[0].split('区')[0]+this.number; //完整牌子编码
+      console.log("this.IsBrandCode", this.IsBrandCode);
       var canvas = document.getElementById("canvas");
       var cxt = canvas.getContext("2d");
       canvas.width = 1400;

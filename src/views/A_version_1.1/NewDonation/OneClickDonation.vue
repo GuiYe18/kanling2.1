@@ -131,7 +131,7 @@
       <van-address-list v-model="StoreAddressID" :list="stores" default-tag-text="默认" @select="onSelect" />
     </van-popup> -->
     <!-- 库房列表弹框 -->
-    <van-popup v-model="StoreShow" round position="bottom" :style="{ height: '60%' }"  class="Store">
+    <van-popup v-model="StoreShow" round position="bottom" :style="{ height: '60%' }" class="Store">
       <!-- 地址选区 -->
       <div class="AddressSelection">
         <!-- <van-sticky offset-top="40vh"> -->
@@ -149,9 +149,9 @@
           <!-- {{stores}} -->
           <van-cell v-for="(item, i) in stores" :key="i" @click="StorePitchOn(item)">
             <div>
-              {{ item.name }} <br>
-              {{ item.tel }}  <br>
-              {{ item.address }}  <br>
+              {{ item.name }} <br />
+              {{ item.tel }} <br />
+              {{ item.address }} <br />
             </div>
           </van-cell>
         </div>
@@ -521,11 +521,46 @@ export default {
         that.$toast("获取定位成功");
         console.log(obj);
         that.sqnadress = obj.formattedAddress;
+        /**
+         * @Author: 飞
+         * @Date: 2021-10-27 19:04:09
+         * @Describe:定位成功获取收件人的地址
+         */
+
+        that.AccessToTheRecipientAddress(obj.addressComponent.adcode);
       }
 
       function onError(obj) {
         that.$toast("获取定位失败，请点击定位按钮");
       }
+    },
+    /**
+     * @Author: 飞
+     * @Date: 2021-10-27 19:10:34
+     * @Describe: 定位成功获取收件人的地址
+     */
+    AccessToTheRecipientAddress(adc) {
+      var that = this;
+      axios({
+        method: "post",
+        url: "https://tpkl.minpinyouxuan.com/api/v2/wh_addrs",
+        data: {
+          addcode: adc
+        }
+      })
+        .then(response => {
+          if (response.data.result == 1) {
+            // that.stores = response.data.data;
+            that.stores = [{ tel: response.data.data[0].phone, name: response.data.data[0].name, address: response.data.data[0].adress, id: response.data.data[0].id }];
+            console.log('that.stores',that.stores);
+            // that.successSubmit = true;
+          }
+          if (response.data.result == 0) {
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     // 删除
     beforeDelete_1(name, index) {
@@ -615,7 +650,7 @@ export default {
     // 门店选中
     StorePitchOn(item) {
       // console.log("StoreAddress", item);
-      this.StoreAddressID = item.id
+      this.StoreAddressID = item.id;
       this.StoreShow = false;
       // return;
       this.type_id = this.StoreAddressID; //选中门店的地址id
@@ -1684,7 +1719,7 @@ export default {
         }
       }
       // 附近地址
-      .NearbyAddress{
+      .NearbyAddress {
         margin: 1rem;
       }
       // 地址
